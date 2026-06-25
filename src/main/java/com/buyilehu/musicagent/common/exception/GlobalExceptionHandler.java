@@ -1,6 +1,6 @@
 package com.buyilehu.musicagent.common.exception;
 
-import com.buyilehu.musicagent.common.api.ApiResponse;
+import com.buyilehu.musicagent.common.response.ApiResponse;
 import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,28 +16,41 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException exception) {
-        ErrorCode code = exception.getErrorCode();
-        HttpStatus status;
-        switch (code) {
-            case BAD_REQUEST: status = HttpStatus.BAD_REQUEST; break;
-            case UNAUTHORIZED: status = HttpStatus.UNAUTHORIZED; break;
-            case FORBIDDEN: status = HttpStatus.FORBIDDEN; break;
-            case RESOURCE_NOT_FOUND: status = HttpStatus.NOT_FOUND; break;
-            default: status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return ResponseEntity.status(status).body(ApiResponse.failure(code.code(), exception.getMessage()));
+        ErrorCode errorCode = exception.getErrorCode();
+        HttpStatus status = resolveHttpStatus(errorCode);
+        return ResponseEntity
+                .status(status)
+                .body(ApiResponse.fail(errorCode.code(), exception.getMessage()));
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     public ResponseEntity<ApiResponse<Void>> handleValidationException(Exception exception) {
-        return ResponseEntity.badRequest().body(ApiResponse.failure(
-                ErrorCode.BAD_REQUEST.code(), ErrorCode.BAD_REQUEST.message()));
+        return ResponseEntity
+                .badRequest()
+                .body(ApiResponse.fail(ErrorCode.PARAM_ERROR.code(), ErrorCode.PARAM_ERROR.message()));
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleUnexpectedException(Exception exception) {
         log.error("Unhandled server exception", exception);
-        return ResponseEntity.internalServerError().body(ApiResponse.failure(
-                ErrorCode.INTERNAL_ERROR.code(), ErrorCode.INTERNAL_ERROR.message()));
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.fail(ErrorCode.INTERNAL_ERROR.code(), ErrorCode.INTERNAL_ERROR.message()));
+    }
+
+    private HttpStatus resolveHttpStatus(ErrorCode errorCode) {
+        switch (errorCode) {
+            case PARAM_ERROR:
+            case BAD_REQUEST:
+                return HttpStatus.BAD_REQUEST;
+            case UNAUTHORIZED:
+                return HttpStatus.UNAUTHORIZED;
+            case FORBIDDEN:
+                return HttpStatus.FORBIDDEN;
+            case RESOURCE_NOT_FOUND:
+                return HttpStatus.NOT_FOUND;
+            default:
+                return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.buyilehu.musicagent.presentation.controller;
 
 import com.buyilehu.musicagent.application.service.SystemStatusService;
-import com.buyilehu.musicagent.common.api.ApiResponse;
+import com.buyilehu.musicagent.common.response.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

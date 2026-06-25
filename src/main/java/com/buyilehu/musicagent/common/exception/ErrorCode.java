@@ -1,6 +1,7 @@
 package com.buyilehu.musicagent.common.exception;
 
 public enum ErrorCode {
+    PARAM_ERROR(40001, "参数错误"),
     BAD_REQUEST(40000, "请求参数错误"),
     UNAUTHORIZED(40100, "未登录或登录已失效"),
     FORBIDDEN(40300, "无权访问该资源"),

@@ -2,7 +2,7 @@ package com.buyilehu.musicagent.presentation.controller;
 
 import com.buyilehu.musicagent.application.dto.response.UserResponse;
 import com.buyilehu.musicagent.application.service.UserService;
-import com.buyilehu.musicagent.common.api.ApiResponse;
+import com.buyilehu.musicagent.common.response.ApiResponse;
 import javax.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
