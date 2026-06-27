@@ -1,0 +1,256 @@
+package com.buyilehu.musicagent;
+
+import com.buyilehu.musicagent.domain.entity.ActivityNode;
+import com.buyilehu.musicagent.infrastructure.repository.ActivityNodeRepository;
+import com.buyilehu.musicagent.infrastructure.repository.AssetRepository;
+import com.buyilehu.musicagent.infrastructure.repository.ComponentInstanceRepository;
+import com.buyilehu.musicagent.infrastructure.repository.GenerationJobRepository;
+import com.buyilehu.musicagent.infrastructure.repository.InteractivePackageRepository;
+import com.buyilehu.musicagent.infrastructure.repository.PackageVersionRepository;
+import com.buyilehu.musicagent.infrastructure.repository.ProposalCardRepository;
+import com.buyilehu.musicagent.infrastructure.repository.QualityReportRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class MusicAgentServerApplicationTests {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private GenerationJobRepository generationJobRepository;
+
+    @Autowired
+    private InteractivePackageRepository interactivePackageRepository;
+
+    @Autowired
+    private PackageVersionRepository packageVersionRepository;
+
+    @Autowired
+    private ProposalCardRepository proposalCardRepository;
+
+    @Autowired
+    private ActivityNodeRepository activityNodeRepository;
+
+    @Autowired
+    private ComponentInstanceRepository componentInstanceRepository;
+
+    @Autowired
+    private AssetRepository assetRepository;
+
+    @Autowired
+    private QualityReportRepository qualityReportRepository;
+
+    @Test
+    void contextLoadsAndHealthEndpointIsPublic() throws Exception {
+        mockMvc.perform(get("/api/v1/system/health"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.status").value("UP"));
+    }
+
+    @Test
+    void businessEndpointRequiresAuthentication() throws Exception {
+        mockMvc.perform(get("/api/v1/users/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void teacherCanLoginAndGetCurrentUser() throws Exception {
+        String token = loginAndGetToken("teacher001", "123456");
+
+        mockMvc.perform(get("/api/v1/auth/me")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.username").value("teacher001"))
+                .andExpect(jsonPath("$.data.role").value("teacher"));
+    }
+
+    @Test
+    void teacherCreatesClassAndStudentJoinsByInviteCode() throws Exception {
+        String teacherToken = loginAndGetToken("teacher001", "123456");
+        String studentToken = loginAndGetToken("student001", "123456");
+
+        String createClassResponse = mockMvc.perform(post("/api/v1/classes")
+                        .header("Authorization", "Bearer " + teacherToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"className\":\"一年级音乐一班\",\"description\":\"节奏启蒙班\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.id").isNumber())
+                .andExpect(jsonPath("$.data.className").value("一年级音乐一班"))
+                .andExpect(jsonPath("$.data.inviteCode").isNotEmpty())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        JsonNode classData = objectMapper.readTree(createClassResponse).path("data");
+        long classId = classData.path("id").asLong();
+        String inviteCode = classData.path("inviteCode").asText();
+
+        mockMvc.perform(post("/api/v1/classes/join")
+                        .header("Authorization", "Bearer " + studentToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"inviteCode\":\"" + inviteCode + "\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.id").value(classId));
+
+        mockMvc.perform(get("/api/v1/classes/" + classId + "/students")
+                        .header("Authorization", "Bearer " + teacherToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data[0].username").value("student001"))
+                .andExpect(jsonPath("$.data[0].realName").value("学生001"));
+    }
+
+    @Test
+    void teacherUploadsTxtLessonPlanAndParserCreatesStructuredResult() throws Exception {
+        String teacherToken = loginAndGetToken("teacher001", "123456");
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "lesson.txt",
+                MediaType.TEXT_PLAIN_VALUE,
+                ("课程名称：小星星节奏课\n"
+                        + "年级：一年级\n"
+                        + "教学目标：感受稳定节拍\n"
+                        + "教学重点：节奏与旋律\n"
+                        + "教学过程：聆听歌曲\n"
+                        + "跟随节奏拍手\n").getBytes("UTF-8"));
+
+        String uploadResponse = mockMvc.perform(multipart("/api/v1/lesson-plans")
+                        .file(file)
+                        .param("title", "小星星节奏课")
+                        .header("Authorization", "Bearer " + teacherToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.id").isNumber())
+                .andExpect(jsonPath("$.data.sourceFileUrl").isNotEmpty())
+                .andExpect(jsonPath("$.data.rawText").isNotEmpty())
+                .andExpect(jsonPath("$.data.parsedJson").isNotEmpty())
+                .andExpect(jsonPath("$.data.parseStatus").value("success"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        JsonNode data = objectMapper.readTree(uploadResponse).path("data");
+        long lessonPlanId = data.path("id").asLong();
+        JsonNode parsedJson = objectMapper.readTree(data.path("parsedJson").asText());
+
+        org.assertj.core.api.Assertions.assertThat(parsedJson.path("courseName").asText()).isEqualTo("小星星节奏课");
+        org.assertj.core.api.Assertions.assertThat(parsedJson.path("objectives").get(0).asText()).contains("感受稳定节拍");
+        org.assertj.core.api.Assertions.assertThat(parsedJson.path("musicElements").toString()).contains("节奏");
+
+        mockMvc.perform(get("/api/v1/lesson-plans/" + lessonPlanId)
+                        .header("Authorization", "Bearer " + teacherToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.id").value(lessonPlanId))
+                .andExpect(jsonPath("$.data.parseStatus").value("success"));
+    }
+
+    @Test
+    void teacherGeneratesInteractivePackageFromLessonPlan() throws Exception {
+        String teacherToken = loginAndGetToken("teacher001", "123456");
+        long lessonPlanId = uploadTxtLessonPlanAndGetId(teacherToken);
+
+        String generationResponse = mockMvc.perform(post("/api/v1/generation-jobs")
+                        .header("Authorization", "Bearer " + teacherToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"lessonPlanId\":" + lessonPlanId + ",\"preferences\":{\"style\":\"standard\",\"durationMinutes\":40}}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.status").value("success"))
+                .andExpect(jsonPath("$.data.progress").value(100))
+                .andExpect(jsonPath("$.data.packageId").isNumber())
+                .andExpect(jsonPath("$.data.versionId").isNumber())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        JsonNode data = objectMapper.readTree(generationResponse).path("data");
+        long jobId = data.path("id").asLong();
+        long packageId = data.path("packageId").asLong();
+        long versionId = data.path("versionId").asLong();
+
+        org.assertj.core.api.Assertions.assertThat(generationJobRepository.findById(jobId)).isPresent();
+        org.assertj.core.api.Assertions.assertThat(interactivePackageRepository.findById(packageId)).isPresent();
+        org.assertj.core.api.Assertions.assertThat(packageVersionRepository.findById(versionId)).isPresent();
+        org.assertj.core.api.Assertions.assertThat(proposalCardRepository.findByPackageId(packageId)).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(assetRepository.findByPackageId(packageId)).hasSize(1);
+        org.assertj.core.api.Assertions.assertThat(qualityReportRepository.findByPackageId(packageId)).hasSize(1);
+
+        List<ActivityNode> nodes = activityNodeRepository.findByPackageIdOrderBySortOrderAsc(packageId);
+        org.assertj.core.api.Assertions.assertThat(nodes).hasSize(5);
+        org.assertj.core.api.Assertions.assertThat(nodes)
+                .extracting(ActivityNode::getTitle)
+                .containsExactly("课堂入口页", "节拍体验工具", "节奏拖拽游戏", "创编工作坊", "展示总结页");
+
+        List<Long> nodeIds = nodes.stream().map(ActivityNode::getId).collect(Collectors.toList());
+        org.assertj.core.api.Assertions.assertThat(componentInstanceRepository.findByActivityNodeIdIn(nodeIds))
+                .isNotEmpty();
+    }
+
+    private long uploadTxtLessonPlanAndGetId(String teacherToken) throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "generation-lesson.txt",
+                MediaType.TEXT_PLAIN_VALUE,
+                ("课程名称：节奏创编课\n"
+                        + "年级：二年级\n"
+                        + "教学目标：体验节拍和节奏\n"
+                        + "教学重点：2/4节拍、节奏疏密与旋律\n"
+                        + "教学过程：节拍体验\n"
+                        + "节奏拖拽\n"
+                        + "合作创编\n"
+                        + "总结归纳\n").getBytes("UTF-8"));
+
+        String uploadResponse = mockMvc.perform(multipart("/api/v1/lesson-plans")
+                        .file(file)
+                        .param("title", "节奏创编课")
+                        .header("Authorization", "Bearer " + teacherToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readTree(uploadResponse).path("data").path("id").asLong();
+    }
+
+    private String loginAndGetToken(String username, String password) throws Exception {
+        String loginResponse = mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0))
+                .andExpect(jsonPath("$.data.token").isNotEmpty())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        return objectMapper.readTree(loginResponse).path("data").path("token").asText();
+    }
+}
