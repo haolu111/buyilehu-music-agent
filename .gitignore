@@ -1,3 +1,8 @@
 .idea/
 *.iml
 target/
+.vscode/
+logs/
+storage/uploads/
+!.gitkeep
+.env
