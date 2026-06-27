@@ -1,8 +1,0 @@
-target/
-.idea/
-*.iml
-.vscode/
-logs/
-storage/uploads/
-!.gitkeep
-.env
