@@ -6,3 +6,5 @@ logs/
 storage/uploads/
 !.gitkeep
 .env
+.npm-cache/
+%SystemDrive%/

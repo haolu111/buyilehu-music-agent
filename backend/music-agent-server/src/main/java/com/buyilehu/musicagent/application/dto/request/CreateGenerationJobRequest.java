@@ -11,7 +11,7 @@ public class CreateGenerationJobRequest {
     private Long lessonPlanId;
 
     @Valid
-    private GeneratePreferences preferences = new GeneratePreferences();
+    private GeneratePreferences preferences = new GeneratePreferences();//课程偏好
 
     public Long getLessonPlanId() { return lessonPlanId; }
     public void setLessonPlanId(Long lessonPlanId) { this.lessonPlanId = lessonPlanId; }

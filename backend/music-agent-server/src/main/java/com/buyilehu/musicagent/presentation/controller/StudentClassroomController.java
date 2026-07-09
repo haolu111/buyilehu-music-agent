@@ -4,9 +4,11 @@ import com.buyilehu.musicagent.application.dto.request.LearningEventRequest;
 import com.buyilehu.musicagent.application.dto.request.StudentNodeSubmitRequest;
 import com.buyilehu.musicagent.application.dto.response.ClassroomSessionResponse;
 import com.buyilehu.musicagent.application.dto.response.LearningEventResponse;
+import com.buyilehu.musicagent.application.dto.response.StudentSubmissionResponse;
 import com.buyilehu.musicagent.application.service.LearningEventService;
 import com.buyilehu.musicagent.application.service.StudentProgressService;
 import com.buyilehu.musicagent.common.response.ApiResponse;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +35,16 @@ public class StudentClassroomController {
     @GetMapping("/student/classrooms/current")
     public ApiResponse<ClassroomSessionResponse> getCurrentClassroom() {
         return ApiResponse.success(studentProgressService.getCurrentClassroom());
+    }
+
+    @GetMapping("/student/classroom-sessions/history")
+    public ApiResponse<List<ClassroomSessionResponse>> listMyClassroomHistory() {
+        return ApiResponse.success(studentProgressService.listMyClassroomHistory());
+    }
+
+    @GetMapping("/student/classroom-sessions/{sessionId}/submissions")
+    public ApiResponse<List<StudentSubmissionResponse>> listMySubmissions(@PathVariable @Positive Long sessionId) {
+        return ApiResponse.success(studentProgressService.listMySubmissions(sessionId));
     }
 
     @PostMapping("/student/classroom-sessions/{sessionId}/nodes/{nodeId}/enter")

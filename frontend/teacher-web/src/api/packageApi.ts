@@ -17,10 +17,8 @@ export const packageApi = {
   listPackages() {
     return unwrap<PackageInfo[]>(request.get('/packages'))
   },
-  publishPackage(packageId: number, classId: number, versionId?: number, reviewEnabled = false) {
-    return unwrap<unknown>(
-      request.post(`/packages/${packageId}/publish`, { classId, versionId, reviewEnabled }),
-    )
+  publishPackage(packageId: number, payload: Record<string, unknown>) {
+    return unwrap<unknown>(request.post(`/packages/${packageId}/publish`, payload))
   },
   updateNodeConfig(packageId: number, nodeId: number, payload: PackageModifyPayload) {
     return unwrap<PackageModifyResult>(request.patch(`/packages/${packageId}/nodes/${nodeId}/config`, payload))

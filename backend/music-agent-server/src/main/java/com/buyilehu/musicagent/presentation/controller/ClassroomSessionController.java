@@ -2,8 +2,10 @@ package com.buyilehu.musicagent.presentation.controller;
 
 import com.buyilehu.musicagent.application.dto.request.CreateClassroomSessionRequest;
 import com.buyilehu.musicagent.application.dto.response.ClassroomSessionResponse;
+import com.buyilehu.musicagent.application.dto.response.StudentSubmissionResponse;
 import com.buyilehu.musicagent.application.service.ClassroomSessionService;
 import com.buyilehu.musicagent.common.response.ApiResponse;
+import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
@@ -29,9 +31,19 @@ public class ClassroomSessionController {
         return ApiResponse.success(classroomSessionService.create(request));
     }
 
+    @GetMapping("/active")
+    public ApiResponse<List<ClassroomSessionResponse>> listActiveForTeacher() {
+        return ApiResponse.success(classroomSessionService.listActiveForTeacher());
+    }
+
     @GetMapping("/{sessionId}")
     public ApiResponse<ClassroomSessionResponse> get(@PathVariable @Positive Long sessionId) {
         return ApiResponse.success(classroomSessionService.get(sessionId));
+    }
+
+    @GetMapping("/{sessionId}/submissions")
+    public ApiResponse<List<StudentSubmissionResponse>> listSubmissions(@PathVariable @Positive Long sessionId) {
+        return ApiResponse.success(classroomSessionService.listSubmissions(sessionId));
     }
 
     @PostMapping("/{sessionId}/start")

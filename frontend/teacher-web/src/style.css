@@ -390,3 +390,147 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.data-table th,
+.data-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px 8px;
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.data-table th {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.data-table pre {
+  margin: 0;
+  max-height: 120px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.section-header.compact {
+  margin-bottom: 0;
+}
+
+.analysis-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  margin-top: 18px;
+}
+
+.pie-row {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+}
+
+.pie-chart {
+  align-items: center;
+  border-radius: 50%;
+  display: inline-flex;
+  height: 150px;
+  justify-content: center;
+  min-width: 150px;
+  position: relative;
+  width: 150px;
+}
+
+.pie-chart::after {
+  background: #ffffff;
+  border-radius: 50%;
+  content: "";
+  height: 92px;
+  position: absolute;
+  width: 92px;
+}
+
+.pie-chart span {
+  color: #172033;
+  font-size: 24px;
+  font-weight: 800;
+  position: relative;
+  z-index: 1;
+}
+
+.bar-list {
+  display: grid;
+  gap: 12px;
+}
+
+.bar-row {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 76px 1fr 48px;
+}
+
+.bar-row.wide-bar {
+  grid-template-columns: minmax(180px, 0.7fr) 1fr 72px;
+}
+
+.bar-track {
+  background: #edf0f7;
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.bar-track i {
+  background: linear-gradient(90deg, #2a9d8f, #6d5dfc);
+  display: block;
+  height: 100%;
+}
+
+.answer-list {
+  display: grid;
+  gap: 10px;
+}
+
+.answer-item {
+  border: 1px solid #e8ecf5;
+  border-radius: 10px;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+}
+
+.answer-item span {
+  color: #7b879f;
+}
+
+.answer-item pre {
+  border-radius: 8px;
+  margin: 0;
+  max-height: 140px;
+  padding: 10px;
+}
+
+.success {
+  color: #047857;
+}
+
+@media (max-width: 900px) {
+  .analysis-grid,
+  .bar-row,
+  .bar-row.wide-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .pie-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -3,6 +3,7 @@ package com.buyilehu.musicagent.application.service.impl;
 import com.buyilehu.musicagent.application.dto.request.StudentNodeSubmitRequest;
 import com.buyilehu.musicagent.application.dto.response.ClassroomSessionResponse;
 import com.buyilehu.musicagent.application.dto.response.SessionNodeStateResponse;
+import com.buyilehu.musicagent.application.dto.response.StudentSubmissionResponse;
 import com.buyilehu.musicagent.application.service.LearningEventService;
 import com.buyilehu.musicagent.application.service.StudentProgressService;
 import com.buyilehu.musicagent.common.exception.BusinessException;
@@ -87,13 +88,75 @@ public class StudentProgressServiceImpl implements StudentProgressService {
             classIds.add(membership.getClassId());
         }
         List<ClassroomSession> sessions = classroomSessionRepository.findByClassIdInAndStatusInOrderByIdDesc(
-                classIds, Arrays.asList("not_started", "running", "paused"));
+                classIds, Arrays.asList("running", "paused"));
         for (ClassroomSession session : sessions) {
             if (isPublicationActive(session)) {
                 return buildResponse(session);
             }
         }
         return null;
+    }
+
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClassroomSessionResponse> listMyClassroomHistory() {
+        User student = getCurrentStudent();
+        List<ClassMember> memberships = classMemberRepository.findByUserIdAndStatusOrderByIdDesc(student.getId(), "active");
+        if (memberships.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Long> classIds = new ArrayList<>();
+        for (ClassMember membership : memberships) {
+            classIds.add(membership.getClassId());
+        }
+        List<ClassroomSession> sessions = classroomSessionRepository.findByClassIdInAndStatusInOrderByIdDesc(
+                classIds, Arrays.asList("running", "paused", "ended"));
+        List<ClassroomSessionResponse> responses = new ArrayList<>();
+        for (ClassroomSession session : sessions) {
+            if (isPublicationActive(session)) {
+                responses.add(buildResponse(session));
+            }
+        }
+        return responses;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StudentSubmissionResponse> listMySubmissions(Long sessionId) {
+        User student = getCurrentStudent();
+        ClassroomSession session = classroomSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "session not found"));
+        if (!classMemberRepository.existsByClassIdAndUserIdAndStatus(session.getClassId(), student.getId(), "active")) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "student is not in this class");
+        }
+        List<StudentProgress> progressList = studentProgressRepository.findBySessionIdAndStudentId(sessionId, student.getId());
+        List<Long> nodeIds = new ArrayList<>();
+        for (StudentProgress progress : progressList) {
+            if (progress.getCurrentNodeId() != null) {
+                nodeIds.add(progress.getCurrentNodeId());
+            }
+        }
+        Map<Long, ActivityNode> nodesById = new HashMap<>();
+        if (!nodeIds.isEmpty()) {
+            for (ActivityNode node : activityNodeRepository.findByIdIn(nodeIds)) {
+                nodesById.put(node.getId(), node);
+            }
+        }
+        List<StudentSubmissionResponse> responses = new ArrayList<>();
+        for (StudentProgress progress : progressList) {
+            responses.add(StudentSubmissionResponse.from(progress, student, nodesById.get(progress.getCurrentNodeId())));
+        }
+        Collections.sort(responses, new Comparator<StudentSubmissionResponse>() {
+            @Override
+            public int compare(StudentSubmissionResponse left, StudentSubmissionResponse right) {
+                Integer leftOrder = left.getSortOrder() == null ? Integer.MAX_VALUE : left.getSortOrder();
+                Integer rightOrder = right.getSortOrder() == null ? Integer.MAX_VALUE : right.getSortOrder();
+                return leftOrder.compareTo(rightOrder);
+            }
+        });
+        return responses;
     }
 
     @Override
@@ -265,3 +328,4 @@ public class StudentProgressServiceImpl implements StudentProgressService {
         }
     }
 }
+

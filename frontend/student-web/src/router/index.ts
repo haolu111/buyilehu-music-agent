@@ -6,6 +6,7 @@ import StudentHomeView from '../views/StudentHomeView.vue'
 import ClassroomEntryView from '../views/ClassroomEntryView.vue'
 import ActivityNodeView from '../views/ActivityNodeView.vue'
 import WaitingNextNodeView from '../views/WaitingNextNodeView.vue'
+import ClassroomHistoryView from '../views/ClassroomHistoryView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -17,6 +18,8 @@ const router = createRouter({
     { path: '/classroom', name: 'classroom-entry', component: ClassroomEntryView },
     { path: '/classroom/nodes/:nodeId', name: 'activity-node', component: ActivityNodeView },
     { path: '/classroom/waiting', name: 'waiting-next-node', component: WaitingNextNodeView },
+    { path: '/history', name: 'classroom-history', component: ClassroomHistoryView },
+    { path: '/:pathMatch(.*)*', redirect: '/home' },
   ],
 })
 

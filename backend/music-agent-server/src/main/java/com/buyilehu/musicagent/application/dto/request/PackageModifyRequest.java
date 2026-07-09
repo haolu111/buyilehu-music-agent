@@ -4,6 +4,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+/**
+ * 教师对已经生成好的课堂互动包进行“局部修改”时，前端传给后端的请求对象。
+ * 我要修改哪个活动节点 nodeId
+ * 这次修改属于什么类型 modifyType
+ * 具体修改配置是什么 config
+ */
 public class PackageModifyRequest {
     @NotNull
     @Positive

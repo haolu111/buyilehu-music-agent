@@ -4,9 +4,23 @@
 
 Run commands from the project root unless a step says to enter a subdirectory.
 
+### 0. Prerequisites
+
+Make sure these commands are available in your terminal:
+
+```powershell
+java -version
+mvn -version
+node -v
+npm -v
+mysql --version
+```
+
+The backend is a Spring Boot 2.7 app and expects JDK 8+ and Maven. The frontend apps use Node/npm.
+
 ### 1. Use Your Local MySQL
 
-The backend now connects directly to your local MySQL instance and expects the `buyilehu_music_agent` database. No Docker container is needed.
+The backend connects directly to your local MySQL instance and expects the `buyilehu_music_agent` database. No Docker container is needed.
 
 If the database does not exist yet:
 
@@ -14,7 +28,17 @@ If the database does not exist yet:
 mysql -uroot -p123456 -e "CREATE DATABASE IF NOT EXISTS buyilehu_music_agent DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
-If you need to rebuild the schema from scratch, import `database/buyilehu_music_agent_schema.sql` into that database.
+The local profile runs Flyway automatically. On an empty database, the backend creates and seeds the schema from:
+
+```text
+backend/music-agent-server/src/main/resources/db/migration
+```
+
+If you previously imported `database/buyilehu_music_agent_schema.sql`, recreate the local database before starting the backend. That file is an older schema and does not match the current Java entities.
+
+```powershell
+mysql -uroot -p123456 -e "DROP DATABASE IF EXISTS buyilehu_music_agent; CREATE DATABASE buyilehu_music_agent DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```
 
 ### 2. Start Backend
 
@@ -73,4 +97,4 @@ Student: student001 / 123456
 - Student web runs on port `5174`.
 - Backend runs on port `8080`.
 - Both frontend apps proxy `/api` requests to `http://localhost:8080`.
-- The backend local profile points to your local MySQL database and skips Flyway, so an existing database like the one in your screenshot can be used directly.
+- The backend local profile points to your local MySQL database and uses Flyway migrations to keep the schema aligned with the Java entities.

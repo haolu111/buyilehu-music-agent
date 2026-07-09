@@ -16,6 +16,7 @@ const router = createRouter({
     { path: '/packages/:packageId/proposal', component: () => import('../views/ProposalCardView.vue') },
     { path: '/packages/:packageId', component: () => import('../views/PackageDetailView.vue') },
     { path: '/packages/:packageId/publish', component: () => import('../views/PublishPackageView.vue') },
+    { path: '/classrooms', component: () => import('../views/ClassroomListView.vue') },
     { path: '/classroom/:sessionId/control', component: () => import('../views/ClassroomControlView.vue') },
     { path: '/classroom/:sessionId/report', component: () => import('../views/ClassroomReportView.vue') },
     { path: '/packages/:packageId/edit', component: () => import('../views/PackageEditView.vue') },

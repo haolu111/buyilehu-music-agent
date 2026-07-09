@@ -12,7 +12,10 @@ const activeClassId = computed(() => store.currentSession?.classId || null)
 
 async function refresh() {
   try {
-    await store.refreshCurrentClassroom()
+    await Promise.all([
+      store.refreshCurrentClassroom(),
+      store.loadClassroomHistory(),
+    ])
   } catch {
     toast.value = store.error
   }
@@ -47,6 +50,12 @@ onMounted(refresh)
         >
           进入课堂
         </button>
+      </article>
+
+      <article class="action-card">
+        <h2>课堂记录</h2>
+        <p>{{ store.classroomHistory.length ? `共 ${store.classroomHistory.length} 节课堂` : '暂无课堂记录' }}</p>
+        <button class="secondary-action" type="button" @click="router.push('/history')">查看历史课堂</button>
       </article>
     </section>
 

@@ -1,9 +1,21 @@
 import request, { unwrap } from './request'
-import type { ClassroomSession, NodeSubmitPayload, StudentCurrentClassroom } from '../types'
+import type { ClassroomSession, NodeSubmitPayload, StudentCurrentClassroom, StudentSubmission } from '../types'
 
 export function getCurrentClassroom() {
   return unwrap<StudentCurrentClassroom | ClassroomSession | null>(
     request.get('/student/classrooms/current'),
+  )
+}
+
+export function listClassroomHistory() {
+  return unwrap<ClassroomSession[]>(
+    request.get('/student/classroom-sessions/history'),
+  )
+}
+
+export function listMySubmissions(sessionId: number) {
+  return unwrap<StudentSubmission[]>(
+    request.get(`/student/classroom-sessions/${sessionId}/submissions`),
   )
 }
 

@@ -3,9 +3,10 @@ import { computed, ref } from 'vue'
 import * as authApi from '../api/authApi'
 import * as classApi from '../api/classApi'
 import * as classroomApi from '../api/studentClassroomApi'
-import type { ClassroomSession, ClassInfo, LoginResponse } from '../types'
+import type { ClassroomSession, ClassInfo, LoginResponse, StudentSubmission } from '../types'
 
 const savedProfile = localStorage.getItem('student_profile')
+const savedExitedSessions = localStorage.getItem('student_exited_sessions')
 
 export const useStudentStore = defineStore('student', () => {
   const token = ref(localStorage.getItem('student_token') || '')
@@ -13,6 +14,9 @@ export const useStudentStore = defineStore('student', () => {
   const currentClass = ref<ClassInfo | null>(null)
   const joinedClasses = ref<ClassInfo[]>([])
   const currentSession = ref<ClassroomSession | null>(null)
+  const classroomHistory = ref<ClassroomSession[]>([])
+  const submissions = ref<StudentSubmission[]>([])
+  const exitedSessionIds = ref<number[]>(savedExitedSessions ? JSON.parse(savedExitedSessions) : [])
   const joinedClassesLoaded = ref(false)
   const loading = ref(false)
   const error = ref('')
@@ -27,6 +31,10 @@ export const useStudentStore = defineStore('student', () => {
   const firstUnlockedNode = computed(() =>
     currentSession.value?.nodeStates.find((node) => node.status === 'unlocked') || null,
   )
+
+  function persistExitedSessions() {
+    localStorage.setItem('student_exited_sessions', JSON.stringify(exitedSessionIds.value))
+  }
 
   function syncCurrentClass(preferredClassId?: number | null) {
     if (preferredClassId != null) {
@@ -57,6 +65,24 @@ export const useStudentStore = defineStore('student', () => {
     return loadJoinedClasses()
   }
 
+  async function loadClassroomHistory() {
+    classroomHistory.value = await classroomApi.listClassroomHistory()
+    return classroomHistory.value
+  }
+
+  async function loadSubmissions(sessionId = currentSession.value?.id) {
+    if (!sessionId) {
+      submissions.value = []
+      return submissions.value
+    }
+    submissions.value = await classroomApi.listMySubmissions(sessionId)
+    return submissions.value
+  }
+
+  function getSubmission(nodeId: number) {
+    return submissions.value.find((item) => item.nodeId === nodeId) || null
+  }
+
   async function login(username: string, password: string) {
     loading.value = true
     error.value = ''
@@ -85,9 +111,13 @@ export const useStudentStore = defineStore('student', () => {
     currentClass.value = null
     joinedClasses.value = []
     currentSession.value = null
+    classroomHistory.value = []
+    submissions.value = []
+    exitedSessionIds.value = []
     joinedClassesLoaded.value = false
     localStorage.removeItem('student_token')
     localStorage.removeItem('student_profile')
+    localStorage.removeItem('student_exited_sessions')
   }
 
   async function join(inviteCode: string) {
@@ -121,12 +151,21 @@ export const useStudentStore = defineStore('student', () => {
       }
 
       const data = await classroomApi.getCurrentClassroom()
-      if (data && 'session' in data) {
-        currentSession.value = data.session
+      const session = data && 'session' in data ? data.session : data
+      if (session && exitedSessionIds.value.includes(session.id)) {
+        currentSession.value = null
+        submissions.value = []
       } else {
-        currentSession.value = data
+        currentSession.value = session
       }
       syncCurrentClass(currentSession.value?.classId || currentClass.value?.id || null)
+      if (currentSession.value) {
+        await loadSubmissions(currentSession.value.id).catch((loadError: unknown) => {
+          console.error('[student-web] failed to load submissions', loadError)
+        })
+      } else {
+        submissions.value = []
+      }
       return currentSession.value
     } catch (exception) {
       error.value = exception instanceof Error ? exception.message : '课堂状态同步失败'
@@ -134,6 +173,25 @@ export const useStudentStore = defineStore('student', () => {
     } finally {
       loading.value = false
     }
+  }
+  async function enterHistorySession(session: ClassroomSession) {
+    exitedSessionIds.value = exitedSessionIds.value.filter((id) => id !== session.id)
+    persistExitedSessions()
+    currentSession.value = session
+    syncCurrentClass(session.classId)
+    await loadSubmissions(session.id).catch((loadError: unknown) => {
+      console.error('[student-web] failed to load submissions for history session', loadError)
+    })
+    return currentSession.value
+  }
+
+  function exitCurrentClassroom() {
+    if (currentSession.value && !exitedSessionIds.value.includes(currentSession.value.id)) {
+      exitedSessionIds.value = [...exitedSessionIds.value, currentSession.value.id]
+      persistExitedSessions()
+    }
+    currentSession.value = null
+    submissions.value = []
   }
 
   async function enterCurrentNode(nodeId: number) {
@@ -149,6 +207,7 @@ export const useStudentStore = defineStore('student', () => {
       score,
       resultJson,
     })
+    await loadSubmissions(currentSession.value.id)
     return currentSession.value
   }
 
@@ -158,6 +217,8 @@ export const useStudentStore = defineStore('student', () => {
     currentClass,
     joinedClasses,
     currentSession,
+    classroomHistory,
+    submissions,
     currentNode,
     firstUnlockedNode,
     loading,
@@ -167,6 +228,11 @@ export const useStudentStore = defineStore('student', () => {
     logout,
     join,
     refreshCurrentClassroom,
+    loadClassroomHistory,
+    loadSubmissions,
+    getSubmission,
+    enterHistorySession,
+    exitCurrentClassroom,
     enterCurrentNode,
     submitCurrentNode,
     loadJoinedClasses,

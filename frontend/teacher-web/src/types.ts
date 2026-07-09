@@ -138,3 +138,48 @@ export interface PackageVersion {
   createdAt?: string
   updatedAt?: string
 }
+
+export interface SessionNodeState {
+  id: number
+  sessionId: number
+  activityNodeId: number
+  title: string
+  nodeType: string
+  sortOrder: number
+  status: 'locked' | 'unlocked'
+  unlockedAt?: string
+}
+
+export interface ClassroomSession {
+  id: number
+  publicationId: number
+  classId: number
+  packageId: number
+  teacherId: number
+  currentNodeId?: number | null
+  status: 'not_started' | 'running' | 'paused' | 'ended'
+  courseTitle?: string
+  courseDescription?: string
+  scheduledStartAt?: string
+  startedAt?: string
+  endedAt?: string
+  nodeStates: SessionNodeState[]
+}
+
+export interface StudentSubmission {
+  progressId: number
+  sessionId: number
+  studentId: number
+  studentName: string
+  nodeId: number
+  nodeTitle: string
+  sortOrder: number
+  progressStatus: string
+  progress: number
+  score?: number
+  wrongCount: number
+  hintUsedCount: number
+  durationSeconds: number
+  resultJson?: string
+  lastActiveAt?: string
+}
