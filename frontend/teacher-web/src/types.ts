@@ -31,12 +31,27 @@ export interface ClassInfo {
 
 export interface LessonPlan {
   id: number
+  teacherId?: number
   title: string
   courseName?: string
   grade?: string
   parseStatus?: string
+  status?: string
+  sourceFileUrl?: string
   rawText?: string
   parsedJson?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface LessonPlanSummary {
+  id: number
+  teacherId?: number
+  title: string
+  parseStatus?: string
+  status?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface GenerationJob {

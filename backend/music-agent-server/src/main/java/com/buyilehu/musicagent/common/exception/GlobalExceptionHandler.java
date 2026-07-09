@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException exception) {
         ErrorCode errorCode = exception.getErrorCode();
+        log.warn("Business exception: code={}, message={}", errorCode.code(), exception.getMessage());
         HttpStatus status = resolveHttpStatus(errorCode);
         return ResponseEntity
                 .status(status)
@@ -25,6 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
     public ResponseEntity<ApiResponse<Void>> handleValidationException(Exception exception) {
+        log.warn("Validation failed: {}", exception.getMessage());
         return ResponseEntity
                 .badRequest()
                 .body(ApiResponse.fail(ErrorCode.PARAM_ERROR.code(), ErrorCode.PARAM_ERROR.message()));

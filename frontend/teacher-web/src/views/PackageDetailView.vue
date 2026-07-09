@@ -15,8 +15,8 @@ onMounted(async () => {
   try {
     packageInfo.value = await packageApi.getPackage(packageId)
     packages.value = await packageApi.listPackages()
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : '加载互动包失败'
+  } catch (exception) {
+    error.value = exception instanceof Error ? exception.message : '加载互动包失败'
   }
 })
 </script>
@@ -28,7 +28,7 @@ onMounted(async () => {
     <section v-if="packageInfo" class="card">
       <h2>{{ packageInfo.title }}</h2>
       <p>{{ packageInfo.description }}</p>
-      <p class="muted">状态：{{ packageInfo.status }} / 当前版本：{{ packageInfo.currentVersionId || '-' }}</p>
+      <p class="muted">状态：{{ packageInfo.status }} / 当前版本 ID：{{ packageInfo.currentVersionId || '-' }}</p>
       <div class="button-row">
         <RouterLink class="button" :to="`/packages/${packageId}/proposal`">查看方案卡</RouterLink>
         <RouterLink class="button" :to="`/packages/${packageId}/edit`">编辑互动包</RouterLink>
@@ -36,7 +36,7 @@ onMounted(async () => {
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" style="margin-top: 18px;">
       <h3>我的互动包</h3>
       <RouterLink v-for="item in packages" :key="item.id" class="list-line" :to="`/packages/${item.id}`">
         {{ item.title }} <span class="muted">{{ item.status }}</span>

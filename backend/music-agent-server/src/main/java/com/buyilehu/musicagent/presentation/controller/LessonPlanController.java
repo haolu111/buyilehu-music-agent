@@ -1,8 +1,10 @@
 package com.buyilehu.musicagent.presentation.controller;
 
 import com.buyilehu.musicagent.application.dto.response.LessonPlanResponse;
+import com.buyilehu.musicagent.application.dto.response.LessonPlanSummaryResponse;
 import com.buyilehu.musicagent.application.service.LessonPlanService;
 import com.buyilehu.musicagent.common.response.ApiResponse;
+import java.util.List;
 import javax.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,11 @@ public class LessonPlanController {
     public ApiResponse<LessonPlanResponse> upload(@RequestParam("file") MultipartFile file,
                                                   @RequestParam(value = "title", required = false) String title) {
         return ApiResponse.success(lessonPlanService.upload(file, title));
+    }
+
+    @GetMapping("/mine")
+    public ApiResponse<List<LessonPlanSummaryResponse>> listMine() {
+        return ApiResponse.success(lessonPlanService.listMine());
     }
 
     @GetMapping("/{lessonPlanId}")

@@ -13,7 +13,7 @@ defineProps<{
     </div>
     <div>
       <h2>课堂小结</h2>
-      <p>已完成的活动会同步到课堂记录。</p>
+      <p>已完成的活动会同步到课堂记录中。</p>
     </div>
   </section>
 </template>

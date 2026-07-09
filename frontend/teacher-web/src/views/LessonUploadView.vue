@@ -24,8 +24,8 @@ async function upload() {
   try {
     const lessonPlan = await lessonPlanApi.upload(file.value, title.value)
     await router.push(`/lesson-plans/${lessonPlan.id}/parse-result`)
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : '上传失败'
+  } catch (exception) {
+    error.value = exception instanceof Error ? exception.message : '上传失败'
   } finally {
     loading.value = false
   }
@@ -34,11 +34,22 @@ async function upload() {
 
 <template>
   <AppShell>
-    <h1>上传教案</h1>
+    <div class="section-header">
+      <div>
+        <h1>上传教案</h1>
+        <p class="muted">上传后可以立即查看解析结果，也可以去历史教案里查看所有已上传内容和教案 ID。</p>
+      </div>
+      <RouterLink class="button" to="/lesson-plans/history">查看历史教案</RouterLink>
+    </div>
+
     <div class="card stack">
       <label>教案标题<input v-model="title" placeholder="可选，默认使用文件名" /></label>
       <label>教案文件<input type="file" accept=".txt,.docx" @change="onFileChange" /></label>
-      <button class="primary" :disabled="loading" @click="upload">{{ loading ? '上传解析中...' : '上传并解析' }}</button>
+      <div class="button-row">
+        <button class="primary" :disabled="loading" @click="upload">
+          {{ loading ? '上传解析中...' : '上传并解析' }}
+        </button>
+      </div>
       <p v-if="error" class="error">{{ error }}</p>
     </div>
   </AppShell>

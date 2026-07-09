@@ -1,6 +1,7 @@
 package com.buyilehu.musicagent.application.service.impl;
 
 import com.buyilehu.musicagent.application.dto.response.LessonPlanResponse;
+import com.buyilehu.musicagent.application.dto.response.LessonPlanSummaryResponse;
 import com.buyilehu.musicagent.application.service.LessonParseService;
 import com.buyilehu.musicagent.application.service.LessonPlanService;
 import com.buyilehu.musicagent.common.exception.BusinessException;
@@ -14,6 +15,10 @@ import com.buyilehu.musicagent.infrastructure.repository.UserRepository;
 import com.buyilehu.musicagent.infrastructure.storage.FileStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class LessonPlanServiceImpl implements LessonPlanService {
+    private static final Logger log = LoggerFactory.getLogger(LessonPlanServiceImpl.class);
     private static final String PARSE_SUCCESS = "success";
     private static final String STATUS_UPLOADED = "uploaded";
 
@@ -71,7 +77,10 @@ public class LessonPlanServiceImpl implements LessonPlanService {
         lessonPlan.setParseStatus(PARSE_SUCCESS);
         lessonPlan.setStatus(STATUS_UPLOADED);
 
-        return LessonPlanResponse.from(lessonPlanRepository.save(lessonPlan));
+        LessonPlan savedLessonPlan = lessonPlanRepository.save(lessonPlan);
+        log.info("Lesson plan uploaded: lessonPlanId={}, teacherId={}, title={}",
+                savedLessonPlan.getId(), savedLessonPlan.getTeacherId(), savedLessonPlan.getTitle());
+        return LessonPlanResponse.from(savedLessonPlan);
     }
 
     @Override
@@ -84,6 +93,18 @@ public class LessonPlanServiceImpl implements LessonPlanService {
             throw new BusinessException(ErrorCode.FORBIDDEN, "只能查看自己的教案");
         }
         return LessonPlanResponse.from(lessonPlan);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LessonPlanSummaryResponse> listMine() {
+        User currentUser = getCurrentUser();
+        List<LessonPlanSummaryResponse> lessonPlans = lessonPlanRepository.findByTeacherIdOrderByIdDesc(currentUser.getId())
+                .stream()
+                .map(LessonPlanSummaryResponse::from)
+                .collect(Collectors.toList());
+        log.info("Lesson plans queried: teacherId={}, count={}", currentUser.getId(), lessonPlans.size());
+        return lessonPlans;
     }
 
     private String resolveTitle(String title, MultipartFile file, ParsedLesson parsedLesson) {

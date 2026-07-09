@@ -34,7 +34,7 @@ public class PackageVersionServiceImpl implements PackageVersionService {
     @Override
     public PackageVersion getLatestVersion(Long packageId) {
         return packageVersionRepository.findFirstByPackageIdOrderByVersionNoDesc(packageId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "package version not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "互动包版本不存在"));
     }
 
     @Override
@@ -57,17 +57,17 @@ public class PackageVersionServiceImpl implements PackageVersionService {
     private void assertPackageOwner(Long packageId) {
         User user = getCurrentTeacher();
         InteractivePackage pkg = interactivePackageRepository.findById(packageId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "package not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "互动包不存在"));
         if (!user.getId().equals(pkg.getOwnerId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN, "package access denied");
+            throw new BusinessException(ErrorCode.FORBIDDEN, "只能查看自己创建的互动包版本");
         }
     }
 
     private User getCurrentTeacher() {
         User user = userRepository.findById(getCurrentUserId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED, "login user not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED, "登录用户不存在"));
         if (user.getRole() != UserRole.teacher) {
-            throw new BusinessException(ErrorCode.FORBIDDEN, "teacher permission required");
+            throw new BusinessException(ErrorCode.FORBIDDEN, "只有教师可以执行该操作");
         }
         return user;
     }
@@ -75,7 +75,7 @@ public class PackageVersionServiceImpl implements PackageVersionService {
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED, "login required");
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录或登录已失效");
         }
         Object principal = authentication.getPrincipal();
         if (principal instanceof Long) {
@@ -84,6 +84,6 @@ public class PackageVersionServiceImpl implements PackageVersionService {
         if (principal instanceof String) {
             return Long.valueOf((String) principal);
         }
-        throw new BusinessException(ErrorCode.UNAUTHORIZED, "login required");
+        throw new BusinessException(ErrorCode.UNAUTHORIZED, "未登录或登录已失效");
     }
 }

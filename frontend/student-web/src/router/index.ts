@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useStudentStore } from '../stores/studentStore'
 import LoginView from '../views/LoginView.vue'
 import JoinClassView from '../views/JoinClassView.vue'
 import StudentHomeView from '../views/StudentHomeView.vue'
@@ -19,10 +20,16 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   const authed = Boolean(localStorage.getItem('student_token'))
   if (!to.meta.public && !authed) {
     return { name: 'login', query: { redirect: to.fullPath } }
+  }
+  if (authed) {
+    const store = useStudentStore()
+    await store.ensureJoinedClassesLoaded().catch((error: unknown) => {
+      console.error('[student-web] failed to load joined classes', error)
+    })
   }
   if (to.name === 'login' && authed) {
     return { name: 'home' }

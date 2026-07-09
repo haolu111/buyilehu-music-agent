@@ -12,8 +12,8 @@ const toast = ref('')
 
 async function join() {
   try {
-    await store.join(inviteCode.value)
-    toast.value = '已加入班级'
+    const classInfo = await store.join(inviteCode.value)
+    toast.value = `已加入班级：${classInfo.className}（#${classInfo.id}）`
     await router.push('/home')
   } catch {
     toast.value = store.error
@@ -30,7 +30,7 @@ async function join() {
         <input v-model.trim="inviteCode" maxlength="16" required />
       </label>
       <button class="primary-action" type="submit" :disabled="store.loading">
-        {{ store.loading ? '加入中' : '加入' }}
+        {{ store.loading ? '加入中...' : '加入班级' }}
       </button>
     </form>
     <FeedbackToast :message="toast" :tone="store.error ? 'error' : 'success'" />

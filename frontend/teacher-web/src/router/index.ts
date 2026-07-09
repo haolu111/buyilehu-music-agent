@@ -10,6 +10,7 @@ const router = createRouter({
     { path: '/classes', component: () => import('../views/ClassListView.vue') },
     { path: '/classes/:classId', component: () => import('../views/ClassDetailView.vue') },
     { path: '/lesson-plans/upload', component: () => import('../views/LessonUploadView.vue') },
+    { path: '/lesson-plans/history', component: () => import('../views/LessonPlanHistoryView.vue') },
     { path: '/lesson-plans/:lessonPlanId/parse-result', component: () => import('../views/LessonParseResultView.vue') },
     { path: '/packages/generate', component: () => import('../views/PackageGenerateView.vue') },
     { path: '/packages/:packageId/proposal', component: () => import('../views/ProposalCardView.vue') },

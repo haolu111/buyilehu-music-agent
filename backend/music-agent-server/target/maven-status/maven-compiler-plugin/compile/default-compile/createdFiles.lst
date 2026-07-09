@@ -51,6 +51,7 @@ com\buyilehu\musicagent\domain\model\ParsedLesson.class
 com\buyilehu\musicagent\application\dto\request\CreateGenerationJobRequest.class
 com\buyilehu\musicagent\common\exception\GlobalExceptionHandler$1.class
 com\buyilehu\musicagent\application\service\GenerationJobService.class
+com\buyilehu\musicagent\application\dto\response\LessonPlanSummaryResponse.class
 com\buyilehu\musicagent\infrastructure\repository\PackageVersionRepository.class
 com\buyilehu\musicagent\application\dto\response\ClassStudentResponse.class
 com\buyilehu\musicagent\application\service\impl\MusicValidationServiceImpl.class

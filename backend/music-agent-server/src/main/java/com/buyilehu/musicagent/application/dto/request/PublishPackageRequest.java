@@ -1,14 +1,11 @@
 package com.buyilehu.musicagent.application.dto.request;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class PublishPackageRequest {
-    @NotNull
     @Positive
     private Long versionId;
 
-    @NotNull
     @Positive
     private Long classId;
 

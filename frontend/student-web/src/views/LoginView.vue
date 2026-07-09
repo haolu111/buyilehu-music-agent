@@ -35,7 +35,7 @@ async function submit() {
     </section>
 
     <section class="auth-panel">
-      <SceneHeader title="学生登录" subtitle="进入不亦乐乎音乐课堂" status="Student" />
+      <SceneHeader title="学生登录" subtitle="进入课堂后端同步的学生端" status="Student" />
       <form class="form-stack" @submit.prevent="submit">
         <label>
           账号
@@ -46,10 +46,11 @@ async function submit() {
           <input v-model="password" type="password" autocomplete="current-password" required />
         </label>
         <button class="primary-action" type="submit" :disabled="store.loading">
-          {{ store.loading ? '登录中' : '登录' }}
+          {{ store.loading ? '登录中...' : '登录' }}
         </button>
       </form>
     </section>
+
     <FeedbackToast :message="toast" :tone="store.error ? 'error' : 'success'" />
   </main>
 </template>

@@ -43,7 +43,7 @@ onBeforeUnmount(() => window.clearInterval(timer))
 
 <template>
   <main class="page-shell">
-    <SceneHeader title="课堂入口" subtitle="跟随老师解锁活动" :status="store.currentSession?.status || 'Session'" />
+    <SceneHeader title="课堂入口" subtitle="跟随老师解锁活动" :status="store.currentSession?.status || '等待课堂'" />
 
     <section v-if="store.currentSession" class="classroom-board">
       <div class="node-map">
@@ -52,7 +52,10 @@ onBeforeUnmount(() => window.clearInterval(timer))
           :key="node.activityNodeId || node.id"
           type="button"
           class="node-pill"
-          :class="{ unlocked: node.status === 'unlocked', current: (node.activityNodeId || node.id) === store.currentSession.currentNodeId }"
+          :class="{
+            unlocked: node.status === 'unlocked',
+            current: (node.activityNodeId || node.id) === store.currentSession.currentNodeId,
+          }"
           :disabled="node.status !== 'unlocked'"
           @click="router.push(`/classroom/nodes/${node.activityNodeId || node.id}`)"
         >
@@ -69,7 +72,7 @@ onBeforeUnmount(() => window.clearInterval(timer))
     </section>
 
     <section v-else class="empty-state">
-      <p>暂无课堂</p>
+      <p>当前没有进行中的课堂，老师开始后会自动显示。</p>
       <button class="secondary-action" type="button" @click="router.push('/home')">返回首页</button>
     </section>
 

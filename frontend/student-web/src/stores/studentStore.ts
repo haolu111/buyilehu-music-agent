@@ -11,7 +11,9 @@ export const useStudentStore = defineStore('student', () => {
   const token = ref(localStorage.getItem('student_token') || '')
   const profile = ref<LoginResponse | null>(savedProfile ? JSON.parse(savedProfile) : null)
   const currentClass = ref<ClassInfo | null>(null)
+  const joinedClasses = ref<ClassInfo[]>([])
   const currentSession = ref<ClassroomSession | null>(null)
+  const joinedClassesLoaded = ref(false)
   const loading = ref(false)
   const error = ref('')
 
@@ -26,6 +28,35 @@ export const useStudentStore = defineStore('student', () => {
     currentSession.value?.nodeStates.find((node) => node.status === 'unlocked') || null,
   )
 
+  function syncCurrentClass(preferredClassId?: number | null) {
+    if (preferredClassId != null) {
+      const matchedClass = joinedClasses.value.find((item) => item.id === preferredClassId)
+      if (matchedClass) {
+        currentClass.value = matchedClass
+        return
+      }
+    }
+
+    if (!currentClass.value || !joinedClasses.value.some((item) => item.id === currentClass.value?.id)) {
+      currentClass.value = joinedClasses.value[0] || null
+    }
+  }
+
+  async function loadJoinedClasses(preferredClassId?: number | null) {
+    const classes = await classApi.listMine()
+    joinedClasses.value = classes
+    joinedClassesLoaded.value = true
+    syncCurrentClass(preferredClassId)
+    return classes
+  }
+
+  async function ensureJoinedClassesLoaded() {
+    if (joinedClassesLoaded.value || !isAuthed.value) {
+      return joinedClasses.value
+    }
+    return loadJoinedClasses()
+  }
+
   async function login(username: string, password: string) {
     loading.value = true
     error.value = ''
@@ -35,6 +66,11 @@ export const useStudentStore = defineStore('student', () => {
       profile.value = data
       localStorage.setItem('student_token', data.token)
       localStorage.setItem('student_profile', JSON.stringify(data))
+      try {
+        await loadJoinedClasses()
+      } catch (loadError) {
+        console.error('[student-web] failed to load joined classes after login', loadError)
+      }
     } catch (exception) {
       error.value = exception instanceof Error ? exception.message : '登录失败'
       throw exception
@@ -47,7 +83,9 @@ export const useStudentStore = defineStore('student', () => {
     token.value = ''
     profile.value = null
     currentClass.value = null
+    joinedClasses.value = []
     currentSession.value = null
+    joinedClassesLoaded.value = false
     localStorage.removeItem('student_token')
     localStorage.removeItem('student_profile')
   }
@@ -56,8 +94,14 @@ export const useStudentStore = defineStore('student', () => {
     loading.value = true
     error.value = ''
     try {
-      currentClass.value = await classApi.joinClass(inviteCode)
-      return currentClass.value
+      const classInfo = await classApi.joinClass(inviteCode)
+      currentClass.value = classInfo
+      try {
+        await loadJoinedClasses(classInfo.id)
+      } catch (loadError) {
+        console.error('[student-web] failed to refresh joined classes after join', loadError)
+      }
+      return classInfo
     } catch (exception) {
       error.value = exception instanceof Error ? exception.message : '加入班级失败'
       throw exception
@@ -70,13 +114,19 @@ export const useStudentStore = defineStore('student', () => {
     loading.value = true
     error.value = ''
     try {
+      try {
+        await loadJoinedClasses()
+      } catch (loadError) {
+        console.error('[student-web] failed to refresh joined classes', loadError)
+      }
+
       const data = await classroomApi.getCurrentClassroom()
       if (data && 'session' in data) {
         currentSession.value = data.session
-        currentClass.value = data.classInfo || currentClass.value
       } else {
         currentSession.value = data
       }
+      syncCurrentClass(currentSession.value?.classId || currentClass.value?.id || null)
       return currentSession.value
     } catch (exception) {
       error.value = exception instanceof Error ? exception.message : '课堂状态同步失败'
@@ -106,6 +156,7 @@ export const useStudentStore = defineStore('student', () => {
     token,
     profile,
     currentClass,
+    joinedClasses,
     currentSession,
     currentNode,
     firstUnlockedNode,
@@ -118,5 +169,8 @@ export const useStudentStore = defineStore('student', () => {
     refreshCurrentClassroom,
     enterCurrentNode,
     submitCurrentNode,
+    loadJoinedClasses,
+    ensureJoinedClassesLoaded,
+    syncCurrentClass,
   }
 })

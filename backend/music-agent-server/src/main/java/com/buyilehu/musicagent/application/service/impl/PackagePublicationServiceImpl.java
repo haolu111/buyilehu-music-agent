@@ -17,6 +17,8 @@ import com.buyilehu.musicagent.infrastructure.repository.PackagePublicationRepos
 import com.buyilehu.musicagent.infrastructure.repository.PackageVersionRepository;
 import com.buyilehu.musicagent.infrastructure.repository.UserRepository;
 import java.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PackagePublicationServiceImpl implements PackagePublicationService {
+    private static final Logger log = LoggerFactory.getLogger(PackagePublicationServiceImpl.class);
     private final PackagePublicationRepository packagePublicationRepository;
     private final InteractivePackageRepository interactivePackageRepository;
     private final PackageVersionRepository packageVersionRepository;
@@ -47,17 +50,22 @@ public class PackagePublicationServiceImpl implements PackagePublicationService 
     public PackagePublicationResponse publish(Long packageId, PublishPackageRequest request) {
         User teacher = getCurrentTeacher();
         InteractivePackage pkg = interactivePackageRepository.findById(packageId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "package not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "互动包不存在"));
         if (!teacher.getId().equals(pkg.getOwnerId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN, "package access denied");
+            throw new BusinessException(ErrorCode.FORBIDDEN, "只能发布自己的互动包");
         }
 
-        PackageVersion version = packageVersionRepository.findByIdAndPackageId(request.getVersionId(), packageId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "package version not found"));
+        Long versionId = request.getVersionId() != null ? request.getVersionId() : pkg.getCurrentVersionId();
+        if (versionId == null) {
+            throw new BusinessException(ErrorCode.PARAM_ERROR, "请先选择要发布的版本");
+        }
+
+        PackageVersion version = packageVersionRepository.findByIdAndPackageId(versionId, packageId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "版本不存在或不属于该互动包"));
         ClassEntity classEntity = classRepository.findById(request.getClassId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "class not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "班级不存在"));
         if (!teacher.getId().equals(classEntity.getTeacherId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN, "class access denied");
+            throw new BusinessException(ErrorCode.FORBIDDEN, "只能发布到自己创建的班级");
         }
 
         PackagePublication publication = new PackagePublication();
@@ -69,7 +77,10 @@ public class PackagePublicationServiceImpl implements PackagePublicationService 
         publication.setStatus("published");
         publication.setReviewEnabled(Boolean.TRUE.equals(request.getReviewEnabled()));
         publication.setPublishedAt(LocalDateTime.now());
-        return PackagePublicationResponse.from(packagePublicationRepository.save(publication));
+        PackagePublication savedPublication = packagePublicationRepository.save(publication);
+        log.info("Package published: publicationId={}, packageId={}, versionId={}, classId={}, teacherId={}",
+                savedPublication.getId(), packageId, versionId, classEntity.getId(), teacher.getId());
+        return PackagePublicationResponse.from(savedPublication);
     }
 
     private User getCurrentTeacher() {

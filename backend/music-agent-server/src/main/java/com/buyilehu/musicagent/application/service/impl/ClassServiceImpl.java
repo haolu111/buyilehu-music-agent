@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClassServiceImpl implements ClassService {
+    private static final Logger log = LoggerFactory.getLogger(ClassServiceImpl.class);
     private static final String ACTIVE = "active";
     private static final String STUDENT_MEMBER_ROLE = "student";
     private static final String INVITE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -56,7 +59,10 @@ public class ClassServiceImpl implements ClassService {
         classEntity.setInviteCode(generateInviteCode());
         classEntity.setStatus(ACTIVE);
 
-        return ClassResponse.from(classRepository.save(classEntity));
+        ClassEntity savedClass = classRepository.save(classEntity);
+        log.info("Class created: classId={}, teacherId={}, inviteCode={}",
+                savedClass.getId(), savedClass.getTeacherId(), savedClass.getInviteCode());
+        return ClassResponse.from(savedClass);
     }
 
     @Override
@@ -94,8 +100,9 @@ public class ClassServiceImpl implements ClassService {
         if (!ACTIVE.equals(classEntity.getStatus())) {
             throw new BusinessException(ErrorCode.BAD_REQUEST, "班级不可加入");
         }
-        if (classMemberRepository.existsByClassIdAndUserId(classEntity.getId(), currentUser.getId())) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST, "你已加入该班级");
+        if (classMemberRepository.findByClassIdAndUserId(classEntity.getId(), currentUser.getId()).isPresent()) {
+            log.info("Student already joined class: classId={}, userId={}", classEntity.getId(), currentUser.getId());
+            return ClassResponse.from(classEntity);
         }
 
         ClassMember member = new ClassMember();
@@ -105,6 +112,7 @@ public class ClassServiceImpl implements ClassService {
         member.setStatus(ACTIVE);
         classMemberRepository.save(member);
 
+        log.info("Student joined class: classId={}, userId={}", classEntity.getId(), currentUser.getId());
         return ClassResponse.from(classEntity);
     }
 
