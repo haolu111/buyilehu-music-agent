@@ -30,6 +30,15 @@ public class ClassroomSession extends BaseEntity {
     @Column(nullable = false, length = 30)
     private String status = "not_started";
 
+    @Column(name = "course_title", length = 150)
+    private String courseTitle;
+
+    @Column(name = "course_description", columnDefinition = "TEXT")
+    private String courseDescription;
+
+    @Column(name = "scheduled_start_at")
+    private LocalDateTime scheduledStartAt;
+
     @Column(name = "current_node_id")
     private Long currentNodeId;
 
@@ -53,6 +62,12 @@ public class ClassroomSession extends BaseEntity {
     public void setTeacherId(Long teacherId) { this.teacherId = teacherId; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getCourseTitle() { return courseTitle; }
+    public void setCourseTitle(String courseTitle) { this.courseTitle = courseTitle; }
+    public String getCourseDescription() { return courseDescription; }
+    public void setCourseDescription(String courseDescription) { this.courseDescription = courseDescription; }
+    public LocalDateTime getScheduledStartAt() { return scheduledStartAt; }
+    public void setScheduledStartAt(LocalDateTime scheduledStartAt) { this.scheduledStartAt = scheduledStartAt; }
     public Long getCurrentNodeId() { return currentNodeId; }
     public void setCurrentNodeId(Long currentNodeId) { this.currentNodeId = currentNodeId; }
     public LocalDateTime getStartedAt() { return startedAt; }

@@ -13,14 +13,17 @@ const packageId = Number(route.params.packageId)
 const packageInfo = ref<PackageInfo | null>(null)
 const classes = ref<ClassInfo[]>([])
 const versions = ref<PackageVersion[]>([])
-const classId = ref('')
+const selectedClassIds = ref<number[]>([])
 const versionId = ref('')
+const courseTitle = ref('')
+const courseDescription = ref('')
+const scheduledStartAt = ref('')
 const reviewEnabled = ref(false)
 const loading = ref(false)
 const error = ref('')
-const message = ref('选择班级和版本后即可发布。')
+const message = ref('选择班级和版本后即可创建课堂。创建后课堂默认未开始，需要到课堂管理中点击开始课堂。')
 
-const canPublish = computed(() => Boolean(classId.value && versionId.value))
+const canPublish = computed(() => selectedClassIds.value.length > 0 && Boolean(versionId.value))
 
 async function loadData() {
   loading.value = true
@@ -34,9 +37,10 @@ async function loadData() {
     packageInfo.value = pkg
     classes.value = mineClasses
     versions.value = versionList
+    courseTitle.value = courseTitle.value || pkg.title
 
-    if (!classId.value && mineClasses.length > 0) {
-      classId.value = String(mineClasses[0].id)
+    if (selectedClassIds.value.length === 0 && mineClasses.length > 0) {
+      selectedClassIds.value = [mineClasses[0].id]
     }
 
     const defaultVersionId = pkg.currentVersionId || versionList[0]?.id
@@ -44,41 +48,40 @@ async function loadData() {
       versionId.value = String(defaultVersionId)
     }
   } catch (exception) {
-    error.value = exception instanceof Error ? exception.message : '加载发布页失败'
+    error.value = exception instanceof Error ? exception.message : '加载创建页面失败'
   } finally {
     loading.value = false
   }
 }
 
 async function publish() {
-  if (!classId.value) {
-    error.value = '请先选择班级'
+  if (!canPublish.value) {
+    error.value = '请先选择班级和版本'
     return
   }
   loading.value = true
   error.value = ''
   try {
-    await packageApi.publishPackage(
-      packageId,
-      Number(classId.value),
-      Number(versionId.value),
-      reviewEnabled.value,
-    )
-    message.value = '发布成功，班级已可使用该互动包。'
-    await router.push(`/packages/${packageId}`)
+    await packageApi.publishPackage(packageId, {
+      classIds: selectedClassIds.value,
+      versionId: Number(versionId.value),
+      courseTitle: courseTitle.value,
+      courseDescription: courseDescription.value,
+      scheduledStartAt: scheduledStartAt.value || undefined,
+      startImmediately: false,
+      reviewEnabled: reviewEnabled.value,
+    })
+    message.value = '课堂已创建，当前未开始。请到课堂管理中点击开始课堂，系统会自动解锁第一个环节。'
+    await router.push('/classrooms')
   } catch (exception) {
-    error.value = exception instanceof Error ? exception.message : '发布失败'
+    error.value = exception instanceof Error ? exception.message : '创建课堂失败'
   } finally {
     loading.value = false
   }
 }
 
-function describeClass(item: ClassInfo) {
-  return `#${item.id} · ${item.className}`
-}
-
 function describeVersion(item: PackageVersion) {
-  return `版本 ${item.versionNo} · ID ${item.id}`
+  return `版本 ${item.versionNo} / ID ${item.id}`
 }
 
 onMounted(loadData)
@@ -88,8 +91,8 @@ onMounted(loadData)
   <AppShell>
     <div class="section-header">
       <div>
-        <h1>发布到班级</h1>
-        <p class="muted">这里会把互动包发布到指定班级，并绑定一个具体版本。版本不填时会优先使用当前版本。</p>
+        <h1>创建课堂</h1>
+        <p class="muted">选择一个或多个授课班级，设置课堂信息后创建课堂。每个班级会生成独立课堂进度。</p>
       </div>
       <RouterLink class="button" :to="`/packages/${packageId}`">返回互动包详情</RouterLink>
     </div>
@@ -109,25 +112,38 @@ onMounted(loadData)
 
       <div class="grid two">
         <label>
-          班级
-          <select v-model="classId">
-            <option value="">请选择班级</option>
-            <option v-for="item in classes" :key="item.id" :value="String(item.id)">
-              {{ describeClass(item) }}
-            </option>
-          </select>
+          课堂标题
+          <input v-model.trim="courseTitle" placeholder="例如：三拍子律动体验课" />
         </label>
-
         <label>
-          版本
-          <select v-model="versionId">
-            <option value="">请选择版本</option>
-            <option v-for="item in versions" :key="item.id" :value="String(item.id)">
-              {{ describeVersion(item) }}
-            </option>
-          </select>
+          计划开始时间
+          <input v-model="scheduledStartAt" type="datetime-local" />
         </label>
       </div>
+
+      <label>
+        课程简介
+        <textarea v-model.trim="courseDescription" rows="3" placeholder="给学生和教师看的课堂说明"></textarea>
+      </label>
+
+      <label>
+        版本
+        <select v-model="versionId">
+          <option value="">请选择版本</option>
+          <option v-for="item in versions" :key="item.id" :value="String(item.id)">
+            {{ describeVersion(item) }}
+          </option>
+        </select>
+      </label>
+
+      <section class="stack">
+        <h3>授课班级</h3>
+        <label v-for="item in classes" :key="item.id" class="inline-control">
+          <input v-model="selectedClassIds" type="checkbox" :value="item.id" />
+          #{{ item.id }} {{ item.className }}
+          <span class="muted">{{ item.description }}</span>
+        </label>
+      </section>
 
       <label class="inline-control">
         <input v-model="reviewEnabled" type="checkbox" />
@@ -136,7 +152,7 @@ onMounted(loadData)
 
       <div class="button-row">
         <button class="primary" :disabled="loading || !canPublish" @click="publish">
-          {{ loading ? '发布中...' : '发布' }}
+          {{ loading ? '创建中...' : '创建课堂' }}
         </button>
         <button class="button" type="button" @click="loadData">刷新数据</button>
       </div>

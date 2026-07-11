@@ -3,6 +3,9 @@ package com.buyilehu.musicagent.application.dto.request;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+/**
+ * 班级邀请码
+ */
 public class JoinClassRequest {
     @NotBlank(message = "邀请码不能为空")
     @Size(max = 16, message = "邀请码不能超过16个字符")

@@ -11,13 +11,19 @@ const store = useStudentStore()
 const username = ref('')
 const password = ref('')
 const toast = ref('')
+const studentRoutePaths = new Set(['/home', '/join-class', '/classroom', '/classroom/waiting', '/history'])
+
+function getSafeRedirect(value: unknown) {
+  if (typeof value !== 'string') return '/home'
+  if (studentRoutePaths.has(value) || value.startsWith('/classroom/nodes/')) return value
+  return '/home'
+}
 
 async function submit() {
   try {
     await store.login(username.value, password.value)
     toast.value = '登录成功'
-    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/home'
-    await router.push(redirect)
+    await router.push(getSafeRedirect(route.query.redirect))
   } catch {
     toast.value = store.error
   }
@@ -54,3 +60,4 @@ async function submit() {
     <FeedbackToast :message="toast" :tone="store.error ? 'error' : 'success'" />
   </main>
 </template>
+

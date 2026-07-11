@@ -27,6 +27,7 @@ function logout() {
         <RouterLink to="/lesson-plans/upload">上传教案</RouterLink>
         <RouterLink to="/lesson-plans/history">教案历史</RouterLink>
         <RouterLink to="/packages/generate">生成互动包</RouterLink>
+        <RouterLink to="/classrooms">课堂管理</RouterLink>
       </nav>
     </aside>
 

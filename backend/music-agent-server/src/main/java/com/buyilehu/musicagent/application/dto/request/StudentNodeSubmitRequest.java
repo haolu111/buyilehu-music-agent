@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.validation.constraints.Min;
 
+/**
+ * 学生完成某个活动节点后，向后端提交结果用的请求类
+ */
 public class StudentNodeSubmitRequest {
     private String resultType = "activity_result";
     @Min(0)

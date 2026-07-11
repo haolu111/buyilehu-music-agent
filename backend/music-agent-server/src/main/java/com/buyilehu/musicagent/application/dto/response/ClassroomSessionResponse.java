@@ -13,6 +13,9 @@ public class ClassroomSessionResponse {
     private Long teacherId;
     private Long currentNodeId;
     private String status;
+    private String courseTitle;
+    private String courseDescription;
+    private LocalDateTime scheduledStartAt;
     private LocalDateTime startedAt;
     private LocalDateTime endedAt;
     private List<SessionNodeStateResponse> nodeStates = new ArrayList<>();
@@ -26,6 +29,9 @@ public class ClassroomSessionResponse {
         response.setTeacherId(session.getTeacherId());
         response.setCurrentNodeId(session.getCurrentNodeId());
         response.setStatus(session.getStatus());
+        response.setCourseTitle(session.getCourseTitle());
+        response.setCourseDescription(session.getCourseDescription());
+        response.setScheduledStartAt(session.getScheduledStartAt());
         response.setStartedAt(session.getStartedAt());
         response.setEndedAt(session.getEndedAt());
         response.setNodeStates(nodeStates);
@@ -46,6 +52,12 @@ public class ClassroomSessionResponse {
     public void setCurrentNodeId(Long currentNodeId) { this.currentNodeId = currentNodeId; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getCourseTitle() { return courseTitle; }
+    public void setCourseTitle(String courseTitle) { this.courseTitle = courseTitle; }
+    public String getCourseDescription() { return courseDescription; }
+    public void setCourseDescription(String courseDescription) { this.courseDescription = courseDescription; }
+    public LocalDateTime getScheduledStartAt() { return scheduledStartAt; }
+    public void setScheduledStartAt(LocalDateTime scheduledStartAt) { this.scheduledStartAt = scheduledStartAt; }
     public LocalDateTime getStartedAt() { return startedAt; }
     public void setStartedAt(LocalDateTime startedAt) { this.startedAt = startedAt; }
     public LocalDateTime getEndedAt() { return endedAt; }
