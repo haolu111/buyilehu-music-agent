@@ -18,8 +18,11 @@ pip install -r requirements.txt
 在该目录作为工作目录时，可继续使用原有导入路径：
 
 ```python
-from app.services.component_library import get_component_spec
-from app.services.music_classroom_suite import build_default_music_media_session
+from app.services.public_api import (
+    build_default_music_media_session,
+    build_primary_music_game_runtime,
+    build_toolkit_spec,
+)
 ```
 
 部分媒体处理能力需要系统中可用的 FFmpeg。模型调用能力只读取运行环境变量，不在仓库中保存凭据。
