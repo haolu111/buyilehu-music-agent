@@ -1,0 +1,158 @@
+{
+  "version": "instrument_timbre_catalog_v1",
+  "sampleLibrary": {
+    "id": "FluidR3_GM",
+    "format": "midi_js_mp3_soundfont",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0/us/",
+    "sourceUrl": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/",
+    "attribution": "FluidR3 GM SoundFont; browser conversion distributed by the midi-js-soundfonts project by Benjamin Gleitzman"
+  },
+  "exactTimbres": [
+    {
+      "id": "piano",
+      "label": "钢琴",
+      "familyId": "keyboard",
+      "familyLabel": "键盘乐器",
+      "classroomFamily": "击弦与键盘",
+      "playbackInstrument": "acoustic_grand_piano",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["击弦起音清晰", "音域宽", "余音自然衰减"],
+      "classroomNote": "听辨琴槌击弦形成的清晰音头和宽广音域。",
+      "preview": { "baseMidi": 60, "offsets": [0, 4, 7, 12], "gap": 0.34, "duration": 0.58, "gain": 0.58 }
+    },
+    {
+      "id": "acoustic_guitar",
+      "label": "古典吉他",
+      "familyId": "plucked_string",
+      "familyLabel": "拨弦乐器",
+      "classroomFamily": "弹拨",
+      "playbackInstrument": "acoustic_guitar_nylon",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["拨弦颗粒感", "音色温暖", "衰减较快"],
+      "classroomNote": "关注尼龙弦拨弦的柔和音头和共鸣箱音色。",
+      "preview": { "baseMidi": 52, "offsets": [0, 3, 5, 8], "gap": 0.36, "duration": 0.62, "gain": 0.6 }
+    },
+    {
+      "id": "violin",
+      "label": "小提琴",
+      "familyId": "bowed_string",
+      "familyLabel": "弓弦乐器",
+      "classroomFamily": "拉弦",
+      "playbackInstrument": "violin",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["弓弦连续", "音色明亮", "旋律线条可持续"],
+      "classroomNote": "关注弓擦弦形成的连续声音和明亮高音区。",
+      "preview": { "baseMidi": 67, "offsets": [0, 2, 4, 7], "gap": 0.42, "duration": 0.68, "gain": 0.54 }
+    },
+    {
+      "id": "cello",
+      "label": "大提琴",
+      "familyId": "bowed_string",
+      "familyLabel": "弓弦乐器",
+      "classroomFamily": "拉弦",
+      "playbackInstrument": "cello",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["中低音浑厚", "弓弦连续", "共鸣深"],
+      "classroomNote": "与小提琴对比，听辨更低、更厚、更温暖的弓弦音色。",
+      "preview": { "baseMidi": 48, "offsets": [0, 2, 5, 7], "gap": 0.44, "duration": 0.72, "gain": 0.58 }
+    },
+    {
+      "id": "flute",
+      "label": "长笛",
+      "familyId": "woodwind",
+      "familyLabel": "木管乐器",
+      "classroomFamily": "吹奏",
+      "playbackInstrument": "flute",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["气流感", "明亮通透", "无簧片吹奏"],
+      "classroomNote": "关注气流经过吹口产生的明亮、通透音色。",
+      "preview": { "baseMidi": 72, "offsets": [0, 2, 4, 7], "gap": 0.4, "duration": 0.66, "gain": 0.52 }
+    },
+    {
+      "id": "clarinet",
+      "label": "单簧管",
+      "familyId": "woodwind",
+      "familyLabel": "木管乐器",
+      "classroomFamily": "吹奏",
+      "playbackInstrument": "clarinet",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["单簧片振动", "音色圆润", "中低音饱满"],
+      "classroomNote": "听辨圆润、饱满且较暗的单簧片音色。",
+      "preview": { "baseMidi": 60, "offsets": [0, 2, 3, 7], "gap": 0.42, "duration": 0.68, "gain": 0.54 }
+    },
+    {
+      "id": "oboe",
+      "label": "双簧管",
+      "familyId": "woodwind",
+      "familyLabel": "木管乐器",
+      "classroomFamily": "吹奏",
+      "playbackInstrument": "oboe",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["双簧片振动", "音色集中", "带鼻音感"],
+      "classroomNote": "关注双簧片形成的集中音色和明显穿透力。",
+      "preview": { "baseMidi": 62, "offsets": [0, 2, 5, 7], "gap": 0.42, "duration": 0.68, "gain": 0.52 }
+    },
+    {
+      "id": "trumpet",
+      "label": "小号",
+      "familyId": "brass",
+      "familyLabel": "铜管乐器",
+      "classroomFamily": "吹奏",
+      "playbackInstrument": "trumpet",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["唇振发声", "音色明亮", "起音有力量"],
+      "classroomNote": "听辨明亮、辉煌且起音明确的铜管音色。",
+      "preview": { "baseMidi": 60, "offsets": [0, 4, 7, 12], "gap": 0.4, "duration": 0.64, "gain": 0.48 }
+    },
+    {
+      "id": "french_horn",
+      "label": "圆号",
+      "familyId": "brass",
+      "familyLabel": "铜管乐器",
+      "classroomFamily": "吹奏",
+      "playbackInstrument": "french_horn",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["唇振发声", "音色圆润", "温暖宽厚"],
+      "classroomNote": "与小号对比，听辨更圆润、柔和、宽厚的铜管音色。",
+      "preview": { "baseMidi": 48, "offsets": [0, 4, 7, 12], "gap": 0.44, "duration": 0.7, "gain": 0.54 }
+    },
+    {
+      "id": "accordion",
+      "label": "手风琴",
+      "familyId": "free_reed",
+      "familyLabel": "自由簧乐器",
+      "classroomFamily": "簧片与键盘",
+      "playbackInstrument": "accordion",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["自由簧振动", "声音可持续", "带风箱感"],
+      "classroomNote": "关注风箱供气和自由簧片形成的持续音色。",
+      "preview": { "baseMidi": 60, "offsets": [0, 4, 7, 5], "gap": 0.42, "duration": 0.7, "gain": 0.54 }
+    },
+    {
+      "id": "harp",
+      "label": "竖琴",
+      "familyId": "plucked_string",
+      "familyLabel": "拨弦乐器",
+      "classroomFamily": "弹拨",
+      "playbackInstrument": "orchestral_harp",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["拨弦清澈", "泛音丰富", "余音自然衰减"],
+      "classroomNote": "关注逐弦拨奏形成的清澈音头和丰富泛音。",
+      "preview": { "baseMidi": 60, "offsets": [0, 4, 7, 12], "gap": 0.3, "duration": 0.78, "gain": 0.54 }
+    },
+    {
+      "id": "xylophone",
+      "label": "木琴",
+      "familyId": "percussion",
+      "familyLabel": "有固定音高打击乐器",
+      "classroomFamily": "敲击",
+      "playbackInstrument": "xylophone",
+      "sampleFidelity": "exact_open_sample",
+      "evidenceTerms": ["木质敲击感", "音头清楚", "声音短促"],
+      "classroomNote": "关注木质音条受击后的清晰音头和短促衰减。",
+      "preview": { "baseMidi": 72, "offsets": [0, 2, 4, 7], "gap": 0.32, "duration": 0.38, "gain": 0.58 }
+    }
+  ],
+  "pendingExactTimbres": []
+}

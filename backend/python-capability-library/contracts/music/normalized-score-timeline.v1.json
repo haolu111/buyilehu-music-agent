@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "normalized-score-timeline.v1",
+  "version": "normalized_score_timeline_v1",
+  "title": "Normalized Score Timeline V1",
+  "type": "object",
+  "required": ["version", "source", "teacherConfirmed", "meterMap", "tempoMap", "keyMap", "events"],
+  "properties": {
+    "version": { "const": "normalized_score_timeline_v1" },
+    "source": { "enum": ["musicxml", "midi", "teacher_manual", "recognized_draft"] },
+    "teacherConfirmed": { "type": "boolean" },
+    "meterMap": { "type": "array", "items": { "type": "object", "required": ["measure", "meter"] } },
+    "tempoMap": { "type": "array", "items": { "type": "object", "required": ["measure", "bpm"] } },
+    "keyMap": { "type": "array", "items": { "type": "object", "required": ["measure", "tonic", "mode"] } },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "partId", "measure", "beat", "startSeconds", "durationSeconds", "midi", "rest"],
+        "properties": {
+          "id": { "type": "string" }, "partId": { "type": "string" }, "measure": { "type": "integer", "minimum": 1 },
+          "beat": { "type": "number", "minimum": 1 }, "startSeconds": { "type": "number", "minimum": 0 },
+          "durationSeconds": { "type": "number", "minimum": 0 }, "midi": { "type": "integer", "minimum": 0, "maximum": 127 },
+          "lyric": { "type": "string" }, "tie": { "enum": ["start", "continue", "stop"] }, "rest": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
