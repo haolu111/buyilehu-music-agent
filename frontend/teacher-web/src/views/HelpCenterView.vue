@@ -1,0 +1,4 @@
+<script setup lang="ts">
+import AppShell from '../components/AppShell.vue'
+</script>
+<template><AppShell><div class="page-heading"><div><p class="eyebrow">支持</p><h1>帮助中心</h1><p>按照教学任务快速找到操作方法。</p></div></div><section class="help-grid"><article class="card"><span>1</span><h2>如何开始备课？</h2><p>上传 DOCX、PDF 或 TXT 教案，查看解析结果，确认活动方案后生成互动包。</p><RouterLink class="text-link" to="/lesson-plans/upload">上传教案 →</RouterLink></article><article class="card"><span>2</span><h2>如何开启课堂？</h2><p>将互动包发布到班级并创建课堂，然后在课堂控制台逐步解锁活动。</p><RouterLink class="text-link" to="/classrooms">查看课堂 →</RouterLink></article><article class="card"><span>3</span><h2>在哪里查看学生表现？</h2><p>课堂结束后进入数据报告，查看完成度、活动表现和学生明细。</p><RouterLink class="text-link" to="/reports">查看报告 →</RouterLink></article></section><section class="card help-process"><h2>完整教学流程</h2><ol><li>创建班级</li><li>上传并解析教案</li><li>确认活动方案</li><li>生成并发布互动包</li><li>创建并控制课堂</li><li>查看课后数据报告</li></ol></section></AppShell></template>
