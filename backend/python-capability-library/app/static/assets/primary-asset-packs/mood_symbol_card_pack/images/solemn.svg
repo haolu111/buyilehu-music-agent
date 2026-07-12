@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" role="img" aria-label="庄严情绪符号图卡">
+  <rect width="320" height="220" rx="18" fill="#f4f1e8"/>
+  <path d="M78 162V78l82-34 82 34v84" fill="none" stroke="#5b5142" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M58 164h204M82 186h156" stroke="#5b5142" stroke-width="12" stroke-linecap="round"/>
+  <path d="M118 156v-52m42 52V90m42 66v-52" stroke="#9c8052" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="160" cy="68" r="14" fill="#c49a52"/>
+</svg>

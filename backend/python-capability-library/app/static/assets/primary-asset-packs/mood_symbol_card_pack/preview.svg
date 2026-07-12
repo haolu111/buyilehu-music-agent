@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 260" role="img" aria-label="音乐情绪符号图卡预览">
+  <rect width="680" height="260" rx="24" fill="#fffdfa"/>
+  <g transform="translate(24 24) scale(.48)"><rect width="320" height="220" rx="18" fill="#fff7d6"/><circle cx="82" cy="78" r="34" fill="#f2b84b"/><path d="M54 124c30 26 65 26 95 0" fill="none" stroke="#172721" stroke-width="10" stroke-linecap="round"/><path d="M190 62v78" fill="none" stroke="#176a5b" stroke-width="14" stroke-linecap="round"/><path d="M190 62l62-18v78l-62 18z" fill="#7fcbb6" stroke="#176a5b" stroke-width="8" stroke-linejoin="round"/></g>
+  <g transform="translate(184 24) scale(.48)"><rect width="320" height="220" rx="18" fill="#f0f6ff"/><path d="M48 138c44-54 86-54 130 0s86 54 114 4" fill="none" stroke="#4b7bb8" stroke-width="12" stroke-linecap="round"/><path d="M120 62c42-28 84-26 124 6" fill="none" stroke="#7fcbb6" stroke-width="10" stroke-linecap="round"/></g>
+  <g transform="translate(344 24) scale(.48)"><rect width="320" height="220" rx="18" fill="#ecfbf5"/><path d="M54 160l38-62 36 42 42-76 42 76 36-42 22 62" fill="none" stroke="#176a5b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g transform="translate(504 24) scale(.48)"><rect width="320" height="220" rx="18" fill="#edf4ef"/><path d="M52 150c42-16 78-16 120 0s72 16 102 0" fill="none" stroke="#5f8c7a" stroke-width="10" stroke-linecap="round"/></g>
+  <text x="32" y="220" font-family="system-ui, sans-serif" font-size="24" font-weight="800" fill="#172721">项目生成 SVG 情绪图卡 fallback</text>
+</svg>

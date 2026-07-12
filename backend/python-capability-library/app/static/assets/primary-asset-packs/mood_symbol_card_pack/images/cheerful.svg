@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" role="img" aria-label="欢快情绪符号图卡">
+  <rect width="320" height="220" rx="18" fill="#fff7d6"/>
+  <circle cx="82" cy="78" r="34" fill="#f2b84b"/>
+  <path d="M54 124c30 26 65 26 95 0" fill="none" stroke="#172721" stroke-width="10" stroke-linecap="round"/>
+  <path d="M190 62v78" fill="none" stroke="#176a5b" stroke-width="14" stroke-linecap="round"/>
+  <path d="M190 62l62-18v78l-62 18z" fill="#7fcbb6" stroke="#176a5b" stroke-width="8" stroke-linejoin="round"/>
+  <circle cx="178" cy="154" r="18" fill="#176a5b"/>
+  <circle cx="240" cy="136" r="18" fill="#176a5b"/>
+  <path d="M42 174h236" stroke="#e0a83e" stroke-width="8" stroke-linecap="round" stroke-dasharray="18 18"/>
+</svg>
