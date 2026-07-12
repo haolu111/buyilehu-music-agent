@@ -6,6 +6,13 @@ const request = axios.create({
   timeout: 15000,
 })
 
+function redirectToLogin() {
+  const redirect = window.location.pathname + window.location.search
+  if (window.location.pathname !== '/login') {
+    window.location.assign(`/login?redirect=${encodeURIComponent(redirect)}`)
+  }
+}
+
 request.interceptors.request.use((config) => {
   const token = localStorage.getItem('student_token')
   if (token) {
@@ -26,8 +33,9 @@ request.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('student_token')
       localStorage.removeItem('student_profile')
+      redirectToLogin()
     }
-    return Promise.reject(new Error(error.response?.data?.message || error.message || '网络错误'))
+    return Promise.reject(new Error(error.response?.data?.message || (error.response?.status === 401 ? '登录已过期，请重新登录' : error.message) || '网络错误'))
   },
 )
 

@@ -1,67 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import AppShell from '../components/AppShell.vue'
-import { classroomApi } from '../api/classroomApi'
-import type { ClassroomSession } from '../types'
-
-const sessions = ref<ClassroomSession[]>([])
-const loading = ref(false)
-const error = ref('')
-
-async function loadSessions() {
-  loading.value = true
-  error.value = ''
-  try {
-    sessions.value = await classroomApi.listActiveSessions()
-  } catch (exception) {
-    error.value = exception instanceof Error ? exception.message : '加载课堂失败'
-  } finally {
-    loading.value = false
-  }
-}
-
-function statusText(status: string) {
-  const map: Record<string, string> = {
-    not_started: '未开始',
-    running: '进行中',
-    paused: '已暂停',
-    ended: '已结束',
-  }
-  return map[status] || status
-}
-
+import { computed, onMounted, ref } from 'vue'; import { useRoute } from 'vue-router'; import AppShell from '../components/AppShell.vue'; import { classroomApi } from '../api/classroomApi'; import { formatDateTime,statusText } from '../utils/display'; import type { ClassroomSession } from '../types'
+const route=useRoute(),sessions=ref<ClassroomSession[]>([]),loading=ref(false),error=ref(''),activeStatus=ref(String(route.query.view||'all'))
+const counts=computed(()=>({not_started:sessions.value.filter(x=>x.status==='not_started').length,running:sessions.value.filter(x=>['running','paused'].includes(x.status)).length,ended:sessions.value.filter(x=>x.status==='ended').length}))
+const filtered=computed(()=>activeStatus.value==='all'?sessions.value:sessions.value.filter(x=>activeStatus.value==='running'?['running','paused'].includes(x.status):x.status===activeStatus.value))
+async function loadSessions(){loading.value=true;error.value='';try{sessions.value=await classroomApi.listActiveSessions()}catch(e){error.value=e instanceof Error?e.message:'加载课堂失败'}finally{loading.value=false}}
 onMounted(loadSessions)
 </script>
-
-<template>
-  <AppShell>
-    <div class="section-header">
-      <div>
-        <h1>课堂管理</h1>
-        <p class="muted">查看待开始、进行中和已结束课堂。结束后可进入课程分析。</p>
-      </div>
-      <button class="button" type="button" @click="loadSessions">刷新</button>
-    </div>
-
-    <p v-if="error" class="error">{{ error }}</p>
-
-    <section class="card stack">
-      <p v-if="loading" class="muted">加载中...</p>
-      <p v-else-if="!sessions.length" class="muted">暂无课堂。可以在互动包详情页创建课堂。</p>
-      <div v-for="session in sessions" :key="session.id" class="list-line">
-        <div>
-          <strong>{{ session.courseTitle || `课堂 #${session.id}` }}</strong>
-          <p class="muted">
-            班级 #{{ session.classId }} / 环节 {{ session.nodeStates.length }} 个
-            <span v-if="session.scheduledStartAt"> / 计划 {{ session.scheduledStartAt }}</span>
-          </p>
-        </div>
-        <div class="button-row" style="margin-top: 0;">
-          <span class="tag">{{ statusText(session.status) }}</span>
-          <RouterLink class="button" :to="`/classroom/${session.id}/control`">控制台</RouterLink>
-          <RouterLink class="button primary" :to="`/classroom/${session.id}/report`">课程分析</RouterLink>
-        </div>
-      </div>
-    </section>
-  </AppShell>
-</template>
+<template><AppShell><div class="page-heading"><div><p class="eyebrow">课堂教学</p><h1>课堂安排</h1><p>按课堂状态进入控制台或查看课后报告。</p></div><button class="button" @click="loadSessions">刷新课堂</button></div>
+  <nav class="status-tabs" aria-label="课堂状态"><button :class="{active:activeStatus==='all'}" @click="activeStatus='all'">全部 {{ sessions.length }}</button><button :class="{active:activeStatus==='not_started'}" @click="activeStatus='not_started'">待开始 {{ counts.not_started }}</button><button :class="{active:activeStatus==='running'}" @click="activeStatus='running'">进行中 {{ counts.running }}</button><button :class="{active:activeStatus==='ended'}" @click="activeStatus='ended'">已结束 {{ counts.ended }}</button></nav><p v-if="error" class="error">{{ error }}</p>
+  <div class="session-list"><article v-for="session in filtered" :key="session.id" class="card session-card"><div class="session-date"><strong>{{ formatDateTime(session.scheduledStartAt||session.startedAt).split(' ')[0] }}</strong><span>{{ formatDateTime(session.scheduledStartAt||session.startedAt).split(' ').slice(1).join(' ') }}</span></div><div class="session-info"><span class="status-pill" :class="session.status">{{ statusText(session.status) }}</span><h2>{{ session.courseTitle||'音乐课堂' }}</h2><p>班级课堂 · {{ session.nodeStates.length }} 个教学环节</p><p v-if="session.status==='running'&&session.currentNodeId">当前环节：{{ session.nodeStates.find(node=>node.activityNodeId===session.currentNodeId)?.title||'课堂活动' }}</p></div><div class="session-action"><RouterLink v-if="session.status==='ended'" class="button primary-soft" :to="`/classroom/${session.id}/report`">查看课堂报告</RouterLink><RouterLink v-else class="button teaching" :to="`/classroom/${session.id}/control`">{{ session.status==='not_started'?'开始课堂':'进入控制台' }} →</RouterLink></div></article><div v-if="!filtered.length" class="empty-inline">{{ loading?'正在加载课堂…':'当前分类下暂无课堂' }}</div></div>
+</AppShell></template>

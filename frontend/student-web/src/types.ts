@@ -22,6 +22,8 @@ export interface ClassInfo {
   id: number
   className: string
   teacherId: number
+  teacherName?: string
+  schoolName?: string
   inviteCode?: string
   description?: string
   status: string

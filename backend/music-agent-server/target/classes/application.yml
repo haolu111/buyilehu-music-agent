@@ -3,6 +3,12 @@ spring:
     name: music-agent-server
   profiles:
     default: local
+  datasource:
+    hikari:
+      max-lifetime: ${DB_POOL_MAX_LIFETIME:90000}
+      keepalive-time: ${DB_POOL_KEEPALIVE_TIME:30000}
+      idle-timeout: ${DB_POOL_IDLE_TIMEOUT:60000}
+      validation-timeout: ${DB_POOL_VALIDATION_TIMEOUT:5000}
   jpa:
     open-in-view: false
     hibernate:

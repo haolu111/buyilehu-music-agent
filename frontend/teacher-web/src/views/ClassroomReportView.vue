@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
+import SubmissionResult from '../components/SubmissionResult.vue'
 import { classroomApi } from '../api/classroomApi'
 import { classApi } from '../api/classApi'
 import type { ClassroomSession, StudentSubmission, UserInfo } from '../types'
@@ -144,15 +145,6 @@ function statusText(status?: string) {
   return status ? map[status] || status : '-'
 }
 
-function formatResult(value?: string) {
-  if (!value) return '暂无提交内容'
-  try {
-    return JSON.stringify(JSON.parse(value), null, 2)
-  } catch {
-    return value
-  }
-}
-
 onMounted(loadReport)
 </script>
 
@@ -236,7 +228,7 @@ onMounted(loadReport)
                   <div v-for="item in row.submissions" :key="item.progressId" class="answer-item">
                     <strong>{{ item.nodeTitle || `环节 #${item.nodeId}` }}</strong>
                     <span>{{ statusText(item.progressStatus) }} / {{ item.score ?? '-' }} 分</span>
-                    <pre>{{ formatResult(item.resultJson) }}</pre>
+                    <SubmissionResult :value="item.resultJson" />
                   </div>
                 </div>
               </td>

@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
+import SubmissionResult from '../components/SubmissionResult.vue'
 import { classroomApi } from '../api/classroomApi'
 import type { ClassroomSession, StudentSubmission } from '../types'
 
@@ -118,15 +119,6 @@ function statusText(status?: string) {
   return status ? map[status] || status : '-'
 }
 
-function formatResult(value?: string) {
-  if (!value) return '暂无提交内容'
-  try {
-    return JSON.stringify(JSON.parse(value), null, 2)
-  } catch {
-    return value
-  }
-}
-
 function prevPage() {
   page.value = Math.max(1, page.value - 1)
 }
@@ -221,7 +213,7 @@ onBeforeUnmount(() => window.clearInterval(timer))
             <td>{{ item.nodeTitle || `环节 #${item.nodeId}` }}</td>
             <td>{{ statusText(item.progressStatus) }}</td>
             <td>{{ item.score ?? '-' }}</td>
-            <td><pre>{{ formatResult(item.resultJson) }}</pre></td>
+            <td><SubmissionResult :value="item.resultJson" /></td>
             <td>{{ item.lastActiveAt || '-' }}</td>
           </tr>
         </tbody>
