@@ -14,6 +14,9 @@ import com.buyilehu.musicagent.infrastructure.capability.PythonCapabilityExcepti
 import com.buyilehu.musicagent.infrastructure.capability.PythonCapabilityProperties;
 import com.buyilehu.musicagent.infrastructure.capability.PythonRuntimeRequestFactory;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonRuntimeBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityPackageBuildResponse;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityPackageNodeData;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityRuntimeBuildData;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityRuntimeBuildResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -47,8 +50,54 @@ public class PythonRuntimeIntegrationServiceImpl implements PythonRuntimeIntegra
             return;
         }
         PythonCapabilityProperties.CallMode callMode = resolveCallMode();
-        for (ActivityNodeConfig nodeConfig : nodeConfigs) {
-            enrichNode(parsedLesson, preferences, nodeConfig, callMode);
+        if (callMode == PythonCapabilityProperties.CallMode.DISABLED) {
+            for (ActivityNodeConfig nodeConfig : nodeConfigs) {
+                enrichNode(parsedLesson, preferences, nodeConfig, callMode);
+            }
+            return;
+        }
+
+        Map<String, String> activityIds = new java.util.LinkedHashMap<String, String>();
+        for (int index = 0; index < nodeConfigs.size(); index++) {
+            String activityId = resolveActivityId(nodeConfigs.get(index));
+            if (StringUtils.hasText(activityId)) activityIds.put(String.valueOf(index), activityId);
+        }
+        if (activityIds.isEmpty()) {
+            for (ActivityNodeConfig nodeConfig : nodeConfigs) {
+                applyFallback(nodeConfig, null, "No Python capability mapping for nodeType=" + nodeConfig.getNodeType());
+            }
+            return;
+        }
+
+        try {
+            PythonPackageBuildRequest request = requestFactory.buildPackage(parsedLesson, preferences, nodeConfigs, activityIds);
+            PythonCapabilityPackageBuildResponse response = pythonCapabilityClient.buildPackage(request);
+            if (response == null || !response.isSuccess() || response.getData() == null
+                    || !"activity-package.v1".equals(response.getData().getSchemaVersion())) {
+                throw new PythonCapabilityException(PythonCapabilityException.ErrorType.RESPONSE_PARSE_ERROR,
+                        "Python package response has an unsupported schema.");
+            }
+            Map<String, PythonCapabilityPackageNodeData> results = new HashMap<String, PythonCapabilityPackageNodeData>();
+            for (PythonCapabilityPackageNodeData result : response.getData().getNodes()) {
+                results.put(result.getClientRef(), result);
+            }
+            for (int index = 0; index < nodeConfigs.size(); index++) {
+                ActivityNodeConfig nodeConfig = nodeConfigs.get(index);
+                String ref = String.valueOf(index);
+                String activityId = activityIds.get(ref);
+                PythonCapabilityPackageNodeData result = results.get(ref);
+                if (!StringUtils.hasText(activityId)) {
+                    applyFallback(nodeConfig, null, "No Python capability mapping for nodeType=" + nodeConfig.getNodeType());
+                } else if (result == null) {
+                    applyFallback(nodeConfig, activityId, "Python package response omitted node " + ref);
+                } else {
+                    applySuccess(nodeConfig, activityId, callMode, result);
+                }
+            }
+        } catch (RuntimeException exception) {
+            for (ActivityNodeConfig nodeConfig : nodeConfigs) {
+                enrichNode(parsedLesson, preferences, nodeConfig, callMode);
+            }
         }
     }
 
@@ -95,6 +144,9 @@ public class PythonRuntimeIntegrationServiceImpl implements PythonRuntimeIntegra
         nodeConfig.setToolkit(convertNodeToMap(data.getToolkit()));
         nodeConfig.setRuntime(convertNodeToMap(data.getRuntime()));
         nodeConfig.setMediaSessionPreview(convertNullableNodeToMap(data.getMediaSessionPreview()));
+        nodeConfig.setActivityRuntime(callMode == PythonCapabilityProperties.CallMode.PRIMARY
+                ? convertNodeToMap(data.getActivityRuntime())
+                : buildFallbackRuntime(nodeConfig));
         nodeConfig.setCapabilityError(null);
     }
 
@@ -106,6 +158,29 @@ public class PythonRuntimeIntegrationServiceImpl implements PythonRuntimeIntegra
         nodeConfig.setToolkit(new HashMap<String, Object>());
         nodeConfig.setRuntime(new HashMap<String, Object>());
         nodeConfig.setMediaSessionPreview(null);
+        nodeConfig.setActivityRuntime(buildFallbackRuntime(nodeConfig));
+    }
+
+    private Map<String, Object> buildFallbackRuntime(ActivityNodeConfig nodeConfig) {
+        Map<String, Object> runtime = new java.util.LinkedHashMap<String, Object>();
+        runtime.put("schemaVersion", "activity-runtime.v1");
+        runtime.put("renderer", fallbackRenderer(nodeConfig == null ? null : nodeConfig.getNodeType()));
+        runtime.put("props", new java.util.LinkedHashMap<String, Object>());
+        runtime.put("assets", new ArrayList<Object>());
+        Map<String, Object> assessment = new java.util.LinkedHashMap<String, Object>();
+        assessment.put("resultType", "completion");
+        assessment.put("maxScore", 100);
+        runtime.put("assessment", assessment);
+        return runtime;
+    }
+
+    private String fallbackRenderer(String nodeType) {
+        String type = nodeType == null ? "" : nodeType.toLowerCase();
+        if (type.contains("summary")) return "summary";
+        if (type.contains("creation")) return "creation-panel";
+        if (type.contains("rhythm")) return "rhythm-drag";
+        if (type.contains("meter") || type.contains("entry") || type.contains("tool")) return "meter-compare";
+        return "completion";
     }
 
     private Map<String, Object> buildErrorMap(String message) {
@@ -123,9 +198,13 @@ public class PythonRuntimeIntegrationServiceImpl implements PythonRuntimeIntegra
     }
 
     private String resolveActivityId(ActivityNodeConfig nodeConfig) {
-        if (nodeConfig == null || nodeConfig.getNodeType() == null) {
+        if (nodeConfig == null) {
             return null;
         }
+        if (StringUtils.hasText(nodeConfig.getCapabilityActivityId())) {
+            return nodeConfig.getCapabilityActivityId().trim();
+        }
+        if (nodeConfig.getNodeType() == null) return null;
         Map<String, String> mappings = properties.getNodeTypeActivityIdMappings();
         if (mappings == null || mappings.isEmpty()) {
             return null;

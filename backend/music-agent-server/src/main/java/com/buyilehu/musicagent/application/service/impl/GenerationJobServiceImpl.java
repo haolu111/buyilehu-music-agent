@@ -142,7 +142,7 @@ public class GenerationJobServiceImpl implements GenerationJobService {
             job.setProgress(100);
             job.setFinishedAt(LocalDateTime.now());
             generationJobRepository.save(job);
-            return GenerationJobResponse.from(job, pkg.getId(), version.getId());
+            return GenerationJobResponse.from(job, pkg.getId(), version.getId(), chain);
         } catch (RuntimeException exception) {
             job.setStatus("failed");
             job.setProgress(100);

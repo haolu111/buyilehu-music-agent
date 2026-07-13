@@ -186,6 +186,7 @@ class MusicAgentServerApplicationTests {
                 .andExpect(jsonPath("$.data.progress").value(100))
                 .andExpect(jsonPath("$.data.packageId").isNumber())
                 .andExpect(jsonPath("$.data.versionId").isNumber())
+                .andExpect(jsonPath("$.data.designProvider").isNotEmpty())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
@@ -203,10 +204,10 @@ class MusicAgentServerApplicationTests {
         org.assertj.core.api.Assertions.assertThat(qualityReportRepository.findByPackageId(packageId)).hasSize(1);
 
         List<ActivityNode> nodes = activityNodeRepository.findByPackageIdOrderBySortOrderAsc(packageId);
-        org.assertj.core.api.Assertions.assertThat(nodes).hasSize(5);
+        org.assertj.core.api.Assertions.assertThat(nodes).hasSizeBetween(3, 7);
         org.assertj.core.api.Assertions.assertThat(nodes)
                 .extracting(ActivityNode::getTitle)
-                .containsExactly("课堂入口页", "节拍体验工具", "节奏拖拽游戏", "创编工作坊", "展示总结页");
+                .allSatisfy(title -> org.assertj.core.api.Assertions.assertThat(title).isNotBlank());
 
         List<Long> nodeIds = nodes.stream().map(ActivityNode::getId).collect(Collectors.toList());
         org.assertj.core.api.Assertions.assertThat(componentInstanceRepository.findByActivityNodeIdIn(nodeIds))

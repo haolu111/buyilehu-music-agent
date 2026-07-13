@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import CreationPanel from '../components/CreationPanel.vue'
+import DynamicActivityHost from '../components/DynamicActivityHost.vue'
 import FeedbackToast from '../components/FeedbackToast.vue'
-import MeterCompareTool from '../components/MeterCompareTool.vue'
-import RhythmDragGame from '../components/RhythmDragGame.vue'
 import SceneHeader from '../components/SceneHeader.vue'
-import SummaryPage from '../components/SummaryPage.vue'
+import type { ActivityRenderer } from '../types'
 import { useStudentStore } from '../stores/studentStore'
+import { playErrorSound, playSuccessSound, unlockActivitySound } from '../utils/activitySound'
+
+interface AssessmentResult {
+  score?: number | null
+  mode?: string
+  provider?: string
+  model?: string | null
+  feedback?: string
+  fallbackReason?: string | null
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -21,6 +29,7 @@ const node = computed(() =>
 )
 const submission = computed(() => store.getSubmission(nodeId.value))
 const rawNodeType = computed(() => node.value?.nodeType || '')
+const runtimeConfig = computed(() => node.value?.runtimeConfig || null)
 
 const activityKind = computed(() => {
   const type = rawNodeType.value.toLowerCase()
@@ -53,18 +62,65 @@ const subtitle = computed(() => {
   return `节点 ${node.value.sortOrder || ''}`.trim()
 })
 
-const resultFields = computed(() => {
+const parsedResult = computed<Record<string, unknown>>(() => {
   const value = submission.value?.resultJson
-  if (!value) return []
+  if (!value) return {}
   try {
-    const parsed = JSON.parse(value) as Record<string, unknown>
-    const labels: Record<string, string> = { observed: '完成内容', sequence: '我的节奏', title: '作品名称', notes: '创作灵感' }
-    const observed: Record<string, string> = { entry: '课堂准备已完成', meter_experience: '节拍体验已完成', summary: '课堂小结已查看' }
-    return Object.entries(parsed).map(([key, item]) => ({ label: labels[key] || '活动记录', value: key === 'observed' ? (observed[String(item)] || '活动已完成') : Array.isArray(item) ? item.join('、') : String(item) }))
+    return JSON.parse(value) as Record<string, unknown>
   } catch {
-    return [{ label: '活动记录', value }]
+    return { result: value }
   }
 })
+
+function formatResultValue(value: unknown) {
+  if (Array.isArray(value)) return value.join('、')
+  if (value && typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>).map(([key, item]) => `${key}: ${String(item)}`).join('；')
+  }
+  return String(value ?? '')
+}
+
+const resultFields = computed(() => {
+  const labels: Record<string, string> = {
+    observed: '完成内容', sequence: '我的顺序', title: '作品名称', notes: '创作内容', choice: '我的选择', evidence: '判断依据',
+    explanation: '我的理由', trace: '旋律轨迹', matches: '音色配对', order: '曲式顺序', role: '合奏角色', completedSteps: '排练步骤',
+    phrase: '练唱乐句', attempts: '练唱次数', durationSeconds: '录音时长', bpm: '练习速度', result: '活动记录',
+  }
+  const observed: Record<string, string> = { entry: '课堂准备已完成', meter_experience: '节拍体验已完成', summary: '课堂小结已查看' }
+  return Object.entries(parsedResult.value)
+    .filter(([key]) => key !== '_assessment')
+    .map(([key, item]) => ({
+      label: labels[key] || '活动记录',
+      value: key === 'observed' ? (observed[String(item)] || '活动已完成') : formatResultValue(item),
+    }))
+})
+
+const assessment = computed<AssessmentResult | null>(() => {
+  const value = parsedResult.value._assessment
+  return value && typeof value === 'object' ? value as AssessmentResult : null
+})
+
+const assessmentSource = computed(() => {
+  const value = assessment.value
+  if (!value) return '课堂评分'
+  if (value.mode === 'service_fallback' || value.mode === 'ai_fallback') return '临时评分'
+  const provider = (value.provider || '').toLowerCase()
+  if (provider.includes('ecnu')) return 'ECNU 智能评分'
+  if (provider.includes('doubao')) return '豆包智能评分'
+  if (value.mode === 'rule') return '系统自动评分'
+  if (value.mode === 'completion') return '完成记录'
+  if (value.mode === 'ai') return '智能评分'
+  return '课堂评分'
+})
+
+const fallbackRenderer = computed<ActivityRenderer>(() => {
+  if (activityKind.value === 'summary') return 'summary'
+  if (activityKind.value === 'creation') return 'creation-panel'
+  if (activityKind.value === 'game') return 'rhythm-drag'
+  if (activityKind.value === 'tool') return 'meter-compare'
+  return 'completion'
+})
+const activeRenderer = computed(() => runtimeConfig.value?.renderer || fallbackRenderer.value)
 
 const challengeNodes = computed(() => store.currentSession?.nodeStates.filter(item => {
   const type = item.nodeType.toLowerCase()
@@ -92,19 +148,29 @@ async function ensureSession() {
   }
 }
 
-async function submit(payload: Record<string, unknown>, score?: number) {
+async function submit(payload: Record<string, unknown>) {
   const wasCompleted = submission.value?.progressStatus === 'completed'
+  unlockActivitySound()
   try {
-    await store.submitCurrentNode(nodeId.value, payload, score)
+    await store.submitCurrentNode(nodeId.value, payload)
     editing.value = false
     toast.value = wasCompleted ? '结果已更新' : '活动已提交'
+    playSuccessSound()
   } catch {
     toast.value = store.error
+    playErrorSound()
   }
 }
 
 function editResult() {
   editing.value = true
+}
+
+async function waitForNextNode() {
+  await router.push({
+    path: '/classroom/waiting',
+    query: { completedNodeId: String(nodeId.value) },
+  })
 }
 
 async function syncClassroom() {
@@ -127,38 +193,34 @@ onBeforeUnmount(() => window.clearInterval(timer))
     <section v-if="node" class="activity-content">
       <section v-if="showResult" class="tool-panel">
         <div class="submission-success"><span>✓</span><div><h2>活动已提交</h2><p>做得很好！结果已经保存，等待老师开启下一环节。</p></div></div>
-        <div class="student-result-grid"><span v-for="field in resultFields" :key="`${field.label}-${field.value}`"><small>{{ field.label }}</small><strong>{{ field.value }}</strong></span><span v-if="submission?.score != null"><small>本次得分</small><strong>{{ submission.score }} 分</strong></span></div>
+        <div class="student-result-grid"><span v-for="field in resultFields" :key="`${field.label}-${field.value}`"><small>{{ field.label }}</small><strong>{{ field.value }}</strong></span></div>
+        <div v-if="assessment" class="assessment-panel" :class="{ temporary: assessment.mode === 'service_fallback' || assessment.mode === 'ai_fallback' }">
+          <div><small>{{ assessmentSource }}</small><strong v-if="assessment.score != null">{{ assessment.score }} 分</strong><strong v-else>本环节不计分</strong></div>
+          <p>{{ assessment.feedback || '结果已记录。' }}</p>
+        </div>
+        <div v-else-if="submission?.score != null" class="assessment-panel"><div><small>课堂评分</small><strong>{{ submission.score }} 分</strong></div></div>
         <div class="action-row">
           <button class="primary-action" type="button" @click="editResult">修改结果</button>
-          <button class="secondary-action" type="button" @click="router.push('/classroom/waiting')">完成，等待下一环节</button>
+          <button class="secondary-action" type="button" @click="router.push('/classroom')">返回课堂</button>
+          <button class="secondary-action" type="button" @click="waitForNextNode">完成，等待下一环节</button>
         </div>
       </section>
 
       <template v-else>
-        <MeterCompareTool v-if="activityKind === 'tool'" />
-        <RhythmDragGame
-          v-else-if="activityKind === 'game'"
-          @completed="submit({ sequence: $event.sequence }, $event.score)"
-        />
-        <CreationPanel v-else-if="activityKind === 'creation'" @submitted="submit($event, 100)" />
-        <SummaryPage
-          v-else-if="activityKind === 'summary'"
+        <DynamicActivityHost
+          :runtime="runtimeConfig"
+          :fallback-renderer="fallbackRenderer"
           :completed-count="completedChallenges"
           :total-count="challengeNodes.length"
+          @completed="submit($event.result)"
         />
-        <section v-else class="tool-panel">
-          <p>当前活动类型暂未接入专用组件，完成后可以直接提交。</p>
-          <button class="primary-action" type="button" @click="submit({ observed: rawNodeType || 'unknown' }, 100)">
-            完成并提交
-          </button>
-        </section>
 
-        <div v-if="activityKind === 'tool' || activityKind === 'summary' || activityKind === 'unknown'" class="action-row">
+        <div v-if="activeRenderer === 'meter-compare' || activeRenderer === 'summary' || activeRenderer === 'completion'" class="action-row">
           <button class="secondary-action" type="button" @click="router.push('/classroom')">返回课堂</button>
           <button
             class="primary-action"
             type="button"
-            @click="submit({ observed: rawNodeType || activityKind }, 100)"
+            @click="submit({ observed: rawNodeType || activityKind })"
           >
             {{ submission ? '重新提交' : '完成' }}
           </button>

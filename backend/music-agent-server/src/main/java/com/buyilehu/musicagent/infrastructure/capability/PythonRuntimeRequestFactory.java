@@ -9,10 +9,45 @@ import com.buyilehu.musicagent.domain.model.ActivityNodeConfig;
 import com.buyilehu.musicagent.domain.model.GeneratePreferences;
 import com.buyilehu.musicagent.domain.model.ParsedLesson;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonRuntimeBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageNodeBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageDesignRequest;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PythonRuntimeRequestFactory {
+
+    public PythonPackageDesignRequest buildDesign(ParsedLesson parsedLesson, GeneratePreferences preferences) {
+        PythonPackageDesignRequest request = new PythonPackageDesignRequest();
+        request.setLesson(buildLessonMap(parsedLesson));
+        request.setPreferences(buildPreferencesMap(preferences));
+        return request;
+    }
+
+    public PythonPackageBuildRequest buildPackage(
+            ParsedLesson parsedLesson,
+            GeneratePreferences preferences,
+            List<ActivityNodeConfig> nodeConfigs,
+            Map<String, String> activityIds
+    ) {
+        PythonPackageBuildRequest packageRequest = new PythonPackageBuildRequest();
+        List<PythonPackageNodeBuildRequest> nodes = new ArrayList<PythonPackageNodeBuildRequest>();
+        for (int index = 0; index < nodeConfigs.size(); index++) {
+            ActivityNodeConfig nodeConfig = nodeConfigs.get(index);
+            String clientRef = String.valueOf(index);
+            String activityId = activityIds.get(clientRef);
+            if (activityId == null || activityId.trim().isEmpty()) continue;
+            PythonRuntimeBuildRequest single = build(parsedLesson, preferences, nodeConfig, activityId);
+            PythonPackageNodeBuildRequest node = new PythonPackageNodeBuildRequest();
+            node.setClientRef(clientRef);
+            node.setActivityId(activityId);
+            node.setComposition(single.getComposition());
+            node.setRequest(single.getRequest());
+            nodes.add(node);
+        }
+        packageRequest.setNodes(nodes);
+        return packageRequest;
+    }
 
     public PythonRuntimeBuildRequest build(
             ParsedLesson parsedLesson,
@@ -74,6 +109,11 @@ public class PythonRuntimeRequestFactory {
         if (preferences != null) {
             preferenceMap.put("style", preferences.getStyle());
             preferenceMap.put("duration_minutes", preferences.getDurationMinutes());
+            preferenceMap.put("mode", preferences.getMode());
+            preferenceMap.put("density", preferences.getDensity());
+            preferenceMap.put("difficulty", preferences.getDifficulty());
+            preferenceMap.put("flow", preferences.getFlow());
+            preferenceMap.put("theme", preferences.getTheme());
         }
         return preferenceMap;
     }

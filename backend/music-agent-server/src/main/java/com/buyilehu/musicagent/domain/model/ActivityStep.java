@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ActivityStep {
     private String title;
+    private String activityId;
     private String nodeType;
     private Integer sortOrder;
     private List<String> componentKeys = new ArrayList<>();
@@ -19,8 +20,15 @@ public class ActivityStep {
         this.componentKeys = componentKeys;
     }
 
+    public ActivityStep(String title, String activityId, String nodeType, Integer sortOrder, List<String> componentKeys) {
+        this(title, nodeType, sortOrder, componentKeys);
+        this.activityId = activityId;
+    }
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+    public String getActivityId() { return activityId; }
+    public void setActivityId(String activityId) { this.activityId = activityId; }
     public String getNodeType() { return nodeType; }
     public void setNodeType(String nodeType) { this.nodeType = nodeType; }
     public Integer getSortOrder() { return sortOrder; }

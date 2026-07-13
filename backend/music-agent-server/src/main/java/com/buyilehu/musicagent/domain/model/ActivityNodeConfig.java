@@ -17,6 +17,7 @@ public class ActivityNodeConfig {
     private Map<String, Object> toolkit = new LinkedHashMap<String, Object>();
     private Map<String, Object> runtime = new LinkedHashMap<String, Object>();
     private Map<String, Object> mediaSessionPreview;
+    private Map<String, Object> activityRuntime;
     private String capabilityStatus;
     private Map<String, Object> capabilityError;
 
@@ -38,6 +39,8 @@ public class ActivityNodeConfig {
     public void setRuntime(Map<String, Object> runtime) { this.runtime = runtime; }
     public Map<String, Object> getMediaSessionPreview() { return mediaSessionPreview; }
     public void setMediaSessionPreview(Map<String, Object> mediaSessionPreview) { this.mediaSessionPreview = mediaSessionPreview; }
+    public Map<String, Object> getActivityRuntime() { return activityRuntime; }
+    public void setActivityRuntime(Map<String, Object> activityRuntime) { this.activityRuntime = activityRuntime; }
     public String getCapabilityStatus() { return capabilityStatus; }
     public void setCapabilityStatus(String capabilityStatus) { this.capabilityStatus = capabilityStatus; }
     public Map<String, Object> getCapabilityError() { return capabilityError; }

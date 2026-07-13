@@ -15,6 +15,7 @@ public class ComponentMatcher {
         for (ActivityStep step : chain.getSteps()) {
             ActivityNodeConfig config = new ActivityNodeConfig();
             config.setTitle(step.getTitle());
+            config.setCapabilityActivityId(step.getActivityId());
             config.setNodeType(step.getNodeType());
             config.setSortOrder(step.getSortOrder());
             config.setComponentKeys(new ArrayList<>(step.getComponentKeys()));

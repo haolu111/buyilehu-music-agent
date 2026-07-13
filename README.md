@@ -40,7 +40,37 @@ If you previously imported `database/buyilehu_music_agent_schema.sql`, recreate 
 mysql -uroot -p123456 -e "DROP DATABASE IF EXISTS buyilehu_music_agent; CREATE DATABASE buyilehu_music_agent DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
-### 2. Start Backend
+### 2. Prepare Python Capability Service
+
+Python 3.11 or newer is required. Create its isolated environment once:
+
+```powershell
+cd backend\python-capability-library
+py -3.11 -m venv .venv
+.\.venv\Scripts\pip install -r requirements.txt
+```
+
+### 3. Start Both Backends
+
+From the project root, start Python first, wait for its health check, and then start Java:
+
+```powershell
+.\start-backends.bat
+```
+
+Python capability health check:
+
+```text
+http://127.0.0.1:8001/api/v1/health
+```
+
+Java health reports both services:
+
+```text
+http://127.0.0.1:8080/api/v1/system/health
+```
+
+To start Java manually:
 
 ```powershell
 cd backend\music-agent-server
@@ -56,7 +86,7 @@ Backend health check:
 http://127.0.0.1:8080/actuator/health
 ```
 
-### 3. Start Teacher Web
+### 4. Start Teacher Web
 
 ```powershell
 cd frontend\teacher-web
@@ -70,7 +100,7 @@ Teacher web:
 http://127.0.0.1:5173/
 ```
 
-### 4. Start Student Web
+### 5. Start Student Web
 
 ```powershell
 cd frontend\student-web
@@ -84,17 +114,19 @@ Student web:
 http://127.0.0.1:5174/
 ```
 
-### 5. Default Accounts
+### 6. Default Accounts
 
 ```text
 Teacher: teacher001 / 123456
 Student: student001 / 123456
 ```
 
-### 6. Notes
+### 7. Notes
 
 - Teacher web runs on port `5173`.
 - Student web runs on port `5174`.
 - Backend runs on port `8080`.
+- Python capability service runs on port `8001`.
+- `PYTHON_CAPABILITY_CALL_MODE=primary` uses Python-generated activity runtime; `shadow` records it for inspection; `disabled` uses Java fallback runtime.
 - Both frontend apps proxy `/api` requests to `http://localhost:8080`.
 - The backend local profile points to your local MySQL database and uses Flyway migrations to keep the schema aligned with the Java entities.

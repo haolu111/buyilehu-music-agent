@@ -183,9 +183,9 @@ public class PackageModifyServiceImpl implements PackageModifyService {
         Map<String, Object> diff = new HashMap<>();
         diff.put("nodeId", request.getNodeId());
         diff.put("modifyType", request.getModifyType());
-        diff.put("request", request);
-        diff.put("before", beforeSnapshot);
-        diff.put("after", afterSnapshot);
+        diff.put("config", request.getConfig());
+        diff.put("beforeSummary", buildSnapshotSummary(beforeSnapshot));
+        diff.put("afterSummary", buildSnapshotSummary(afterSnapshot));
         return diff;
     }
 
@@ -195,8 +195,32 @@ public class PackageModifyServiceImpl implements PackageModifyService {
         report.put("score", 90);
         report.put("message", "参数级修改已通过基础检查");
         report.put("nodeId", request.getNodeId());
-        report.put("snapshot", afterSnapshot);
+        report.put("snapshotSummary", buildSnapshotSummary(afterSnapshot));
         return report;
+    }
+
+    private Map<String, Object> buildSnapshotSummary(Map<String, Object> snapshot) {
+        Map<String, Object> summary = new HashMap<>();
+        Object nodesValue = snapshot.get("nodes");
+        if (!(nodesValue instanceof List)) {
+            summary.put("nodeCount", 0);
+            summary.put("componentCount", 0);
+            return summary;
+        }
+        List<?> nodes = (List<?>) nodesValue;
+        int componentCount = 0;
+        for (Object nodeValue : nodes) {
+            if (!(nodeValue instanceof Map)) {
+                continue;
+            }
+            Object componentsValue = ((Map<?, ?>) nodeValue).get("components");
+            if (componentsValue instanceof List) {
+                componentCount += ((List<?>) componentsValue).size();
+            }
+        }
+        summary.put("nodeCount", nodes.size());
+        summary.put("componentCount", componentCount);
+        return summary;
     }
 
     private String buildRemark(PackageModifyRequest request) {

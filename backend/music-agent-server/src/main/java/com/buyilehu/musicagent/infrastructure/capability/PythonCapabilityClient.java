@@ -4,6 +4,12 @@ import java.net.SocketTimeoutException;
 import java.time.Duration;
 
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonRuntimeBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageDesignRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonActivityAssessmentRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityAssessmentResponse;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityPackageBuildResponse;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonPackageDesignResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityError;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityErrorResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityHealthResponse;
@@ -63,6 +69,18 @@ public class PythonCapabilityClient {
 
     public PythonCapabilityRuntimeBuildResponse buildRuntime(PythonRuntimeBuildRequest request) {
         return exchange("/api/v1/runtime/build", HttpMethod.POST, request, PythonCapabilityRuntimeBuildResponse.class);
+    }
+
+    public PythonCapabilityPackageBuildResponse buildPackage(PythonPackageBuildRequest request) {
+        return exchange("/api/v1/packages/build", HttpMethod.POST, request, PythonCapabilityPackageBuildResponse.class);
+    }
+
+    public PythonPackageDesignResponse designPackage(PythonPackageDesignRequest request) {
+        return exchange("/api/v1/packages/design", HttpMethod.POST, request, PythonPackageDesignResponse.class);
+    }
+
+    public PythonCapabilityAssessmentResponse assessActivity(PythonActivityAssessmentRequest request) {
+        return exchange("/api/v1/assessments/grade", HttpMethod.POST, request, PythonCapabilityAssessmentResponse.class);
     }
 
     private <T> T exchange(String path, HttpMethod method, Object payload, Class<T> responseType) {

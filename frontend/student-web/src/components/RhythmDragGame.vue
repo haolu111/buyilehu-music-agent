@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import RhythmCard from './RhythmCard.vue'
+import { playRhythmPattern } from '../utils/activitySound'
 
 const emit = defineEmits<{
-  completed: [payload: { sequence: string[]; score: number }]
+  completed: [payload: { sequence: string[] }]
 }>()
 
-const cards = [
+const props = withDefaults(defineProps<{
+  cards?: Array<{ name: string; pattern: string }>
+  maxBeats?: number
+}>(), { cards: () => [
   { name: 'ta', pattern: 'X' },
   { name: 'ti-ti', pattern: 'X X' },
   { name: 'rest', pattern: '-' },
-]
+], maxBeats: 4 })
 
 const selected = ref<string[]>([])
 
-const score = computed(() => Math.min(100, selected.value.length * 25))
-
-function addCard(name: string) {
-  if (selected.value.length >= 4) return
+function addCard(name: string, pattern: string) {
+  if (selected.value.length >= props.maxBeats) return
+  playRhythmPattern(pattern || name)
   selected.value.push(name)
 }
 
@@ -26,7 +29,7 @@ function removeCard(index: number) {
 }
 
 function submit() {
-  emit('completed', { sequence: selected.value, score: score.value })
+  emit('completed', { sequence: selected.value })
 }
 </script>
 
@@ -34,11 +37,11 @@ function submit() {
   <section class="tool-panel rhythm-game">
     <div class="card-row">
       <RhythmCard
-        v-for="card in cards"
+        v-for="card in props.cards"
         :key="card.name"
         :name="card.name"
         :pattern="card.pattern"
-        @click="addCard(card.name)"
+        @click="addCard(card.name, card.pattern)"
       />
     </div>
 
@@ -52,7 +55,7 @@ function submit() {
       >
         {{ item }}
       </button>
-      <span v-for="slot in 4 - selected.length" :key="slot" class="empty-beat"></span>
+      <span v-for="slot in props.maxBeats - selected.length" :key="slot" class="empty-beat"></span>
     </div>
 
     <button class="primary-action" type="button" :disabled="selected.length === 0" @click="submit">

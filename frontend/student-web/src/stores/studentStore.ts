@@ -200,11 +200,10 @@ export const useStudentStore = defineStore('student', () => {
     return currentSession.value
   }
 
-  async function submitCurrentNode(nodeId: number, resultJson: Record<string, unknown>, score?: number) {
+  async function submitCurrentNode(nodeId: number, resultJson: Record<string, unknown>) {
     if (!currentSession.value) return null
     currentSession.value = await classroomApi.submitNode(currentSession.value.id, nodeId, {
       resultType: 'activity_result',
-      score,
       resultJson,
     })
     await loadSubmissions(currentSession.value.id)

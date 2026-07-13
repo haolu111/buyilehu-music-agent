@@ -11,6 +11,8 @@ public class PythonCapabilityRuntimeBuildData {
     private JsonNode runtime;
     @JsonProperty("media_session_preview")
     private JsonNode mediaSessionPreview;
+    @JsonProperty("activity_runtime")
+    private JsonNode activityRuntime;
 
     public String getActivityId() {
         return activityId;
@@ -51,4 +53,7 @@ public class PythonCapabilityRuntimeBuildData {
     public void setMediaSessionPreview(JsonNode mediaSessionPreview) {
         this.mediaSessionPreview = mediaSessionPreview;
     }
+
+    public JsonNode getActivityRuntime() { return activityRuntime; }
+    public void setActivityRuntime(JsonNode activityRuntime) { this.activityRuntime = activityRuntime; }
 }

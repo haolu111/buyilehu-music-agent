@@ -7,6 +7,7 @@ import com.buyilehu.musicagent.domain.model.ActivityNodeConfig;
 import com.buyilehu.musicagent.domain.model.GeneratePreferences;
 import com.buyilehu.musicagent.domain.model.ParsedLesson;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonRuntimeBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageBuildRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
@@ -44,5 +45,21 @@ class PythonRuntimeRequestFactoryTest {
         assertThat(((Map<?, ?>) request.getRequest().get("lesson")).get("course_name")).isEqualTo("旋律启蒙");
         assertThat(json).contains("\"request\"");
         assertThat(json).doesNotContain("request_payload");
+    }
+
+    @Test
+    void shouldBuildPackageRequestWithStableClientReference() {
+        ParsedLesson lesson = new ParsedLesson();
+        ActivityNodeConfig node = new ActivityNodeConfig();
+        node.setNodeType("rhythm_game");
+        java.util.Map<String, String> mappings = new java.util.LinkedHashMap<String, String>();
+        mappings.put("0", "rhythm_question_answer");
+
+        PythonPackageBuildRequest request = factory.buildPackage(
+                lesson, new GeneratePreferences(), java.util.Collections.singletonList(node), mappings);
+
+        assertThat(request.getNodes()).hasSize(1);
+        assertThat(request.getNodes().get(0).getClientRef()).isEqualTo("0");
+        assertThat(request.getNodes().get(0).getActivityId()).isEqualTo("rhythm_question_answer");
     }
 }

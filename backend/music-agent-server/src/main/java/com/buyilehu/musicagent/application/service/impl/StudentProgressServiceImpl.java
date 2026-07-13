@@ -25,7 +25,12 @@ import com.buyilehu.musicagent.infrastructure.repository.PackageVersionRepositor
 import com.buyilehu.musicagent.infrastructure.repository.SessionNodeStateRepository;
 import com.buyilehu.musicagent.infrastructure.repository.StudentProgressRepository;
 import com.buyilehu.musicagent.infrastructure.repository.UserRepository;
+import com.buyilehu.musicagent.infrastructure.capability.PythonCapabilityClient;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonActivityAssessmentRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityAssessmentResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +57,7 @@ public class StudentProgressServiceImpl implements StudentProgressService {
     private final UserRepository userRepository;
     private final LearningEventService learningEventService;
     private final ObjectMapper objectMapper;
+    private final PythonCapabilityClient pythonCapabilityClient;
 
     public StudentProgressServiceImpl(ClassroomSessionRepository classroomSessionRepository,
                                       PackagePublicationRepository packagePublicationRepository,
@@ -62,7 +68,8 @@ public class StudentProgressServiceImpl implements StudentProgressService {
                                       StudentProgressRepository studentProgressRepository,
                                       UserRepository userRepository,
                                       LearningEventService learningEventService,
-                                      ObjectMapper objectMapper) {
+                                      ObjectMapper objectMapper,
+                                      PythonCapabilityClient pythonCapabilityClient) {
         this.classroomSessionRepository = classroomSessionRepository;
         this.packagePublicationRepository = packagePublicationRepository;
         this.packageVersionRepository = packageVersionRepository;
@@ -73,6 +80,7 @@ public class StudentProgressServiceImpl implements StudentProgressService {
         this.userRepository = userRepository;
         this.learningEventService = learningEventService;
         this.objectMapper = objectMapper;
+        this.pythonCapabilityClient = pythonCapabilityClient;
     }
 
     @Override
@@ -179,26 +187,104 @@ public class StudentProgressServiceImpl implements StudentProgressService {
     public ClassroomSessionResponse submitNode(Long sessionId, Long nodeId, StudentNodeSubmitRequest request) {
         User student = getCurrentStudent();
         ClassroomSession session = validateUnlockedNode(student, sessionId, nodeId);
+        ActivityNode node = activityNodeRepository.findById(nodeId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "activity node not found"));
+        Map<String, Object> submittedResult = request.getResultJson() == null
+                ? new HashMap<String, Object>()
+                : new HashMap<String, Object>(request.getResultJson());
+        Map<String, Object> assessmentResult = assessSubmission(node, submittedResult);
+        Integer evaluatedScore = assessmentResult.get("score") instanceof Number
+                ? ((Number) assessmentResult.get("score")).intValue()
+                : null;
+        submittedResult.put("_assessment", assessmentResult);
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("resultType", request.getResultType());
-        eventData.put("score", request.getScore());
+        eventData.put("score", evaluatedScore);
+        eventData.put("assessment", assessmentResult);
         eventData.put("wrongCount", safeInt(request.getWrongCount()));
         eventData.put("hintUsedCount", safeInt(request.getHintUsedCount()));
         eventData.put("durationSeconds", safeInt(request.getDurationSeconds()));
-        eventData.put("resultJson", request.getResultJson());
+        eventData.put("resultJson", submittedResult);
         learningEventService.recordNodeEvent(sessionId, student.getId(), nodeId, "node_submit", eventData);
 
         StudentProgress progress = getOrCreateProgress(session.getId(), student.getId(), nodeId);
         progress.setProgressStatus("completed");
         progress.setProgress(100);
-        progress.setScore(request.getScore());
+        progress.setScore(evaluatedScore);
         progress.setWrongCount(safeInt(request.getWrongCount()));
         progress.setHintUsedCount(safeInt(request.getHintUsedCount()));
         progress.setDurationSeconds(safeInt(request.getDurationSeconds()));
-        progress.setResultJson(toJson(request.getResultJson()));
+        progress.setResultJson(toJson(submittedResult));
         progress.setLastActiveAt(LocalDateTime.now());
         studentProgressRepository.save(progress);
         return buildResponse(session);
+    }
+
+    private Map<String, Object> assessSubmission(ActivityNode node, Map<String, Object> result) {
+        Map<String, Object> runtime = extractActivityRuntime(node.getConfigJson());
+        String renderer = String.valueOf(runtime.get("renderer") == null ? "completion" : runtime.get("renderer"));
+        Map<String, Object> props = asMap(runtime.get("props"));
+        Map<String, Object> assessment = asMap(runtime.get("assessment"));
+        if (assessment.isEmpty()) {
+            assessment = legacyAssessment(renderer);
+        }
+
+        PythonActivityAssessmentRequest request = new PythonActivityAssessmentRequest();
+        request.setActivityId(String.valueOf(props.get("activityId") == null ? "" : props.get("activityId")));
+        request.setRenderer(renderer);
+        request.setTitle(node.getTitle());
+        request.setResult(result);
+        request.setAssessment(assessment);
+        try {
+            PythonCapabilityAssessmentResponse response = pythonCapabilityClient.assessActivity(request);
+            JsonNode data = response == null ? null : response.getData();
+            if (data == null || !data.isObject()) {
+                return assessmentFallback(renderer, "Python assessment returned no data");
+            }
+            return objectMapper.convertValue(data, new TypeReference<Map<String, Object>>() {});
+        } catch (RuntimeException exception) {
+            return assessmentFallback(renderer, exception.getMessage());
+        }
+    }
+
+    private Map<String, Object> extractActivityRuntime(String configJson) {
+        if (configJson == null || configJson.trim().isEmpty()) {
+            return Collections.emptyMap();
+        }
+        try {
+            Map<String, Object> config = objectMapper.readValue(configJson, new TypeReference<Map<String, Object>>() {});
+            return asMap(config.get("activityRuntime"));
+        } catch (Exception ignored) {
+            return Collections.emptyMap();
+        }
+    }
+
+    private Map<String, Object> legacyAssessment(String renderer) {
+        Map<String, Object> assessment = new HashMap<>();
+        if (Arrays.asList("creation-panel", "virtual-instrument", "ensemble-roles").contains(renderer)) {
+            assessment.put("mode", "ai");
+        } else if (Arrays.asList("rhythm-drag", "solfege-sort", "melody-trace", "timbre-match", "form-order", "listening-choice", "singing-practice").contains(renderer)) {
+            assessment.put("mode", "rule");
+        } else {
+            assessment.put("mode", "completion");
+            assessment.put("scoreOnComplete", "summary".equals(renderer) ? null : 80);
+        }
+        return assessment;
+    }
+
+    private Map<String, Object> assessmentFallback(String renderer, String reason) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("score", "summary".equals(renderer) ? null : 70);
+        result.put("mode", "service_fallback");
+        result.put("provider", "java");
+        result.put("feedback", "评分服务暂不可用，已按任务完成度临时记录。");
+        result.put("fallbackReason", reason == null ? "unknown" : reason);
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> asMap(Object value) {
+        return value instanceof Map ? (Map<String, Object>) value : Collections.<String, Object>emptyMap();
     }
 
     private ClassroomSession validateUnlockedNode(User student, Long sessionId, Long nodeId) {

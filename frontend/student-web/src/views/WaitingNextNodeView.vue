@@ -1,20 +1,45 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import SceneHeader from '../components/SceneHeader.vue'
 import FeedbackToast from '../components/FeedbackToast.vue'
 import { useStudentStore } from '../stores/studentStore'
 
 const router = useRouter()
+const route = useRoute()
 const store = useStudentStore()
 const toast = ref('')
 const connected = ref(navigator.onLine)
-const lastNodeId = ref<number | null>(store.currentSession?.currentNodeId || null)
+const completedNodeId = computed(() => {
+  const value = Number(route.query.completedNodeId)
+  return Number.isFinite(value) && value > 0 ? value : null
+})
 let timer = 0
 
+const completedNodeIds = computed(() => new Set(
+  store.submissions
+    .filter((item) => item.progressStatus === 'completed')
+    .map((item) => item.nodeId),
+))
+const completedCount = computed(() => completedNodeIds.value.size)
+const totalCount = computed(() => store.currentSession?.nodeStates.length || 0)
+const teacherCurrentNode = computed(() => {
+  const session = store.currentSession
+  if (!session?.currentNodeId) return null
+  return session.nodeStates.find((node) => (node.activityNodeId || node.id) === session.currentNodeId) || null
+})
 const nextNode = computed(() => {
   const nodes = store.currentSession?.nodeStates || []
-  return nodes.find((node) => node.status === 'unlocked' && (node.activityNodeId || node.id) !== lastNodeId.value)
+  const isAvailable = (node: typeof nodes[number]) => {
+    const id = node.activityNodeId || node.id
+    return node.status === 'unlocked'
+      && id !== completedNodeId.value
+      && !completedNodeIds.value.has(id)
+  }
+  if (teacherCurrentNode.value && isAvailable(teacherCurrentNode.value)) {
+    return teacherCurrentNode.value
+  }
+  return nodes.find(isAvailable) || null
 })
 
 async function poll() {
@@ -52,8 +77,16 @@ onBeforeUnmount(() => window.clearInterval(timer))
       </div>
       <h2>{{ store.currentSession?.status === 'paused' ? '老师暂停了课堂' : '当前活动已完成！' }}</h2>
       <p>{{ store.currentSession?.status === 'paused' ? '请先休息一下，恢复后会自动更新。' : '老师正在准备下一环节，开启后将自动进入。' }}</p>
+      <div class="waiting-progress">
+        <span>课堂进度</span>
+        <strong>{{ completedCount }} / {{ totalCount }}</strong>
+        <div><i :style="{ width: `${totalCount ? completedCount / totalCount * 100 : 0}%` }"></i></div>
+      </div>
+      <p class="teacher-current-node">
+        老师当前开启：<strong>{{ teacherCurrentNode?.title || '等待老师开启下一环节' }}</strong>
+      </p>
     </section>
-    <button class="secondary-action" type="button" @click="router.push('/classroom')">查看课堂</button>
+    <button class="secondary-action" type="button" @click="router.push('/classroom')">返回课堂</button>
     <FeedbackToast :message="toast" tone="warning" />
   </main>
 </template>

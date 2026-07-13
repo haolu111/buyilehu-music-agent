@@ -40,7 +40,7 @@ app:
     call-mode: ${PYTHON_CAPABILITY_CALL_MODE:shadow}
     base-url: ${PYTHON_CAPABILITY_BASE_URL:http://localhost:8001}
     connect-timeout-ms: ${PYTHON_CAPABILITY_CONNECT_TIMEOUT_MS:2000}
-    read-timeout-ms: ${PYTHON_CAPABILITY_READ_TIMEOUT_MS:10000}
+    read-timeout-ms: ${PYTHON_CAPABILITY_READ_TIMEOUT_MS:60000}
     node-type-activity-id-mappings:
       entry: lesson_opening_hook
       meter_experience: meter_body_movement

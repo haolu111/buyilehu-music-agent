@@ -5,6 +5,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonRuntimeBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonActivityAssessmentRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageNodeBuildRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityAssessmentResponse;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityPackageBuildResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityHealthResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityRuntimeBuildResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityToolkitsResponse;
@@ -100,6 +105,58 @@ class PythonCapabilityClientTest {
         assertThat(response.isSuccess()).isTrue();
         assertThat(response.getData().getActivityId()).isEqualTo("pitch_game");
         assertThat(response.getData().getRuntime().get("scene").asText()).isEqualTo("ready");
+        server.verify();
+    }
+
+    @Test
+    void shouldPostPackageBuild() {
+        PythonPackageNodeBuildRequest node = new PythonPackageNodeBuildRequest();
+        node.setClientRef("0");
+        node.setActivityId("rhythm_question_answer");
+        PythonPackageBuildRequest request = new PythonPackageBuildRequest();
+        request.setNodes(java.util.Collections.singletonList(node));
+
+        server.expect(once(), requestTo(BASE_URL + "/api/v1/packages/build"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"nodes\":[{\"client_ref\":\"0\",\"activity_id\":\"rhythm_question_answer\",\"composition\":{},\"request\":{}}]}"))
+                .andRespond(withSuccess(
+                        "{\"success\":true,\"data\":{\"schema_version\":\"activity-package.v1\",\"nodes\":[{\"client_ref\":\"0\",\"activity_id\":\"rhythm_question_answer\",\"toolkit\":{},\"composition\":{},\"runtime\":{},\"activity_runtime\":{\"schemaVersion\":\"activity-runtime.v1\",\"renderer\":\"rhythm-drag\"}}]}}",
+                        MediaType.APPLICATION_JSON));
+
+        PythonCapabilityPackageBuildResponse response = client.buildPackage(request);
+        assertThat(response.getData().getSchemaVersion()).isEqualTo("activity-package.v1");
+        assertThat(response.getData().getNodes().get(0).getActivityRuntime().get("renderer").asText())
+                .isEqualTo("rhythm-drag");
+        server.verify();
+    }
+
+    @Test
+    void shouldPostActivityAssessmentAndReadServerScore() {
+        PythonActivityAssessmentRequest request = new PythonActivityAssessmentRequest();
+        request.setActivityId("solfege_test");
+        request.setRenderer("solfege-sort");
+        request.setTitle("唱名排序");
+        request.setResult(java.util.Collections.<String, Object>singletonMap(
+                "sequence", java.util.Arrays.asList("do", "mi", "re", "sol")));
+        Map<String, Object> answerKey = new LinkedHashMap<String, Object>();
+        answerKey.put("sequence", java.util.Arrays.asList("do", "re", "mi", "sol"));
+        Map<String, Object> assessment = new LinkedHashMap<String, Object>();
+        assessment.put("mode", "rule");
+        assessment.put("answerKey", answerKey);
+        request.setAssessment(assessment);
+
+        server.expect(once(), requestTo(BASE_URL + "/api/v1/assessments/grade"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().json("{\"activity_id\":\"solfege_test\",\"renderer\":\"solfege-sort\",\"title\":\"唱名排序\",\"result\":{\"sequence\":[\"do\",\"mi\",\"re\",\"sol\"]},\"assessment\":{\"mode\":\"rule\",\"answerKey\":{\"sequence\":[\"do\",\"re\",\"mi\",\"sol\"]}}}"))
+                .andRespond(withSuccess(
+                        "{\"success\":true,\"data\":{\"score\":50,\"mode\":\"rule\",\"provider\":\"system\",\"feedback\":\"顺序正确 2/4 项。\"}}",
+                        MediaType.APPLICATION_JSON));
+
+        PythonCapabilityAssessmentResponse response = client.assessActivity(request);
+
+        assertThat(response.isSuccess()).isTrue();
+        assertThat(response.getData().get("score").asInt()).isEqualTo(50);
+        assertThat(response.getData().get("provider").asText()).isEqualTo("system");
         server.verify();
     }
 

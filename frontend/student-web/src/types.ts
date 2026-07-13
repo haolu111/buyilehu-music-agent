@@ -39,6 +39,31 @@ export interface ActivityNode {
   status?: 'locked' | 'unlocked'
   unlockedAt?: string
   configJson?: string
+  runtimeConfig?: ActivityRuntimeConfig
+}
+
+export type ActivityRenderer =
+  | 'meter-compare'
+  | 'rhythm-drag'
+  | 'creation-panel'
+  | 'summary'
+  | 'singing-practice'
+  | 'listening-choice'
+  | 'solfege-sort'
+  | 'melody-trace'
+  | 'timbre-match'
+  | 'form-order'
+  | 'virtual-instrument'
+  | 'ensemble-roles'
+  | 'completion'
+
+export interface ActivityRuntimeConfig {
+  schemaVersion: 'activity-runtime.v1'
+  renderer: ActivityRenderer
+  props?: Record<string, unknown>
+  assets?: Array<Record<string, unknown>>
+  assessment?: { resultType?: string; maxScore?: number }
+  mediaSession?: Record<string, unknown> | null
 }
 
 export interface ClassroomSession {
@@ -64,7 +89,6 @@ export interface StudentCurrentClassroom {
 
 export interface NodeSubmitPayload {
   resultType: string
-  score?: number
   durationSeconds?: number
   resultJson?: Record<string, unknown>
 }

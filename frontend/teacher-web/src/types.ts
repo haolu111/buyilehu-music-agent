@@ -61,6 +61,10 @@ export interface GenerationJob {
   progress?: number
   packageId?: number
   versionId?: number
+  designProvider?: string
+  designModel?: string
+  designFallbackReason?: string
+  designTraceId?: string
 }
 
 export interface PackageInfo {
