@@ -1,6 +1,7 @@
 import type { VirtualInstrumentAudioEngine } from "./audioEngine";
 import { getAuditedClassroomAudioAsset } from "./virtualInstrumentCatalog";
 import { ALL_CLASSROOM_SOUNDBANK_BUILD_SPECS } from "./soundbankBuildPlan";
+import { runtimeAssetUrl } from "../../shared/runtimeAssets";
 
 export type SpessaSynthDriver = {
   initialize(soundbankUrl: string, program: number, drum: boolean): Promise<void>;
@@ -51,7 +52,7 @@ export class SpessaSynthEngine implements VirtualInstrumentAudioEngine {
     const driver = await this.createDriver();
     try {
       this.onStage("正在解码 SoundFont");
-      await driver.initialize(asset.primary.path, buildSpec.program, buildSpec.drum);
+      await driver.initialize(runtimeAssetUrl(asset.primary.path), buildSpec.program, buildSpec.drum);
     } catch (error) {
       await driver.destroy().catch(() => undefined);
       throw error;

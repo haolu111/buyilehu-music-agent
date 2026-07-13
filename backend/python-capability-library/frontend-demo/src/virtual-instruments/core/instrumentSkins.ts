@@ -1,4 +1,5 @@
 import manifestData from "../../../../contracts/music/instrument-skin-manifest.v1.json";
+import { runtimeAssetUrl } from "../../shared/runtimeAssets";
 
 export type InstrumentSkinMetadata = {
   instrumentId: string;
@@ -13,12 +14,12 @@ export type InstrumentSkinMetadata = {
 
 export const INSTRUMENT_SKIN_MANIFEST = manifestData.assets as InstrumentSkinMetadata[];
 export const INSTRUMENT_SKIN_URLS: Record<string, string> = {
-  virtual_frame_drum: "/runtime-assets/virtual-instruments/skins/virtual-frame-drum.webp",
-  virtual_snare_drum: "/runtime-assets/virtual-instruments/skins/virtual-snare-drum.webp",
-  virtual_woodblock: "/runtime-assets/virtual-instruments/skins/virtual-woodblock.webp",
-  virtual_shaker: "/runtime-assets/virtual-instruments/skins/virtual-shaker.webp",
-  virtual_triangle: "/runtime-assets/virtual-instruments/skins/virtual-triangle.webp",
-  virtual_tambourine: "/runtime-assets/virtual-instruments/skins/virtual-tambourine.webp",
+  virtual_frame_drum: runtimeAssetUrl("/runtime-assets/virtual-instruments/skins/virtual-frame-drum.webp"),
+  virtual_snare_drum: runtimeAssetUrl("/runtime-assets/virtual-instruments/skins/virtual-snare-drum.webp"),
+  virtual_woodblock: runtimeAssetUrl("/runtime-assets/virtual-instruments/skins/virtual-woodblock.webp"),
+  virtual_shaker: runtimeAssetUrl("/runtime-assets/virtual-instruments/skins/virtual-shaker.webp"),
+  virtual_triangle: runtimeAssetUrl("/runtime-assets/virtual-instruments/skins/virtual-triangle.webp"),
+  virtual_tambourine: runtimeAssetUrl("/runtime-assets/virtual-instruments/skins/virtual-tambourine.webp"),
 };
 
 export function getInstrumentSkinUrl(instrumentId: string): string | null {

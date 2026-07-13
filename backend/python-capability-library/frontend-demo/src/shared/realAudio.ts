@@ -35,13 +35,15 @@ export type SequencePlaybackOptions = {
 
 export const REAL_AUDIO_POLICY_ID = "soundfont_first_hybrid_audio";
 export const PLAYABLE_INSTRUMENT_AUDIO_POLICY_ID = "open_sample_no_oscillator_fallback";
+import { runtimeAssetUrl } from "./runtimeAssets";
+
 export const SOUNDFONT_PLAYER_PATHS = [
-  "/runtime-assets/soundfont-player/soundfont-player.js",
+  runtimeAssetUrl("/runtime-assets/soundfont-player/soundfont-player.js"),
   "/static/assets/soundfont-player/soundfont-player.js",
   "https://cdn.jsdelivr.net/npm/soundfont-player@0.15.7/dist/soundfont-player.js",
   "https://unpkg.com/soundfont-player@0.15.7/dist/soundfont-player.js"
 ];
-export const SOUNDFONT_LOCAL_BASE = "/runtime-assets/midi-js-soundfonts/FluidR3_GM/";
+export const SOUNDFONT_LOCAL_BASE = runtimeAssetUrl("/runtime-assets/midi-js-soundfonts/FluidR3_GM/");
 export const SOUNDFONT_STATIC_BASE = "/static/assets/midi-js-soundfonts/FluidR3_GM/";
 export const SOUNDFONT_EXTERNAL_BASE = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
 

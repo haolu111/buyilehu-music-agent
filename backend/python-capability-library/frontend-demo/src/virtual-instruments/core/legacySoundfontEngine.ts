@@ -1,5 +1,6 @@
 import type { VirtualInstrumentAudioEngine } from "./audioEngine";
 import { getAuditedClassroomAudioAsset } from "./virtualInstrumentCatalog";
+import { runtimeAssetUrl } from "../../shared/runtimeAssets";
 
 type PlayingSample = { stop: () => void };
 type FallbackFormat = "midi-js-mp3" | "legacy-wav-map";
@@ -108,7 +109,7 @@ export class LegacySoundfontEngine implements VirtualInstrumentAudioEngine {
     const asset = getAuditedClassroomAudioAsset(instrumentId);
     if (!asset) throw new Error(`No audited fallback sample map for ${instrumentId}`);
     if (!this.customPlayback && shouldPredecodeFallback(asset.fallback.format)) this.prepareOwnedContext();
-    const sampleMap = parseLegacySampleMap(await this.loadText(asset.fallback.path));
+    const sampleMap = parseLegacySampleMap(await this.loadText(runtimeAssetUrl(asset.fallback.path)));
     this.onStage(`正在载入 ${Object.keys(sampleMap).length} 个后备采样`);
     for (const [noteName, dataUrl] of Object.entries(sampleMap)) this.dataUrls.set(sampleNameToMidi(noteName), dataUrl);
     if (this.decodeDataUrl && this.playBuffer) {

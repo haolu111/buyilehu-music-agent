@@ -21,6 +21,8 @@ htmlcov/
 *.mid
 *.midi
 *.sf2
+!app/static/assets/virtual-instruments/audio/*.sf2
+!frontend-demo/public/runtime-assets/virtual-instruments/audio/*.sf2
 uploads/
 output/
 outputs/

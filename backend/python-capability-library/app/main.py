@@ -18,3 +18,8 @@ app = FastAPI(
 register_exception_handlers(app)
 app.include_router(router)
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
+app.mount(
+    "/runtime-assets",
+    StaticFiles(directory=Path(__file__).parent / "static" / "assets"),
+    name="runtime-assets",
+)
