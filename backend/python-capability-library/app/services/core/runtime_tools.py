@@ -1,3 +1,4 @@
+# 查找并配置本地 FFmpeg
 from __future__ import annotations
 
 import shutil

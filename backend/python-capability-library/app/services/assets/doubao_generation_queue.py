@@ -1,3 +1,4 @@
+# 生成历史豆包生图任务队列
 from __future__ import annotations
 
 from pathlib import Path

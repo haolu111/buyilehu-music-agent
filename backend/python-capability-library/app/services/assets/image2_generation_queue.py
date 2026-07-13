@@ -1,3 +1,4 @@
+# 生成另一套缺失图片、SVG 素材的任务队列
 from __future__ import annotations
 
 from pathlib import Path

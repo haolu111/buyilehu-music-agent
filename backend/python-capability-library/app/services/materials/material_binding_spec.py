@@ -1,3 +1,4 @@
+# 生成某一活动实际的材料绑定结果
 from __future__ import annotations
 
 from copy import deepcopy

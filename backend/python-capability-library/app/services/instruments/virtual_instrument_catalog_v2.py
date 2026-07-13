@@ -1,3 +1,4 @@
+#从版本化 JSON 契约加载第二版虚拟乐器目录和授权信息
 from __future__ import annotations
 
 from copy import deepcopy

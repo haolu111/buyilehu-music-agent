@@ -1,3 +1,4 @@
+# 把解析出的音乐要素转换成模板允许的配置修改
 from __future__ import annotations
 
 from copy import deepcopy

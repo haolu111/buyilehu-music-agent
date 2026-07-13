@@ -1,3 +1,4 @@
+# 管理核心游戏模板实际使用的本地图片素材
 from __future__ import annotations
 
 from copy import deepcopy

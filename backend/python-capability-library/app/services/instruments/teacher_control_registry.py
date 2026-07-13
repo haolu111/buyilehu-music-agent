@@ -1,3 +1,4 @@
+#定义教师端对游戏的控制能力
 from __future__ import annotations
 
 from copy import deepcopy

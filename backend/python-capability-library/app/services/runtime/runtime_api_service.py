@@ -27,7 +27,7 @@ def build_runtime_bundle(
     *,
     activity_id: str | None,
     composition: dict[str, Any] | None,
-    request_payload: dict[str, Any] | None,
+    request: dict[str, Any] | None,
 ) -> dict[str, Any]:
     resolved_activity_id = _resolve_activity_id(activity_id=activity_id, composition=composition)
     activity = get_activity_template(resolved_activity_id)
@@ -37,11 +37,11 @@ def build_runtime_bundle(
         toolkit=toolkit,
         composition=composition,
     )
-    resolved_request = deepcopy(request_payload) if isinstance(request_payload, dict) else {}
+    resolved_request = deepcopy(request) if isinstance(request, dict) else {}
     media_session_preview = _maybe_build_media_session_preview(
         activity_id=resolved_activity_id,
         composition=resolved_composition,
-        request_payload=resolved_request,
+        request=resolved_request,
     )
     runtime = build_primary_music_game_runtime(
         composition=resolved_composition,
@@ -127,13 +127,13 @@ def _maybe_build_media_session_preview(
     *,
     activity_id: str,
     composition: dict[str, Any],
-    request_payload: dict[str, Any],
+    request: dict[str, Any],
 ) -> dict[str, Any] | None:
     if activity_id not in _MEDIA_SESSION_ACTIVITY_IDS:
         return None
     available_materials = (
-        request_payload.get("available_materials")
-        if isinstance(request_payload.get("available_materials"), dict)
+        request.get("available_materials")
+        if isinstance(request.get("available_materials"), dict)
         else {}
     )
     source_url = str(

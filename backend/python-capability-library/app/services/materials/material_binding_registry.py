@@ -1,3 +1,4 @@
+# 定义不同活动如何绑定音乐材料
 from __future__ import annotations
 
 from copy import deepcopy

@@ -1,6 +1,7 @@
 package com.buyilehu.musicagent.domain.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Lob;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,7 +24,7 @@ public class PackageVersion extends BaseEntity {
     @Column(name = "created_by", nullable = false)
     private Long createdBy;
 
-    @Column(name = "snapshot_json", columnDefinition = "TEXT")
+    @Column(name = "snapshot_json", columnDefinition = "MEDIUMTEXT")
     private String snapshotJson;
 
     @Column(length = 255)

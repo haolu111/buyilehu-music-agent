@@ -1,3 +1,4 @@
+# 把某个活动需要的所有能力组合成完整工具包
 from __future__ import annotations
 
 from copy import deepcopy

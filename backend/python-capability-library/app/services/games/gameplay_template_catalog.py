@@ -1,3 +1,4 @@
+# 更偏教学设计层的玩法目录，描述能力目标、音乐实践和所需组件
 from __future__ import annotations
 
 from copy import deepcopy

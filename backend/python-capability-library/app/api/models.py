@@ -37,7 +37,7 @@ class RuntimeBuildRequest(BaseModel):
     )
     request: dict[str, Any] = Field(
         default_factory=dict,
-        description="Existing runtime request payload passed through to build_primary_music_game_runtime(...).",
+        description="Existing runtime request content passed through to build_primary_music_game_runtime(...).",
     )
 
 

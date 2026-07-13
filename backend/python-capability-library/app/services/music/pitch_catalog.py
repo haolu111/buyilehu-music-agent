@@ -1,3 +1,4 @@
+# 统一音高、唱名和 MIDI 编号之间的转换
 from __future__ import annotations
 
 from copy import deepcopy

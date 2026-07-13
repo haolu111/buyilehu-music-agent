@@ -1,3 +1,4 @@
+#校验教学工具规格
 from __future__ import annotations
 
 from copy import deepcopy

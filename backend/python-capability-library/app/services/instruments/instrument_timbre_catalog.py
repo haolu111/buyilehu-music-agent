@@ -1,3 +1,4 @@
+#管理音色定义及真实音色是否已经具备
 from __future__ import annotations
 
 from copy import deepcopy

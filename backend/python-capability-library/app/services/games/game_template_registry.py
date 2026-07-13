@@ -1,3 +1,37 @@
+# 保存正式游戏模板及其默认参数、难度、玩法、计分和反馈规则
+# 这是整个目录中体积很大的文件之一。它定义了多个生产级核心模板，例如：
+
+# beat_guardian_core：节拍守卫；
+# rhythm_echo_core：节奏回声；
+# pitch_ladder_core：音高阶梯；
+# solfege_target_core：唱名打靶；
+# timbre_detective_core：音色侦探；
+# form_treasure_core：曲式寻宝；
+# composition_puzzle_core：创编拼图。
+
+# 每个模板通常包含：
+
+# template_id
+# 模板名称
+# 适用音乐要素
+# 学生操作流程
+# 核心游戏循环
+# 难度维度
+# L1～L5 难度预设
+# 计分权重
+# 反馈文案
+# 默认配置
+# 前端技术栈
+# 支持的皮肤
+
+# 例如 pitch_ladder_core 会定义：
+
+# 可以使用哪些唱名；
+# 每关出现几个音；
+# 是否显示唱名提示；
+# 是否显示方向提示；
+# 判断上行、下行、同音的反馈；
+# 音高、顺序、唱名映射和演唱迁移的评分权重。
 from __future__ import annotations
 
 import math

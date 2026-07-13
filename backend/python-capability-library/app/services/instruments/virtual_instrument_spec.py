@@ -1,3 +1,4 @@
+#校验虚拟乐器规格是否完整合法
 from __future__ import annotations
 
 from copy import deepcopy

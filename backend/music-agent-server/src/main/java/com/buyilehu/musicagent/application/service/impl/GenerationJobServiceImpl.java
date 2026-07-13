@@ -7,6 +7,7 @@ import com.buyilehu.musicagent.application.generator.LessonToPackageGenerator;
 import com.buyilehu.musicagent.application.generator.ProposalCardGenerator;
 import com.buyilehu.musicagent.application.service.ComponentRegistryService;
 import com.buyilehu.musicagent.application.service.GenerationJobService;
+import com.buyilehu.musicagent.application.service.PythonRuntimeIntegrationService;
 import com.buyilehu.musicagent.application.service.MusicValidationService;
 import com.buyilehu.musicagent.application.service.PackageService;
 import com.buyilehu.musicagent.common.exception.BusinessException;
@@ -56,6 +57,7 @@ public class GenerationJobServiceImpl implements GenerationJobService {
     private final PackageService packageService;
     private final LessonToPackageGenerator lessonToPackageGenerator;
     private final ComponentMatcher componentMatcher;
+    private final PythonRuntimeIntegrationService pythonRuntimeIntegrationService;
     private final MusicValidationService musicValidationService;
     private final ProposalCardGenerator proposalCardGenerator;
     private final ComponentRegistryService componentRegistryService;
@@ -73,6 +75,7 @@ public class GenerationJobServiceImpl implements GenerationJobService {
                                     PackageService packageService,
                                     LessonToPackageGenerator lessonToPackageGenerator,
                                     ComponentMatcher componentMatcher,
+                                    PythonRuntimeIntegrationService pythonRuntimeIntegrationService,
                                     MusicValidationService musicValidationService,
                                     ProposalCardGenerator proposalCardGenerator,
                                     ComponentRegistryService componentRegistryService,
@@ -89,6 +92,7 @@ public class GenerationJobServiceImpl implements GenerationJobService {
         this.packageService = packageService;
         this.lessonToPackageGenerator = lessonToPackageGenerator;
         this.componentMatcher = componentMatcher;
+        this.pythonRuntimeIntegrationService = pythonRuntimeIntegrationService;
         this.musicValidationService = musicValidationService;
         this.proposalCardGenerator = proposalCardGenerator;
         this.componentRegistryService = componentRegistryService;
@@ -124,6 +128,7 @@ public class GenerationJobServiceImpl implements GenerationJobService {
 
             ActivityChain chain = lessonToPackageGenerator.generate(parsedLesson, preferences);
             List<ActivityNodeConfig> nodeConfigs = componentMatcher.match(chain, parsedLesson);
+            pythonRuntimeIntegrationService.enrichNodes(parsedLesson, preferences, nodeConfigs);
             QualityCheckResult quality = musicValidationService.validate(chain, nodeConfigs);
 
             InteractivePackage pkg = packageService.createPackage(lessonPlan, parsedLesson, job.getId());

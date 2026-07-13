@@ -1,3 +1,4 @@
+# 定义教案材料实体的数据结构，并从教案文本中识别材料
 from __future__ import annotations
 
 import re

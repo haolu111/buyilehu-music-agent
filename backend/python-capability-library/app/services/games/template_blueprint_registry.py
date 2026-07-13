@@ -1,3 +1,4 @@
+# 定义游戏的稳定“骨架”，例如核心循环、HUD、交互方式、镜头和迁移任务
 from __future__ import annotations
 
 from copy import deepcopy

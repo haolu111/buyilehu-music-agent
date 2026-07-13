@@ -1,3 +1,4 @@
+# 检查素材清单中登记的文件是否真的存在
 from __future__ import annotations
 
 from pathlib import Path

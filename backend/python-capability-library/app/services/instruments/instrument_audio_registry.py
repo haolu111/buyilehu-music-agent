@@ -1,3 +1,4 @@
+#管理乐器音频包、SoundFont、WebAudio 和真实采样状态
 from __future__ import annotations
 
 from copy import deepcopy

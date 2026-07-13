@@ -1,3 +1,4 @@
+# 把具体素材包转换成可供不同活动复用的素材模板
 from __future__ import annotations
 
 from copy import deepcopy

@@ -1,3 +1,4 @@
+#构建课堂音乐播放会话和标准化乐谱时间线
 from __future__ import annotations
 
 from copy import deepcopy

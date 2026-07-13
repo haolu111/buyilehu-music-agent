@@ -1,3 +1,4 @@
+# 验证豆包生成的 PNG 是否符合尺寸和比例要求
 from __future__ import annotations
 
 import json

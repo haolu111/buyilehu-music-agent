@@ -1,3 +1,4 @@
+#保存数字教学工具，例如节拍板、旋律线、指法板
 from __future__ import annotations
 
 from copy import deepcopy

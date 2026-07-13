@@ -1,4 +1,5 @@
 # 定义课堂中可以进行的自适应调整，例如降低难度、减少卡片、增加提示
+
 from __future__ import annotations
 
 from copy import deepcopy

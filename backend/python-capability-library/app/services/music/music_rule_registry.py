@@ -1,3 +1,4 @@
+# 保存并执行节奏、拍号、旋律、音高等音乐规则  
 from __future__ import annotations
 
 from copy import deepcopy

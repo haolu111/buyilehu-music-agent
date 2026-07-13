@@ -1,3 +1,15 @@
+# 根据教案音乐要素和活动机制，自动选择最合适的核心游戏模板
+# 这是自动选游戏的核心。
+
+# resolve_auto_template_match() 会综合考虑：
+
+# 教案中出现的音乐要素；
+# 已解析出的材料实体；
+# 教学目标；
+# 学生行为；
+# 推荐的交互机制；
+# 模板支持范围；
+# 当前是否缺少关键材料。
 from __future__ import annotations
 
 from copy import deepcopy

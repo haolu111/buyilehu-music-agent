@@ -1,3 +1,4 @@
+# 检查活动是否符合音乐教育目标和年级要求
 from __future__ import annotations
 
 from copy import deepcopy

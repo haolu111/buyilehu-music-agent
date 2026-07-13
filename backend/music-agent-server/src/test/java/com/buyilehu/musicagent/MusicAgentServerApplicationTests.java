@@ -254,3 +254,5 @@ class MusicAgentServerApplicationTests {
         return objectMapper.readTree(loginResponse).path("data").path("token").asText();
     }
 }
+
+

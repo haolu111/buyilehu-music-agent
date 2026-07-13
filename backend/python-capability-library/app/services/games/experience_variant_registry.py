@@ -1,3 +1,4 @@
+# 给同一个游戏骨架添加不同皮肤、场景和体验方式
 from __future__ import annotations
 
 from copy import deepcopy

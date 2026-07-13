@@ -1,3 +1,5 @@
+# 把教师自然语言修改要求转成安全、可执行的模板修改指令
+# 它强调模型只能提出修改意图，真正是否允许修改，要由本地规则和模板约束决定；代码中也明确禁止通过修改指令直接“重写网页”。
 from __future__ import annotations
 
 from copy import deepcopy

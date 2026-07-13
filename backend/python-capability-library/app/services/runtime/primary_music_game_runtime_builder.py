@@ -1,3 +1,4 @@
+# 把活动组合结果转换成学生端可以直接运行的状态数据
 from __future__ import annotations
 
 from copy import deepcopy

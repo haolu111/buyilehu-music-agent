@@ -1,3 +1,4 @@
+# 基于核心模板生成某一节课专属的游戏实例规格
 from __future__ import annotations
 
 from copy import deepcopy

@@ -1,3 +1,4 @@
+#使用 FFmpeg 处理变速、移调和缓存文件
 from __future__ import annotations
 
 import hashlib

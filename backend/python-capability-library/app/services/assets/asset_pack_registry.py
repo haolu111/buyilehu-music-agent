@@ -1,3 +1,4 @@
+# 保存素材包清单、来源、生成提示词和真实性要求
 from __future__ import annotations
 
 from copy import deepcopy

@@ -1,3 +1,4 @@
+# 从教案文字和已上传材料中解析节拍、节奏、音高、唱名、音色、曲式等候选参数
 from __future__ import annotations
 
 from copy import deepcopy

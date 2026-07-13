@@ -45,7 +45,7 @@ def build_runtime(payload: RuntimeBuildRequest) -> RuntimeBuildResponse:
         result = build_runtime_bundle(
             activity_id=payload.activity_id,
             composition=payload.composition,
-            request_payload=payload.request,
+            request=payload.request,
         )
     except ValueError as exc:
         raise _translate_value_error(exc) from exc

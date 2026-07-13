@@ -1,3 +1,4 @@
+# 在教师没有上传具体材料时，提供默认练习素材
 from __future__ import annotations
 
 from copy import deepcopy

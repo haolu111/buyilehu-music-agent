@@ -1,3 +1,20 @@
+# 根据当前教案，对模板中允许修改的内容进行个性化
+# lesson_template_personalizer.py
+
+# 这个文件允许模型参与个性化，但对模型输出进行限制。
+
+# build_template_instance_patch()：
+
+# 有模型配置时，可以调用模型生成个性化建议；
+# 没有模型时，使用本地规则生成；
+# 只生成当前模板允许修改的字段。
+
+# sanitize_template_instance_patch()：
+
+# 删除非法字段；
+# 禁止修改模板骨架；
+# 禁止模型随意增加前端页面；
+# 保证参数仍符合模板约束。
 from __future__ import annotations
 
 from copy import deepcopy
