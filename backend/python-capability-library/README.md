@@ -1,11 +1,13 @@
 # Music Agent Python Capability Library
 
-该目录是从“第一版”项目中独立整理出的后端能力组件库，不包含 Vue 页面、前端演示、生成页面、上传文件、运行缓存、数据库、密钥或个人数据。
+该目录是从“第一版”项目中独立整理出的后端能力组件库。除 `frontend-demo/` 中两个指定审核界面外，不包含其他页面或前端演示，也不包含上传文件、运行缓存、数据库、密钥或个人数据。
 
 ## 内容
 
 - `app/services/`：音乐课堂活动、组件注册、教学材料绑定、音乐规则、音高与音色、虚拟乐器、课堂套件及媒体处理能力。
+- `app/static/assets/`：能力注册表和游戏模板通过 `/static/assets/` URL 使用的本地图片资源。
 - `contracts/music/`：组件运行所需的版本化音乐数据契约。
+- `frontend-demo/`：音乐教育能力审核与虚拟乐器审核两个独立演示页面。
 
 ## 使用
 
@@ -26,6 +28,16 @@ from app.services.public_api import (
 ```
 
 部分媒体处理能力需要系统中可用的 FFmpeg。模型调用能力只读取运行环境变量，不在仓库中保存凭据。
+
+## 前端演示
+
+```bash
+cd frontend-demo
+npm ci
+npm run dev
+```
+
+浏览器打开 `http://127.0.0.1:5173/music-education-review.html` 或 `http://127.0.0.1:5173/virtual-instrument-review.html`。
 
 ## 数据边界
 
