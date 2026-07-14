@@ -1,0 +1,105 @@
+{
+  "version": "instrument_skin_manifest_v1",
+  "provider": "image2",
+  "model": "gpt-image-2",
+  "sourceFormat": "png",
+  "runtimeFormat": "webp",
+  "alphaVerified": true,
+  "touchZonesLockedBeforeGeneration": true,
+  "professionalApproval": "pending_music_educator_review",
+  "assets": [
+    {
+      "instrumentId": "virtual_frame_drum",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-frame-drum.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 84, "y": 96, "width": 861, "height": 855 },
+      "visualCenter": { "x": 0.5024, "y": 0.5112 },
+      "safePadding": 0.04,
+      "sha256": "d677d385a85a191f43f0e572cf4a7ce41cb4b6484e2971a7f2db14eb80424a05",
+      "sizeBytes": 156030
+    },
+    {
+      "instrumentId": "virtual_snare_drum",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-snare-drum.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 124, "y": 120, "width": 789, "height": 871 },
+      "visualCenter": { "x": 0.5063, "y": 0.5425 },
+      "safePadding": 0.04,
+      "sha256": "129e22be1c201668de5c098174890ff5ef24ec144b05ac3ff12bbd20109c3757",
+      "sizeBytes": 159656
+    },
+    {
+      "instrumentId": "virtual_woodblock",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-woodblock.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 40, "y": 350, "width": 951, "height": 300 },
+      "visualCenter": { "x": 0.5034, "y": 0.4883 },
+      "safePadding": 0.03,
+      "sha256": "8e1301937d41464f068d9266ab8bbc153e16c2f7f1eb715f14e354a0a57808f5",
+      "sizeBytes": 118114
+    },
+    {
+      "instrumentId": "virtual_shaker",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-shaker.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 268, "y": 136, "width": 519, "height": 777 },
+      "visualCenter": { "x": 0.5151, "y": 0.5122 },
+      "safePadding": 0.04,
+      "sha256": "3d90bc011a382b32fa568fbff75096497d7b79a2f737ebc464048111da7b5025",
+      "sizeBytes": 95666
+    },
+    {
+      "instrumentId": "virtual_triangle",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-triangle.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 188, "y": 88, "width": 697, "height": 878 },
+      "visualCenter": { "x": 0.5239, "y": 0.5146 },
+      "safePadding": 0.04,
+      "sha256": "94fc071579e27f7455e46d349fcb05c0364058eeb1ed4ddcb0dfdc6f51ef2458",
+      "sizeBytes": 88564
+    },
+    {
+      "instrumentId": "virtual_tambourine",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-tambourine.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 120, "y": 129, "width": 787, "height": 806 },
+      "visualCenter": { "x": 0.5015, "y": 0.5195 },
+      "safePadding": 0.04,
+      "sha256": "2e8442bd13fbf3f886262305089260a6785f9273e717d37d4736dff5c086d74c",
+      "sizeBytes": 157486
+    },
+    {
+      "instrumentId": "virtual_xylophone",
+      "assetRole": "chassis",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-xylophone-chassis.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 40, "y": 183, "width": 952, "height": 635 },
+      "visualCenter": { "x": 0.5039, "y": 0.4888 },
+      "safePadding": 0.02,
+      "sha256": "a97ae4ef1925df8bac3d3ca7f052e75143dcf2c8b6afee4039614d8d0a24b4c4",
+      "sizeBytes": 145930
+    },
+    {
+      "instrumentId": "virtual_marimba",
+      "assetRole": "chassis",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-marimba-chassis.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 32, "y": 304, "width": 976, "height": 631 },
+      "visualCenter": { "x": 0.5078, "y": 0.6050 },
+      "safePadding": 0.02,
+      "sha256": "b387bcb87431e84eecd4429669977ca9d215f932d976b85e49ac1ff59120add6",
+      "sizeBytes": 126434
+    },
+    {
+      "instrumentId": "virtual_glockenspiel",
+      "assetRole": "chassis",
+      "path": "/runtime-assets/virtual-instruments/skins/virtual-glockenspiel-chassis.webp",
+      "canvas": { "width": 1024, "height": 1024 },
+      "contentBounds": { "x": 26, "y": 152, "width": 974, "height": 738 },
+      "visualCenter": { "x": 0.5010, "y": 0.5088 },
+      "safePadding": 0.02,
+      "sha256": "d012a768bde93969e32eee6190c18329c04a33b9542f57f70cf8c7c8497d98c9",
+      "sizeBytes": 114804
+    }
+  ]
+}

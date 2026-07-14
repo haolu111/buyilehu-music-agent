@@ -1,0 +1,12 @@
+{
+  "results": [
+    {
+      "status": "generated",
+      "asset_pack_id": "generated_playable_instrument_pack",
+      "asset_id": "flute_playable_board",
+      "path": "/Users/shishangbo/codex/第一版/app/static/assets/primary-asset-packs/generated_playable_instrument_pack/images/flute_playable_board.png",
+      "bytes": 919493,
+      "revised_prompt": "Create a stylized concept asset for a primary school music classroom H5 activity: exactly one playable Western flute skin / performance board, centered and large, isolated on a clean bright background with generous whitespace. The flute should be a realistic silver metal concert flute with clearly visible keys, polished but child-friendly, crisp edges, suitable for touch interaction and later click-zone mapping. Composition must contain only one instrument, no other instruments, no tiles, no collage, no contact sheet, no text, no logo, no watermark. Do not resemble a recorder or bamboo flute; make it unmistakably a Western flute. Bright, clean, realistic classroom illustration asset, simple uncluttered background, projection-friendly."
+    }
+  ]
+}

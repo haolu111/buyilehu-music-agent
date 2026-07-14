@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="音高徽章">
+  <circle cx="80" cy="80" r="72" fill="#eaf4ff"/>
+  <path d="M34 104c32-46 54-54 92-34" fill="none" stroke="#2a6fbb" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="42" cy="104" r="14" fill="#fff8e7" stroke="#173b35" stroke-width="6"/>
+  <circle cx="118" cy="70" r="14" fill="#f7c948" stroke="#173b35" stroke-width="6"/>
+  <text x="54" y="134" fill="#173b35" font-size="24" font-weight="700" font-family="Arial, sans-serif">sol-mi</text>
+</svg>

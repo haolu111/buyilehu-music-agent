@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 360" role="img" aria-labelledby="title desc">
+  <title id="title">不亦乐乎 音乐课堂游戏智能体</title>
+  <desc id="desc">透明背景的可爱风格标题图，主标题采用微微起伏的艺术字排布，副标题为较小字号。</desc>
+  <defs>
+    <linearGradient id="mainFill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff9b87"/>
+      <stop offset="50%" stop-color="#ff7fb2"/>
+      <stop offset="100%" stop-color="#ffca63"/>
+    </linearGradient>
+    <linearGradient id="subFill" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#285a4d"/>
+      <stop offset="100%" stop-color="#3d8f7d"/>
+    </linearGradient>
+    <style>
+      .main {
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        font-size: 150px;
+        font-weight: 900;
+        fill: url(#mainFill);
+        stroke: #fff9f3;
+        stroke-width: 12px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;
+      }
+
+      .sub {
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        font-size: 58px;
+        font-weight: 800;
+        fill: url(#subFill);
+        stroke: #fffaf4;
+        stroke-width: 6px;
+        stroke-linejoin: round;
+        paint-order: stroke fill;
+      }
+
+      .spark {
+        fill: #ffd45f;
+      }
+
+      .bubble {
+        fill: #fff7ef;
+        opacity: 0.86;
+      }
+    </style>
+  </defs>
+
+  <circle class="bubble" cx="110" cy="84" r="14"/>
+  <circle class="bubble" cx="1030" cy="70" r="18"/>
+  <circle class="bubble" cx="1092" cy="160" r="11"/>
+
+  <path class="spark" d="M104 34l9 19 20 3-15 13 4 20-18-10-18 10 4-20-15-13 20-3z"/>
+  <path class="spark" d="M988 30l8 16 17 2-12 11 3 17-16-8-15 8 3-17-12-11 17-2z"/>
+
+  <text class="main" x="50" y="154" transform="rotate(-7 128 154)">不</text>
+  <text class="main" x="234" y="140" transform="rotate(-3 312 140)">亦</text>
+  <text class="main" x="418" y="156" transform="rotate(4 496 156)">乐</text>
+  <text class="main" x="610" y="140" transform="rotate(7 688 140)">乎</text>
+
+  <g>
+    <text class="sub" x="62" y="256">音</text>
+    <text class="sub" x="136" y="266">乐</text>
+    <text class="sub" x="214" y="254">课</text>
+    <text class="sub" x="292" y="266">堂</text>
+    <text class="sub" x="374" y="254">游</text>
+    <text class="sub" x="452" y="266">戏</text>
+    <text class="sub" x="536" y="254">智</text>
+    <text class="sub" x="614" y="266">能</text>
+    <text class="sub" x="692" y="254">体</text>
+  </g>
+
+  <g transform="translate(880 138) rotate(-10)">
+    <circle cx="0" cy="0" r="15" fill="#2f6f5f"/>
+    <rect x="10" y="-70" width="10" height="80" rx="5" fill="#2f6f5f"/>
+    <path d="M18 -64c26 7 42 20 42 38 0 17-12 28-30 28-5 0-11-1-16-4z" fill="#ffc65d"/>
+  </g>
+
+  <g transform="translate(968 178) rotate(9)">
+    <circle cx="0" cy="0" r="12" fill="#ff7fa3"/>
+    <rect x="9" y="-54" width="8" height="62" rx="4" fill="#ff7fa3"/>
+    <path d="M16 -50c22 6 35 16 35 30 0 13-10 22-24 22-5 0-9-1-13-3z" fill="#2f6f5f"/>
+  </g>
+
+  <circle cx="804" cy="224" r="7" fill="#ff9b87"/>
+  <circle cx="844" cy="214" r="6" fill="#ffd45f"/>
+  <circle cx="886" cy="224" r="7" fill="#ff7fb2"/>
+</svg>

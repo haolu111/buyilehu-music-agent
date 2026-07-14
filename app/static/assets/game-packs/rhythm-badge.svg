@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="节奏徽章">
+  <circle cx="80" cy="80" r="72" fill="#fff3c7"/>
+  <circle cx="80" cy="80" r="54" fill="#ff7b54"/>
+  <path d="M52 82h56M80 54v56" stroke="#fff8e7" stroke-width="12" stroke-linecap="round"/>
+  <path d="M35 125c28 20 62 20 90 0" fill="none" stroke="#22534a" stroke-width="8" stroke-linecap="round"/>
+</svg>

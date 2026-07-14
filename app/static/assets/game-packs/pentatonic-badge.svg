@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="五声徽章">
+  <circle cx="80" cy="80" r="72" fill="#fff1ec"/>
+  <g fill="#173b35" font-size="22" font-weight="800" font-family="Arial, sans-serif">
+    <text x="28" y="64">宫</text><text x="70" y="64">商</text><text x="112" y="64">角</text>
+    <text x="50" y="106">徵</text><text x="92" y="106">羽</text>
+  </g>
+  <path d="M28 126c34-28 70-28 104 0" fill="none" stroke="#d95d39" stroke-width="8" stroke-linecap="round"/>
+</svg>

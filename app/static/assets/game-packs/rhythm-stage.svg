@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="节奏游戏插图">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff3c7"/>
+      <stop offset="1" stop-color="#bfead7"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" rx="34" fill="url(#bg)"/>
+  <path d="M64 318c74-64 142-64 204 0s130 64 204 0" fill="none" stroke="#22534a" stroke-width="14" stroke-linecap="round"/>
+  <g transform="translate(76 102)">
+    <circle cx="78" cy="78" r="58" fill="#ff7b54"/>
+    <circle cx="78" cy="78" r="34" fill="#fff8e7"/>
+    <path d="M44 78h68M78 44v68" stroke="#22534a" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(252 72)">
+    <rect x="0" y="42" width="138" height="116" rx="28" fill="#2f8f83"/>
+    <circle cx="42" cy="96" r="18" fill="#fff8e7"/>
+    <circle cx="96" cy="96" r="18" fill="#fff8e7"/>
+    <path d="M43 128c23 18 54 18 76 0" fill="none" stroke="#173b35" stroke-width="8" stroke-linecap="round"/>
+    <path d="M28 42c6-28 38-38 64-18 27-20 62-10 68 18" fill="none" stroke="#173b35" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(454 120)">
+    <path d="M70 0v162" stroke="#173b35" stroke-width="12" stroke-linecap="round"/>
+    <path d="M70 14c-40 8-58 40-52 76 18-22 42-28 82-20z" fill="#f7c948"/>
+    <circle cx="70" cy="188" r="34" fill="#4464ad"/>
+  </g>
+  <g fill="#173b35" font-family="Arial, sans-serif" font-weight="700">
+    <text x="86" y="372" font-size="28">1拍</text>
+    <text x="286" y="372" font-size="28">听</text>
+    <text x="486" y="372" font-size="28">拍</text>
+  </g>
+</svg>

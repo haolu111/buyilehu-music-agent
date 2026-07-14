@@ -1,0 +1,5 @@
+services:
+  music-education-review:
+    build: .
+    ports:
+      - "8000:8000"

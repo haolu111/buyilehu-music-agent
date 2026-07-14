@@ -1,0 +1,518 @@
+{
+  "version": "browser_smoke_report_v2",
+  "targets": [
+    "/template-console/primary-activity-preview.html",
+    "/template-console/primary-library.html",
+    "/template-console/instrument-family-preview.html",
+    "/template-console/lyrics-rhythm-preview.html",
+    "/template-console/strong-weak-beat-preview.html",
+    "/template-console/steady-beat-walk-preview.html",
+    "/template-console/listening-choice-preview.html",
+    "/template-console/lesson-opening-preview.html",
+    "/template-console/rhythm-question-preview.html",
+    "/template-console/theme-return-action-preview.html",
+    "/template-console/graphic-score-preview.html",
+    "/template-console/exit-ticket-preview.html",
+    "/template-console/phrase-singing-preview.html",
+    "/template-console/solfege-echo-preview.html",
+    "/template-console/melody-contour-preview.html",
+    "/template-console/simple-score-preview.html",
+    "/template-console/pentatonic-melody-preview.html",
+    "/template-console/phrase-singing-preview.html",
+    "/template-console/orff-ensemble-preview.html",
+    "/template-console/body-percussion-preview.html",
+    "/template-console/group-relay-preview.html",
+    "/template-console/peer-feedback-preview.html"
+  ],
+  "checked_at": "2026-06-21T23:40:09.610Z",
+  "status": "pass",
+  "viewports": [
+    {
+      "target": "primary-activity",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "小学节奏热身",
+      "root_children": 1,
+      "teacher_control_visible": true,
+      "rhythm_pad_visible": true,
+      "tap_feedback_after_click": "教师控制速度92拍号2/4遍数2小学低段/中段rhythm_warmup小学节奏热身节奏卡、节拍器、拍击反馈和虚拟节奏垫合在一个活动里。1. 听节拍2. 读节奏3. 拍回来4. 换动作节拍播放器92 BPM播放稳已敲 1 次100 分节拍轨道小节、拍点、休止一屏看清1-1ta1-2ti-ti2-1休2-2ta3-1ta3-2ti-ti4-1休4-2ta节奏卡片可投屏，可替代实体节奏卡rhythm_cardsta拍手ti-ti拍腿sh停住ta拍手敲击rhythm_pad 虚拟乐器已落地教具rhythm_cardsmeter_tracktap_feedbackrhythm_pad稳定拍检查稳定拍记录1 次目标间隔652 ms平均间隔-- ms平均偏差-- ms至少记录 3 次拍点，再判断稳定拍。教师提示先让全班读 ta / ti-ti / sh，再分组拍。换成拍肩、跺脚、拍腿时，不需要换实体卡。",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "primary-library",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "音乐课堂活动库",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "instrument-family",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "乐器家族分类",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "lyrics-rhythm",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "歌词节奏",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "strong-weak-beat",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "强弱拍律动",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "steady-beat-walk",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "稳定拍行走",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "listening-choice",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "听赏情绪选择",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "lesson-opening",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "课堂导入钩子",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "rhythm-question",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "节奏问答",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "theme-return-action",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "主题再现动作",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "graphic-score",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "图形谱创编",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "exit-ticket",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "课堂出口票",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "phrase-singing",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "乐句学唱",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "solfege-echo",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "唱名回声",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "melody-contour",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "旋律线描一描",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "simple-score",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "简谱跟读",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "pentatonic-melody",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "五声音条琴创编",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "phrase-difficult-repair",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "乐句学唱",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "orff-ensemble",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "奥尔夫打击乐合奏",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "body-percussion",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "身体打击编排",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "group-relay",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "小组接力展示",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    },
+    {
+      "target": "peer-feedback",
+      "name": "desktop",
+      "viewport": {
+        "width": 1366,
+        "height": 900,
+        "mobile": false
+      },
+      "h1": "展示与同伴评价",
+      "root_children": 1,
+      "teacher_control_visible": false,
+      "rhythm_pad_visible": false,
+      "tap_feedback_after_click": "",
+      "horizontal_overflow": false,
+      "failures": []
+    }
+  ],
+  "console_errors": [],
+  "screenshots": [
+    {
+      "target": "primary-activity",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/primary-activity-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "primary-library",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/primary-library-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "instrument-family",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/instrument-family-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "lyrics-rhythm",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/lyrics-rhythm-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "strong-weak-beat",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/strong-weak-beat-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "steady-beat-walk",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/steady-beat-walk-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "listening-choice",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/listening-choice-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "lesson-opening",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/lesson-opening-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "rhythm-question",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/rhythm-question-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "theme-return-action",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/theme-return-action-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "graphic-score",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/graphic-score-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "exit-ticket",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/exit-ticket-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "phrase-singing",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/phrase-singing-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "solfege-echo",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/solfege-echo-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "melody-contour",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/melody-contour-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "simple-score",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/simple-score-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "pentatonic-melody",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/pentatonic-melody-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "phrase-difficult-repair",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/phrase-difficult-repair-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "orff-ensemble",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/orff-ensemble-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "body-percussion",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/body-percussion-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "group-relay",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/group-relay-desktop.png",
+      "status": "captured"
+    },
+    {
+      "target": "peer-feedback",
+      "viewport": "desktop",
+      "path": "frontend/tests/browser-snapshots/peer-feedback-desktop.png",
+      "status": "captured"
+    }
+  ]
+}

@@ -1,1 +1,0 @@
-"""Student activity assessment services."""

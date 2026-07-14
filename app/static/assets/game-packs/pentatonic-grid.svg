@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="五声宫格插图">
+  <rect width="640" height="420" rx="34" fill="#fff1ec"/>
+  <g transform="translate(120 58)" stroke="#173b35" stroke-width="7">
+    <rect width="400" height="280" rx="26" fill="#ffffff"/>
+    <path d="M80 0v280M160 0v280M240 0v280M320 0v280M0 140h400" opacity=".32"/>
+    <g font-family="Arial, sans-serif" font-size="34" font-weight="800" fill="#173b35" stroke="none">
+      <text x="26" y="88">宫</text>
+      <text x="106" y="88">商</text>
+      <text x="186" y="88">角</text>
+      <text x="266" y="88">徵</text>
+      <text x="346" y="88">羽</text>
+    </g>
+    <path d="M42 208c46-54 100-54 150 0s108 54 166 0" fill="none" stroke="#d95d39" stroke-width="12" stroke-linecap="round"/>
+  </g>
+  <text x="198" y="374" fill="#173b35" font-size="28" font-weight="700" font-family="Arial, sans-serif">拼出民族旋律</text>
+</svg>

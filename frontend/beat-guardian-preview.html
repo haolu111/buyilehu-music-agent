@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>节拍守卫学生游戏预览</title>
+  </head>
+  <body>
+    <div id="student-game-root"></div>
+    <script>
+      const assetRoot = "/template-console/static/assets/game-packs/节拍守卫";
+      const extractedRoot = `${assetRoot}/extracted`;
+      window.__STUDENT_GAME_STATE__ = {
+        workflow: {
+          workflow_kind: "direct_game",
+          gameplay_blueprint: {
+            student_facing_name: "充能护盾",
+            prompt: "听清稳定拍，在每小节第 1 拍同步充能。",
+            scene_goal: "预判强拍，维持护盾。"
+          },
+          experience_script: {
+            progression: [{ emotion: "稳定预备", reward: "护盾徽章" }]
+          },
+          theme_pack: {
+            reward_token: "护盾徽章",
+            scene_goal: "预判强拍，维持护盾。"
+          }
+        },
+        instance: {
+          template_label: "充能护盾",
+          student_task: {
+            listen: "听什么：听清稳定拍和第 1 拍重音周期。",
+            do: "做什么：第 1 拍同步充能，用震波弹开靠近的怪物。",
+            pass: "怎样过关：清掉全部弱拍怪物，别让护盾裂开。"
+          }
+        },
+        template_id: "beat_guardian_core",
+        config: {
+          template_id: "beat_guardian_core",
+          engine: "phaser_2d",
+          scene_id: "beat_guardian_scene",
+          game_genre: "arcade_guardian",
+          runtime_shell: "beat_guardian_shell",
+          camera_profile: "side_guard_lane",
+          hud_model: "energy_combo_target",
+          interaction_model: "predict_downbeat_charge",
+          cartoon_role: "护盾充能员",
+          distinctiveness_tags: ["护盾充能", "强拍预判", "弱拍蓄势", "周期延伸"],
+          student_ui_mode: "game_first",
+          age_ui_profile: "lower_primary",
+          mode: "strong_beat_guard",
+          skin_id: "castle_gate",
+          skin_play_mode: "gate",
+          skin_objective: "维持护盾",
+          reward_animation: "shield_wave",
+          meter: "2/4",
+          beats_per_bar: 2,
+          bpm: 86,
+          target_beats: [1],
+          round_length_beats: 16,
+          mission_duration_bars: 8,
+          count_in_beats: 4,
+          required_combo: 6,
+          max_mistakes: 5,
+          energy_max: 100,
+          energy_loss_per_miss: 24,
+          combo_milestones: [3, 6, 8],
+          judgement_windows: { perfect_ms: 70, good_ms: 150, late_ms: 260 },
+          input_map: { primary: "Space", pointer: true },
+          fx_profile: { hit: "burst", miss: "shake", success: "skin_objective_finish" },
+          score_model: { perfect: 120, good: 80, wrong: -40, missed: -60 },
+          arcade_hud: true,
+          show_teacher_text_in_play: false,
+          show_beat_track: true,
+          show_strong_beat_hint: true,
+          show_weak_beat_hint: false,
+          visual_beat_hint: true,
+          timing_tolerance_ms: 205,
+          audio_mode: "hybrid",
+          strong_beat_sound: "low_drum",
+          weak_beat_sound: "wood_tick",
+          beat_sound_profile: {
+            strong: { wave: "sine", frequency: 196, duration_ms: 110, gain: 0.28 },
+            weak: { wave: "triangle", frequency: 392, duration_ms: 72, gain: 0.12 }
+          },
+          asset_manifest: {
+            background: `${assetRoot}/background.png`,
+            mission_board: "/template-console/static/assets/game-packs/mission-board.svg",
+            mission_badge: "/template-console/static/assets/game-packs/mission-badge.svg",
+            poses: {
+              idle: `${extractedRoot}/pose-01-idle.png`,
+              action: `${extractedRoot}/pose-02-action.png`,
+              miss: `${extractedRoot}/pose-03-miss.png`,
+              win: `${extractedRoot}/pose-04-win.png`
+            },
+            props: Array.from({ length: 12 }, (_, index) => `${extractedRoot}/prop-${String(index + 1).padStart(2, "0")}.png`),
+            rewards: Array.from({ length: 12 }, (_, index) => `${extractedRoot}/ui-${String(index + 1).padStart(2, "0")}.png`),
+            sourcePack: "节拍守卫",
+            license: "local_generated_assets"
+          },
+          lesson_audio_sync: {},
+          minimal_hud: true,
+          student_task_copy: {
+            listen: "听什么：听清稳定拍和第 1 拍重音周期。",
+            do: "做什么：第 1 拍同步充能，用震波弹开靠近的怪物。",
+            pass: "怎样过关：清掉全部弱拍怪物，别让护盾裂开。"
+          },
+          music_reason_prompts: {
+            early: "抢拍了：你比拍点早了一点。",
+            late: "拖拍了：你听到后才按，护盾已经开始放大。",
+            wrong_position: "弱拍先蓄住：等护盾缩到最小的强拍瞬间。",
+            missing: "漏充了：第 1 拍过去了，下一小节提前准备。",
+            success: "怪物清场：说出你怎么预判第 1 拍。"
+          },
+          result_transfer_prompt: "回到歌曲里，用身体律动预判每小节第 1 拍。"
+        }
+      };
+    </script>
+    <script type="module" src="/src/student-main.tsx"></script>
+  </body>
+</html>

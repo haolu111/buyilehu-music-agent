@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="音色侦探插图">
+  <rect width="640" height="420" rx="34" fill="#eef7f0"/>
+  <g transform="translate(110 76)">
+    <circle cx="98" cy="98" r="72" fill="#f7c948"/>
+    <path d="M144 144l70 70" stroke="#173b35" stroke-width="18" stroke-linecap="round"/>
+    <circle cx="98" cy="98" r="46" fill="none" stroke="#173b35" stroke-width="12"/>
+  </g>
+  <g transform="translate(356 96)" fill="#ffffff" stroke="#173b35" stroke-width="8">
+    <rect x="0" y="0" width="160" height="88" rx="20"/>
+    <rect x="26" y="126" width="160" height="88" rx="20"/>
+  </g>
+  <path d="M394 142c20-30 42-30 62 0M420 222c24-20 48-20 72 0" fill="none" stroke="#2f8f83" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="418" cy="138" r="10" fill="#ff7b54"/>
+  <circle cx="474" cy="218" r="10" fill="#4464ad"/>
+  <text x="96" y="350" fill="#173b35" font-size="30" font-weight="700" font-family="Arial, sans-serif">听声音，找证据</text>
+</svg>

@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.buyilehu.musicagent.MusicAgentServerApplicationTests
--------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 23.979 s - in com.buyilehu.musicagent.MusicAgentServerApplicationTests

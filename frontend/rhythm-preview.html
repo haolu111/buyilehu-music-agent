@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>节奏复刻预览</title>
+  </head>
+  <body>
+    <div id="student-game-root"></div>
+    <script>
+      if (window.location.protocol === "file:") {
+        window.location.replace("http://127.0.0.1:5173/template-console/rhythm-preview.html");
+      }
+      const assetRoot = "http://127.0.0.1:8011/static/assets/game-packs/节奏复刻";
+      window.__STUDENT_GAME_STATE__ = {
+        workflow: { workflow_kind: "direct_game" },
+        instance: { template_label: "节奏复刻" },
+        template_id: "rhythm_echo_core",
+        config: {
+          template_id: "rhythm_echo_core",
+          engine: "phaser_2d",
+          scene_id: "rhythm_echo_scene",
+          runtime_shell: "rhythm_echo_shell",
+          hud_model: "demo_record_accuracy",
+          game_genre: "memory_echo",
+          skin_id: "rhythm_radio",
+          skin_play_mode: "radio",
+          student_ui_mode: "game_first",
+          audio_mode: "hybrid",
+          bpm: 92,
+          round_count: 3,
+          required_accuracy: 0.8,
+          energy_max: 100,
+          pattern_steps: ["quarter", "eighth_pair", "rest", "quarter"],
+          student_task_copy: {
+            listen: "听什么：先完整听一遍目标节奏。",
+            do: "做什么：用点击、拍手或身体动作拍回来。",
+            pass: "怎样过关：节奏顺序和拍点都稳定。"
+          },
+          music_reason_prompts: {
+            success: "节奏复刻成功：说出它的长短和疏密特点。",
+            wrong_order: "顺序错了：再听长短和休止的位置。"
+          },
+          result_transfer_prompt: "用口读或身体律动再表现一次节奏型。",
+          asset_manifest: {
+            background: `${assetRoot}/background.png`,
+            poses: {
+              idle: `${assetRoot}/extracted/pose-01-idle.png`,
+              action: `${assetRoot}/extracted/pose-02-action.png`,
+              miss: `${assetRoot}/extracted/pose-03-miss.png`,
+              win: `${assetRoot}/extracted/pose-04-win.png`
+            },
+            props: Array.from({ length: 12 }, (_, index) => `${assetRoot}/extracted/prop-${String(index + 1).padStart(2, "0")}.png`),
+            rewards: Array.from({ length: 12 }, (_, index) => `${assetRoot}/extracted/ui-${String(index + 1).padStart(2, "0")}.png`),
+            sourcePack: "节奏复刻",
+            license: "local_generated_assets"
+          }
+        }
+      };
+    </script>
+    <script type="module" src="/src/student-main.tsx"></script>
+  </body>
+</html>

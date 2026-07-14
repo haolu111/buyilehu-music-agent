@@ -1,0 +1,73 @@
+:root { --suite-ink: #142b25; --suite-teal: #176a5b; --suite-amber: #d59b42; --suite-paper: #fffdf7; }
+body { margin: 0; background: #edf3ed; color: var(--suite-ink); overflow-x: hidden; }
+.music-classroom-suite-shell { min-height: 100vh; padding: 22px 0 60px; background: radial-gradient(circle at 8% 0%, rgba(213,155,66,.16), transparent 28%), linear-gradient(135deg, #f6f1e4 0%, #eef5ef 52%, #e4efeb 100%); }
+.classroom-suite-hero { align-items: end; display: flex; justify-content: space-between; gap: 24px; padding: 20px 4px 18px; }
+.classroom-suite-hero > div:first-child { display: grid; gap: 9px; }
+.classroom-suite-hero h1 { font-family: "Songti SC", "STSong", serif; letter-spacing: -.04em; margin: 0; }
+.classroom-suite-principles { align-items: center; background: rgba(255,253,247,.84); border: 1px solid rgba(20,43,37,.12); border-radius: 999px; display: flex; gap: 8px; padding: 10px 14px; box-shadow: 0 12px 30px rgba(20,43,37,.08); }
+.classroom-suite-principles span { font-size: 13px; font-weight: 900; }
+.classroom-suite-principles i { background: var(--suite-amber); border-radius: 50%; height: 5px; width: 5px; }
+.classroom-suite-nav { display: grid; gap: 8px; grid-template-columns: repeat(5, minmax(0,1fr)); margin: 4px 0 12px; }
+.classroom-suite-nav button { align-items: center; background: rgba(255,253,247,.7); border: 1px solid rgba(20,43,37,.12); border-radius: 14px; color: #43564f; cursor: pointer; display: grid; gap: 4px; justify-items: start; min-height: 100px; padding: 14px; text-align: left; transition: .18s ease; }
+.classroom-suite-nav button:hover { transform: translateY(-2px); border-color: rgba(23,106,91,.4); }
+.classroom-suite-nav button.active { background: var(--suite-ink); color: white; box-shadow: 0 16px 34px rgba(20,43,37,.2); }
+.classroom-suite-nav button span { color: var(--suite-amber); font-size: 11px; font-weight: 950; }
+.classroom-suite-nav button strong { font-size: 14px; line-height: 1.25; }
+.classroom-suite-context { background: rgba(255,255,255,.55); border-radius: 12px; margin-bottom: 12px; padding: 9px 12px; }
+.classroom-suite-component { background: rgba(255,253,247,.94); border: 1px solid rgba(20,43,37,.12); border-radius: 22px; box-shadow: 0 24px 60px rgba(33,61,51,.12); display: grid; gap: 16px; padding: 22px; }
+.classroom-suite-component-head { display: grid; gap: 7px; }
+.classroom-suite-component-head h2 { font-family: "Songti SC", "STSong", serif; }
+.classroom-console-panel { background: #fff; border: 1px solid rgba(20,43,37,.11); border-radius: 15px; display: grid; gap: 14px; padding: 16px; }
+.classroom-control-stack { align-content: start; }
+.classroom-teacher-boundary { align-items: center; background: #203d34; border-radius: 12px; color: white; display: flex; gap: 12px; padding: 12px 14px; }
+.classroom-teacher-boundary strong { color: #f2c97c; white-space: nowrap; }
+.classroom-teacher-boundary span { font-size: 13px; line-height: 1.5; }
+.classroom-upload-button { align-items: center; background: #176a5b; border-radius: 9px; color: white; cursor: pointer; display: inline-flex; font-size: 14px; font-weight: 900; gap: 7px; padding: 9px 12px; }
+.classroom-upload-button input { display: none; }
+.classroom-waveform { align-items: center; background: linear-gradient(180deg,#edf5f1,#f9f3e5); border-radius: 12px; display: flex; gap: 2px; height: 210px; overflow: hidden; padding: 12px; position: relative; }
+.classroom-waveform span { background: rgba(23,106,91,.28); border-radius: 2px; flex: 1; min-width: 2px; }
+.classroom-waveform span.played { background: var(--suite-teal); }
+.classroom-waveform i { background: #d0763c; bottom: 8px; position: absolute; top: 8px; width: 2px; }
+.classroom-field { display: grid; gap: 8px; }
+.classroom-field > span { display: flex; font-size: 13px; font-weight: 850; justify-content: space-between; }
+.classroom-field.compact { min-width: 190px; }
+.music-element-source-panel { background: linear-gradient(135deg,#f4f8f5,#fff9eb); }
+.music-element-source-audio { width: 100%; }
+.music-element-empty { align-items:center;background:#edf3ef;border:1px dashed rgba(20,43,37,.22);border-radius:12px;color:#65756f;display:flex;gap:10px;justify-content:center;min-height:92px; }
+.music-element-control-grid { display:grid;gap:12px;grid-template-columns:repeat(5,minmax(0,1fr)); }
+.music-element-field { background:#f7f3e9;border:1px solid rgba(20,43,37,.1);border-radius:12px;display:grid;gap:8px;min-width:0;padding:12px; }
+.music-element-field > span { font-size:13px;font-weight:900; }
+.music-element-field > input { background:white;border:1px solid rgba(20,43,37,.16);border-radius:9px;color:var(--suite-ink);font:inherit;min-height:38px;padding:0 10px;width:100%; }
+.music-element-field > small { color:#66766f;font-size:12px; }
+.music-element-status { align-items:center;background:#edf4f0;border-left:4px solid var(--suite-teal);border-radius:9px;display:flex;font-size:13px;font-weight:800;gap:9px;padding:11px 12px; }
+.music-element-status.error { background:#fff0ec;border-left-color:#c85645;color:#8d2f22; }
+.music-element-result-panel { background:linear-gradient(180deg,#fff,#fbfaf4); }
+.music-element-compare-grid { display:grid;gap:14px;grid-template-columns:repeat(2,minmax(0,1fr)); }
+.music-element-audio-card { background:#eef4f0;border:1px solid rgba(20,43,37,.1);border-radius:13px;display:grid;gap:10px;padding:14px; }
+.music-element-audio-card audio { width:100%; }
+.music-element-link-group { border-top:1px solid #e2e8e4;display:grid;gap:10px;padding-top:13px; }
+.music-element-warning { background:#fff3df;border:1px solid #e7c17d;border-radius:10px;color:#754d1e;font-size:13px;line-height:1.6;padding:11px 12px; }
+.score-sync-surface { align-items: end; background: #fffdfa; border: 1px solid rgba(20,43,37,.12); border-radius: 12px; display: grid; grid-template-columns: repeat(8,minmax(52px,1fr)); min-height: 230px; overflow: hidden; padding: 38px 14px 22px; position: relative; }
+.score-sync-surface button { background: transparent; border: 0; color: #1a3029; cursor: pointer; display: grid; gap: 7px; justify-items: center; padding: 8px 3px; position: relative; z-index: 2; }
+.score-sync-surface button strong { font-size: 28px; }
+.score-sync-surface.staff button strong { font-size: 20px; transform: translateY(calc((var(--note-y, 0))*1px)); }
+.score-sync-surface button.active { background: #f2c97c; border-radius: 10px; }
+.staff-lines { inset: 65px 0 auto; position: absolute; width: 100%; }
+.staff-lines i { background: rgba(20,43,37,.4); display: block; height: 1px; margin-bottom: 14px; width: 100%; }
+.score-progress { background: #dfe8e3; border-radius: 999px; height: 8px; overflow: hidden; }.score-progress span { background: var(--suite-teal); display:block; height:100%; transition:width .08s linear; }
+.osmd-score-host { background:#fff; border:1px solid rgba(20,43,37,.12); border-radius:12px; min-height:260px; overflow:auto; padding:12px; }
+.classroom-blocked { align-items: center; background: #fff1df; border: 1px solid #e5ba77; border-radius: 12px; display:flex; gap:12px; padding:12px; }.classroom-blocked p{margin:4px 0 0;font-size:13px;}
+.classroom-engine-toolbar,.vocal-safety-strip { background: #f0f5f1; border-radius: 12px; padding: 12px; }
+.classroom-check { align-items:center; display:flex; font-size:13px; font-weight:800; gap:7px; min-height:32px; }
+.ear-question-card > strong,.vocal-practice-card > strong { font-family:"Songti SC","STSong",serif; font-size:28px; }.ear-question-card p,.vocal-practice-card p{line-height:1.65;}
+.ear-feedback { background:#edf4f0; border-left:4px solid var(--suite-teal); border-radius:8px; font-weight:850; padding:12px; }.ear-feedback[data-correct="true"]{background:#e4f4e9;color:#176a5b;}
+.ear-choice-grid { display:grid; gap:9px; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:12px; }.ear-choice-grid button{align-items:center;background:#f5f0e5;border:1px solid rgba(20,43,37,.12);border-radius:12px;color:#22382f;cursor:pointer;display:flex;gap:6px;justify-content:center;min-height:72px;}.ear-choice-grid button.selected{border-color:#176a5b;box-shadow:0 0 0 3px rgba(23,106,91,.12);}
+.teacher-confirm-strip { align-items:center;background:#203d34;border-radius:10px;color:white;display:flex;justify-content:space-between;margin-top:14px;padding:10px 12px; }
+.classroom-stage-path { display:grid;gap:8px;grid-template-columns:repeat(5,minmax(0,1fr));}.classroom-stage-path button{background:#f4efe3;border:1px solid rgba(20,43,37,.11);border-radius:12px;cursor:pointer;display:grid;gap:6px;min-height:82px;padding:10px;text-align:left}.classroom-stage-path button span{align-items:center;background:#d8e5df;border-radius:50%;display:flex;font-weight:900;height:25px;justify-content:center;width:25px}.classroom-stage-path button.active{background:#203d34;color:white}.classroom-stage-path button.done{border-color:#176a5b}.classroom-stage-path button.active span{background:#f2c97c;color:#203d34}
+.vocal-level-visual { align-items:end;background:#e9f0ec;border-radius:12px;display:flex;gap:4px;height:100px;padding:12px}.vocal-level-visual i{background:#7da497;border-radius:3px;flex:1}.vocal-level-visual.recording i{animation:vocalPulse .7s ease-in-out infinite alternate;background:#d68b57}.vocal-level-visual.recording i:nth-child(3n){animation-delay:.2s}@keyframes vocalPulse{to{height:85%}}
+.classroom-local-recording{width:100%}.teacher-vocal-checks label{align-items:center;border-bottom:1px solid #e4e9e6;display:flex;gap:9px;padding:12px 4px}.teacher-pass-card{align-items:center;background:#f3eee4;border-radius:12px;display:flex;gap:10px;padding:16px}.teacher-pass-card.ready{background:#e2f3e7;color:#176a5b}
+.conductor-cue-stage { align-items:center;background:#172f29;border-radius:16px;color:white;display:grid;gap:12px;justify-items:center;min-height:210px;padding:22px;text-align:center}.conductor-cue-stage > span{color:#f2c97c;font-size:12px;font-weight:950;letter-spacing:.16em}.conductor-cue-stage > strong{font-family:"Songti SC","STSong",serif;font-size:38px}.conductor-cue-stage.playing{box-shadow:inset 0 0 0 4px #f2c97c}
+.conductor-actions { flex-wrap: wrap; justify-content: center; }
+.ensemble-track-console { background:white;border:1px solid rgba(20,43,37,.12);border-radius:14px;display:grid;gap:16px;padding:15px}.ensemble-track-console small{color:#63736d;display:block;margin-top:4px}.ensemble-track-console.muted{filter:grayscale(1);opacity:.62}.ensemble-footer{align-items:center;background:#f0f4f1;border-radius:10px;padding:10px 12px}
+@media (max-width: 1100px) { .music-element-control-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.music-element-compare-grid{grid-template-columns:1fr} }
+@media(max-width:800px){.music-classroom-suite-shell{padding-top:8px}.classroom-suite-hero{align-items:start;flex-direction:column;gap:14px;padding-top:8px}.classroom-suite-hero h1{font-size:44px;line-height:1.06}.classroom-suite-principles{box-sizing:border-box;flex-wrap:wrap;justify-content:center;width:100%}.classroom-suite-nav{display:flex;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}.classroom-suite-nav button{flex:0 0 210px;min-height:82px;scroll-snap-align:start}.classroom-suite-component{border-radius:16px;padding:15px}.classroom-stage-path{grid-template-columns:1fr}.score-sync-surface{grid-template-columns:repeat(4,minmax(44px,1fr));}.ear-choice-grid{grid-template-columns:repeat(2,1fr)}.classroom-teacher-boundary{align-items:start;flex-direction:column}.conductor-cue-stage>strong{font-size:29px}}

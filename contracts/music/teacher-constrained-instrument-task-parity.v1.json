@@ -1,0 +1,209 @@
+{
+  "version": "teacher_constrained_instrument_task_parity_v1",
+  "cases": [
+    {
+      "id": "timed_standard_one_to_one",
+      "task": {
+        "version": "teacher_constrained_instrument_task_v1",
+        "id": "snare-steady-beat",
+        "kind": "steady_beat",
+        "instrumentId": "virtual_snare_drum",
+        "gradePreset": "middle_primary",
+        "bpm": 120,
+        "targetEvents": [
+          { "id": "beat-1", "offsetBeats": 0, "zoneId": "center" },
+          { "id": "beat-2", "offsetBeats": 1, "zoneId": "center" }
+        ]
+      },
+      "performanceEvents": [
+        { "timeMs": 0, "zoneId": "center" },
+        { "timeMs": 20, "zoneId": "center" },
+        { "timeMs": 340, "zoneId": "center" }
+      ],
+      "expectedEvidence": {
+        "evidenceStatus": "adjust",
+        "correctCount": 1,
+        "earlyCount": 1,
+        "lateCount": 0,
+        "extraCount": 1,
+        "missedCount": 0,
+        "matchedTargetCount": 2,
+        "missedTargetIds": [],
+        "restErrorCount": 0,
+        "violations": [],
+        "eventStatuses": ["correct", "extra", "early"],
+        "eventIndexes": [0, 1, 2]
+      }
+    },
+    {
+      "id": "middle_primary_80_bpm_rounding_boundary",
+      "task": {
+        "version": "teacher_constrained_instrument_task_v1",
+        "id": "middle-primary-80-boundary",
+        "kind": "steady_beat",
+        "instrumentId": "virtual_snare_drum",
+        "gradePreset": "middle_primary",
+        "bpm": 80,
+        "targetEvents": [
+          { "id": "beat-1", "offsetBeats": 0, "zoneId": "center" }
+        ]
+      },
+      "performanceEvents": [
+        { "timeMs": 113, "zoneId": "center" }
+      ],
+      "expectedWindows": { "correctMs": 113, "outerMs": 210 },
+      "expectedEvidence": {
+        "evidenceStatus": "evidence_pass",
+        "correctCount": 1,
+        "earlyCount": 0,
+        "lateCount": 0,
+        "extraCount": 0,
+        "missedCount": 0,
+        "matchedTargetCount": 1,
+        "missedTargetIds": [],
+        "restErrorCount": 0,
+        "violations": [],
+        "eventStatuses": ["correct"],
+        "eventIndexes": [0]
+      }
+    },
+    {
+      "id": "timed_mismatched_zone_and_midi_is_extra_and_missed",
+      "task": {
+        "version": "teacher_constrained_instrument_task_v1",
+        "id": "melody-zone-midi-match",
+        "kind": "melody_sequence",
+        "instrumentId": "virtual_piano",
+        "gradePreset": "middle_primary",
+        "bpm": 100,
+        "targetEvents": [
+          { "id": "do", "offsetBeats": 0, "zoneId": "white-do", "midi": 60 }
+        ]
+      },
+      "performanceEvents": [
+        { "timeMs": 0, "zoneId": "white-re", "midi": 62 }
+      ],
+      "expectedEvidence": {
+        "evidenceStatus": "adjust",
+        "correctCount": 0,
+        "earlyCount": 0,
+        "lateCount": 0,
+        "extraCount": 1,
+        "missedCount": 1,
+        "matchedTargetCount": 0,
+        "missedTargetIds": ["do"],
+        "restErrorCount": 0,
+        "violations": [],
+        "eventStatuses": ["extra"],
+        "eventIndexes": [0]
+      }
+    },
+    {
+      "id": "constrained_composition_rule_violations",
+      "task": {
+        "version": "teacher_constrained_instrument_task_v1",
+        "id": "three-note-creation",
+        "kind": "constrained_composition",
+        "instrumentId": "virtual_piano",
+        "gradePreset": "middle_primary",
+        "bpm": 120,
+        "compositionRules": {
+          "allowedZoneIds": ["white-do", "white-mi", "white-sol"],
+          "allowedMidi": [60, 64, 67],
+          "requiredEventCount": { "min": 3, "max": 4 },
+          "endingMidi": 60
+        }
+      },
+      "performanceEvents": [
+        { "timeMs": 0, "zoneId": "white-do", "midi": 60 },
+        { "timeMs": 250, "zoneId": "black-do-sharp", "midi": 61 },
+        { "timeMs": 500, "zoneId": "white-mi", "midi": 64 }
+      ],
+      "expectedEvidence": {
+        "evidenceStatus": "adjust",
+        "correctCount": 0,
+        "earlyCount": 0,
+        "lateCount": 0,
+        "extraCount": 0,
+        "missedCount": 0,
+        "matchedTargetCount": 0,
+        "missedTargetIds": [],
+        "restErrorCount": 0,
+        "violations": [
+          "zone_not_allowed:black-do-sharp",
+          "midi_not_allowed:61",
+          "ending_midi_required:60"
+        ],
+        "eventStatuses": [],
+        "eventIndexes": []
+      }
+    },
+    {
+      "id": "timed_unordered_inputs_keep_original_event_indexes",
+      "task": {
+        "version": "teacher_constrained_instrument_task_v1",
+        "id": "unordered-steady-beat",
+        "kind": "steady_beat",
+        "instrumentId": "virtual_snare_drum",
+        "gradePreset": "middle_primary",
+        "bpm": 120,
+        "targetEvents": [
+          { "id": "beat-1", "offsetBeats": 0, "zoneId": "center" },
+          { "id": "beat-2", "offsetBeats": 1, "zoneId": "center" }
+        ]
+      },
+      "performanceEvents": [
+        { "timeMs": 500, "zoneId": "center" },
+        { "timeMs": 0, "zoneId": "center" }
+      ],
+      "expectedEvidence": {
+        "evidenceStatus": "evidence_pass",
+        "correctCount": 2,
+        "earlyCount": 0,
+        "lateCount": 0,
+        "extraCount": 0,
+        "missedCount": 0,
+        "matchedTargetCount": 2,
+        "missedTargetIds": [],
+        "restErrorCount": 0,
+        "violations": [],
+        "eventStatuses": ["correct", "correct"],
+        "eventIndexes": [1, 0]
+      }
+    },
+    {
+      "id": "composition_rest_window_play_is_objective_violation",
+      "task": {
+        "version": "teacher_constrained_instrument_task_v1",
+        "id": "rest-window-creation",
+        "kind": "constrained_composition",
+        "instrumentId": "virtual_piano",
+        "gradePreset": "middle_primary",
+        "bpm": 120,
+        "compositionRules": {
+          "allowedMidi": [60, 64],
+          "restWindowsBeats": [[1, 2]],
+          "requiredRestCount": { "min": 1, "max": 1 }
+        }
+      },
+      "performanceEvents": [
+        { "timeMs": 0, "midi": 60 },
+        { "timeMs": 750, "midi": 64 }
+      ],
+      "expectedEvidence": {
+        "evidenceStatus": "adjust",
+        "correctCount": 0,
+        "earlyCount": 0,
+        "lateCount": 0,
+        "extraCount": 0,
+        "missedCount": 0,
+        "matchedTargetCount": 0,
+        "missedTargetIds": [],
+        "restErrorCount": 1,
+        "violations": ["rest_window_played:0"],
+        "eventStatuses": ["rest_error"],
+        "eventIndexes": [1]
+      }
+    }
+  ]
+}

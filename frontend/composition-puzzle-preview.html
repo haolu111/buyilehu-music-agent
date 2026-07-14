@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>拼图创编工坊预览</title>
+  </head>
+  <body>
+    <div id="student-game-root"></div>
+    <script>
+      const assetRoot = "/template-console/static/assets/game-packs/composition-puzzle";
+      const extractedRoot = `${assetRoot}/extracted`;
+      window.__STUDENT_GAME_STATE__ = {
+        workflow: {
+          workflow_kind: "direct_game",
+          gameplay_blueprint: {
+            student_facing_name: "拼图创编工坊",
+            prompt: "拖卡、试听、通关。",
+            scene_goal: "用节奏和旋律素材卡拼成完整音乐短句。",
+            operation_type: "composition_puzzle",
+            game_genre: "constrained_composition_puzzle"
+          },
+          experience_script: {
+            progression: [{ emotion: "拼出短句", reward: "创编徽章" }]
+          },
+          theme_pack: {
+            reward_token: "创编徽章",
+            scene: { setting: "魔法音乐工坊", objective_noun: "作品轨道", progress_noun: "格" }
+          },
+          presentation_pack: {
+            experience_variant_id: "composition_preview",
+            play_mode: "studio"
+          }
+        },
+        instance: {
+          template_label: "拼图创编工坊",
+          student_task: {
+            listen: "试听短句。",
+            do: "拖卡拼轨道。",
+            pass: "规则通过。"
+          }
+        },
+        template_id: "composition_puzzle_core",
+        age_ui_profile: "upper_primary",
+        config: {
+          template_id: "composition_puzzle_core",
+          engine: "phaser_2d",
+          scene_id: "composition_puzzle_scene",
+          runtime_shell: "composition_puzzle_shell",
+          game_genre: "constrained_composition_puzzle",
+          hud_model: "constraint_checklist_progress",
+          student_ui_mode: "game_first",
+          mode: "melody_rhythm_puzzle",
+          skin_id: "composition_studio",
+          skin_play_mode: "studio",
+          phrase_length_bars: 2,
+          meter_options: ["2/4", "3/4", "4/4"],
+          selected_meter: "4/4",
+          slots_per_bar: 4,
+          tonic_options: ["C", "D", "E", "F", "G", "A"],
+          selected_tonic: "C",
+          scale_options: ["major", "minor", "major_pentatonic"],
+          selected_scale_type: "major_pentatonic",
+          playback_tonic: "C",
+          constraint_profile: "balanced",
+          teacher_confirm_required: true,
+          rhythm_cards: [
+            { id: "quarter", label: "四分", beats: 1, kind: "hit" },
+            { id: "eighth_pair", label: "二八", beats: 1, kind: "hit" },
+            { id: "sixteenth_four", label: "四个十六", beats: 1, kind: "hit" },
+            { id: "eighth_sixteenth_sixteenth", label: "前八后十六", beats: 1, kind: "hit" },
+            { id: "sixteenth_sixteenth_eighth", label: "前十六后八", beats: 1, kind: "hit" },
+            { id: "rest", label: "休止", beats: 1, kind: "rest" }
+          ],
+          melody_cards: ["C", "D", "E", "G", "A"],
+          required_elements: ["填满小节", "试听后提交", "至少使用 2 种节奏材料", "至少出现 3 个音高", "结束音回到 C 或 A"],
+          asset_manifest: {
+            background: `${assetRoot}/background.png`,
+            poses: {
+              idle: `${extractedRoot}/pose-01-idle.png`,
+              action: `${extractedRoot}/pose-02-action.png`,
+              miss: `${extractedRoot}/pose-03-miss.png`,
+              win: `${extractedRoot}/pose-04-win.png`
+            },
+            props: Array.from({ length: 12 }, (_, index) => `${extractedRoot}/prop-${String(index + 1).padStart(2, "0")}.png`),
+            rewards: Array.from({ length: 12 }, (_, index) => `${extractedRoot}/ui-${String(index + 1).padStart(2, "0")}.png`),
+            sourcePack: "composition-puzzle",
+            license: "local_generated_assets"
+          },
+          result_transfer_prompt: "把作品拍读、唱出或用课堂乐器演一遍，并说明它满足了哪些音乐约束。"
+        }
+      };
+    </script>
+    <script type="module" src="/src/student-main.tsx"></script>
+  </body>
+</html>

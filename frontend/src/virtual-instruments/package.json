@@ -1,0 +1,16 @@
+{
+  "name": "@music-education/virtual-instruments-vue",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./vue/index.ts",
+    "./core/*": "./core/*.ts"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "spessasynth_lib": "^4.3.8"
+  }
+}

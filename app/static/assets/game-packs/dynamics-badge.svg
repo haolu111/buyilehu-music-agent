@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="力度徽章">
+  <circle cx="80" cy="80" r="72" fill="#f4ecff"/>
+  <circle cx="58" cy="82" r="36" fill="#ff7b54"/>
+  <circle cx="110" cy="82" r="22" fill="#77c7b3"/>
+  <text x="48" y="96" fill="#fff8e7" font-size="42" font-weight="900" font-family="Arial, sans-serif">f</text>
+  <text x="102" y="94" fill="#173b35" font-size="28" font-weight="900" font-family="Arial, sans-serif">p</text>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="音高路线插图">
+  <rect width="640" height="420" rx="34" fill="#eaf4ff"/>
+  <path d="M60 336h520" stroke="#b6d7f2" stroke-width="10" stroke-linecap="round"/>
+  <path d="M90 300c76-20 104-138 178-130 78 8 76 112 152 100 54-8 76-72 122-92" fill="none" stroke="#2a6fbb" stroke-width="16" stroke-linecap="round"/>
+  <g fill="#fff8e7" stroke="#173b35" stroke-width="8">
+    <circle cx="90" cy="300" r="28"/>
+    <circle cx="268" cy="170" r="28"/>
+    <circle cx="420" cy="270" r="28"/>
+    <circle cx="542" cy="178" r="28"/>
+  </g>
+  <g transform="translate(250 64)">
+    <circle cx="42" cy="42" r="34" fill="#f7c948"/>
+    <path d="M24 42c10 14 26 20 44 0" fill="none" stroke="#173b35" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="30" cy="34" r="5" fill="#173b35"/>
+    <circle cx="54" cy="34" r="5" fill="#173b35"/>
+  </g>
+  <g fill="#173b35" font-family="Arial, sans-serif" font-weight="700" font-size="30">
+    <text x="74" y="374">mi</text>
+    <text x="250" y="132">sol</text>
+    <text x="400" y="330">mi</text>
+    <text x="524" y="140">sol</text>
+  </g>
+</svg>

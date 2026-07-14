@@ -1,132 +1,40 @@
-# Buyilehu Music Agent
+# 音乐教育组件总审核台
 
-## Local Development Startup
+这是截图所示的“音乐教育组件总审核台”。它集中审核正式注册的基础与专业组件、课堂活动、完整游戏模板、虚拟教具、虚拟乐器和音乐材料绑定器，并保留审核预览、真实音色试听和全屏预览入口。
 
-Run commands from the project root unless a step says to enter a subdirectory.
+仓库包含运行所需的图片、游戏资源、音色库和本地音频素材。不会包含任何模型 API Key、用户上传内容、登录数据库或本机缓存。
 
-### 0. Prerequisites
+## 本地启动
 
-Make sure these commands are available in your terminal:
+后端：
 
-```powershell
-java -version
-mvn -version
-node -v
-npm -v
-mysql --version
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
 ```
 
-The backend is a Spring Boot 2.7 app and expects JDK 8+ and Maven. The frontend apps use Node/npm.
+前端：
 
-### 1. Use Your Local MySQL
-
-The backend connects directly to your local MySQL instance and expects the `buyilehu_music_agent` database. No Docker container is needed.
-
-If the database does not exist yet:
-
-```powershell
-mysql -uroot -p123456 -e "CREATE DATABASE IF NOT EXISTS buyilehu_music_agent DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```bash
+cd frontend
+npm ci
+npm run dev -- --port 5176
 ```
 
-The local profile runs Flyway automatically. On an empty database, the backend creates and seeds the schema from:
+打开：`http://127.0.0.1:5176/template-console/music-education-review.html`
 
-```text
-backend/music-agent-server/src/main/resources/db/migration
+生产预览可运行：
+
+```bash
+docker compose up --build
 ```
 
-If you previously imported `database/buyilehu_music_agent_schema.sql`, recreate the local database before starting the backend. That file is an older schema and does not match the current Java entities.
+然后打开：`http://127.0.0.1:8000/template-console/music-education-review.html`
 
-```powershell
-mysql -uroot -p123456 -e "DROP DATABASE IF EXISTS buyilehu_music_agent; CREATE DATABASE buyilehu_music_agent DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-```
+## 安全边界
 
-### 2. Prepare Python Capability Service
-
-Python 3.11 or newer is required. Create its isolated environment once:
-
-```powershell
-cd backend\python-capability-library
-py -3.11 -m venv .venv
-.\.venv\Scripts\pip install -r requirements.txt
-```
-
-### 3. Start Both Backends
-
-From the project root, start Python first, wait for its health check, and then start Java:
-
-```powershell
-.\start-backends.bat
-```
-
-Python capability health check:
-
-```text
-http://127.0.0.1:8001/api/v1/health
-```
-
-Java health reports both services:
-
-```text
-http://127.0.0.1:8080/api/v1/system/health
-```
-
-To start Java manually:
-
-```powershell
-cd backend\music-agent-server
-$env:DB_NAME='buyilehu_music_agent'
-$env:DB_USERNAME='root'
-$env:DB_PASSWORD='123456'
-mvn spring-boot:run
-```
-
-Backend health check:
-
-```text
-http://127.0.0.1:8080/actuator/health
-```
-
-### 4. Start Teacher Web
-
-```powershell
-cd frontend\teacher-web
-npm install
-npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
-```
-
-Teacher web:
-
-```text
-http://127.0.0.1:5173/
-```
-
-### 5. Start Student Web
-
-```powershell
-cd frontend\student-web
-npm install
-npm run dev -- --host 127.0.0.1 --port 5174 --strictPort
-```
-
-Student web:
-
-```text
-http://127.0.0.1:5174/
-```
-
-### 6. Default Accounts
-
-```text
-Teacher: teacher001 / 123456
-Student: student001 / 123456
-```
-
-### 7. Notes
-
-- Teacher web runs on port `5173`.
-- Student web runs on port `5174`.
-- Backend runs on port `8080`.
-- Python capability service runs on port `8001`.
-- `PYTHON_CAPABILITY_CALL_MODE=primary` uses Python-generated activity runtime; `shadow` records it for inspection; `disabled` uses Java fallback runtime.
-- Both frontend apps proxy `/api` requests to `http://localhost:8080`.
-- The backend local profile points to your local MySQL database and uses Flyway migrations to keep the schema aligned with the Java entities.
+- 后端只提供审核目录、确定性审核预览、静态资源和健康检查。
+- 不暴露文件上传、账户、生成任务、模型调用或任意命令执行接口。
+- 审核结果里的“智能体可调用”是正式注册表的受限能力标记，不会从页面执行模型或系统命令。

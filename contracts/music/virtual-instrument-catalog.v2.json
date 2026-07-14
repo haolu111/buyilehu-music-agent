@@ -1,0 +1,172 @@
+{
+  "version": "virtual_instrument_catalog_v2",
+  "audience": "primary_school",
+  "defaultVelocity": 96,
+  "maxSimultaneousPointers": 10,
+  "maxRecordingDurationMs": 300000,
+  "percussionGrid": {
+    "id": "virtual_percussion_grid",
+    "name": "打击乐六宫格",
+    "tileCount": { "min": 2, "max": 6 },
+    "teacherSelectsInstrumentAndZone": true,
+    "studentZonesPerTile": 1,
+    "requiresAuditedAudioAndImage": true
+  },
+  "legacyAliases": {
+    "simple_keyboard": "virtual_piano",
+    "virtual_xylophone": "virtual_xylophone",
+    "virtual_hand_drum": "virtual_snare_drum",
+    "woodblock_claves": "virtual_woodblock",
+    "shaker": "virtual_shaker",
+    "triangle_bell": "virtual_triangle",
+    "tambourine": "virtual_tambourine"
+  },
+  "instruments": [
+    {
+      "id": "virtual_piano",
+      "name": "钢琴",
+      "family": "keyboard",
+      "layout": "piano",
+      "layoutModes": ["chromatic"],
+      "soundPackId": "virtual_piano_audio_v1",
+      "pitchRange": { "minMidi": 48, "maxMidi": 83 },
+      "performanceSurface": { "kind": "piano", "visibleOctavesLandscape": 2, "visibleOctavesPortrait": 1, "supportsGlissando": true, "supportsSustain": true },
+      "zones": [],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "structured_svg", "assetId": "piano_structured_skin_v1" }
+    },
+    {
+      "id": "virtual_xylophone",
+      "name": "木琴",
+      "family": "mallet",
+      "layout": "bars",
+      "layoutModes": ["chromatic", "diatonic", "pentatonic"],
+      "soundPackId": "virtual_xylophone_audio_v1",
+      "pitchRange": { "minMidi": 60, "maxMidi": 84 },
+      "performanceSurface": { "kind": "mallet", "registerWindowSemitones": 12, "defaultLayoutMode": "diatonic", "supportsRoll": true },
+      "zones": [],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "structured_svg", "assetId": "xylophone_structured_skin_v1", "chassisAssetId": "virtual_xylophone_chassis_v1" }
+    },
+    {
+      "id": "virtual_marimba",
+      "name": "马林巴",
+      "family": "mallet",
+      "layout": "bars",
+      "layoutModes": ["chromatic", "diatonic", "pentatonic"],
+      "soundPackId": "virtual_marimba_audio_v1",
+      "pitchRange": { "minMidi": 48, "maxMidi": 84 },
+      "performanceSurface": { "kind": "mallet", "registerWindowSemitones": 12, "defaultLayoutMode": "diatonic", "supportsRoll": true },
+      "zones": [],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "structured_svg", "assetId": "marimba_structured_skin_v1", "chassisAssetId": "virtual_marimba_chassis_v1" }
+    },
+    {
+      "id": "virtual_glockenspiel",
+      "name": "钟琴",
+      "family": "mallet",
+      "layout": "bars",
+      "layoutModes": ["chromatic", "diatonic", "pentatonic"],
+      "soundPackId": "virtual_glockenspiel_audio_v1",
+      "pitchRange": { "minMidi": 72, "maxMidi": 96 },
+      "performanceSurface": { "kind": "mallet", "registerWindowSemitones": 12, "defaultLayoutMode": "diatonic", "supportsRoll": true },
+      "zones": [],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "structured_svg", "assetId": "glockenspiel_structured_skin_v1", "chassisAssetId": "virtual_glockenspiel_chassis_v1" }
+    },
+    {
+      "id": "virtual_frame_drum",
+      "name": "手鼓",
+      "family": "percussion",
+      "layout": "pads",
+      "layoutModes": ["default"],
+      "soundPackId": "virtual_frame_drum_audio_v1",
+      "zones": [
+        { "id": "center", "label": "鼓心", "midi": 64, "action": "one_shot" },
+        { "id": "edge", "label": "鼓边", "midi": 63, "action": "one_shot" }
+      ],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "image2_transparent", "assetId": "virtual_frame_drum_skin_v1" }
+    },
+    {
+      "id": "virtual_snare_drum",
+      "name": "小鼓",
+      "family": "percussion",
+      "layout": "pads",
+      "layoutModes": ["default"],
+      "soundPackId": "virtual_snare_drum_audio_v1",
+      "zones": [
+        { "id": "center", "label": "鼓心", "midi": 38, "action": "one_shot" },
+        { "id": "rim", "label": "边击", "midi": 37, "action": "one_shot" }
+      ],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "image2_transparent", "assetId": "virtual_snare_drum_skin_v1" }
+    },
+    {
+      "id": "virtual_woodblock",
+      "name": "木鱼",
+      "family": "percussion",
+      "layout": "pads",
+      "layoutModes": ["default"],
+      "soundPackId": "virtual_woodblock_audio_v1",
+      "zones": [
+        { "id": "high", "label": "高音木鱼", "midi": 76, "action": "one_shot" },
+        { "id": "low", "label": "低音木鱼", "midi": 77, "action": "one_shot" }
+      ],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "image2_transparent", "assetId": "virtual_woodblock_skin_v1" }
+    },
+    {
+      "id": "virtual_shaker",
+      "name": "沙锤",
+      "family": "percussion",
+      "layout": "pads",
+      "layoutModes": ["default"],
+      "soundPackId": "virtual_shaker_audio_v1",
+      "zones": [
+        { "id": "short", "label": "短摇", "midi": 70, "action": "one_shot" },
+        { "id": "sustain", "label": "持续摇奏", "midi": 70, "action": "roll" }
+      ],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "image2_transparent", "assetId": "virtual_shaker_skin_v1" }
+    },
+    {
+      "id": "virtual_triangle",
+      "name": "三角铁",
+      "family": "percussion",
+      "layout": "pads",
+      "layoutModes": ["default"],
+      "soundPackId": "virtual_triangle_audio_v1",
+      "zones": [
+        { "id": "open", "label": "开放音", "midi": 81, "action": "one_shot" },
+        { "id": "dampen", "label": "止音", "midi": 80, "action": "one_shot" }
+      ],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "image2_transparent", "assetId": "virtual_triangle_skin_v1" }
+    },
+    {
+      "id": "virtual_tambourine",
+      "name": "铃鼓",
+      "family": "percussion",
+      "layout": "pads",
+      "layoutModes": ["default"],
+      "soundPackId": "virtual_tambourine_audio_v1",
+      "zones": [
+        { "id": "hit", "label": "敲击", "midi": 54, "action": "one_shot" },
+        { "id": "roll", "label": "滚奏", "midi": 54, "action": "roll" }
+      ],
+      "supportsMultiTouch": true,
+      "supportsRecording": true,
+      "skin": { "kind": "image2_transparent", "assetId": "virtual_tambourine_skin_v1" }
+    }
+  ]
+}

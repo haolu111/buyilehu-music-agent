@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="课堂任务插图">
+  <rect width="640" height="420" rx="34" fill="#f2f6ea"/>
+  <rect x="96" y="76" width="448" height="260" rx="28" fill="#ffffff" stroke="#22534a" stroke-width="8"/>
+  <path d="M152 150h210M152 214h286M152 278h180" stroke="#77c7b3" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="452" cy="154" r="28" fill="#f7c948"/>
+  <path d="M438 154l12 12 26-30" fill="none" stroke="#173b35" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="452" cy="244" r="28" fill="#ff7b54"/>
+  <path d="M438 244l12 12 26-30" fill="none" stroke="#173b35" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="188" y="374" fill="#173b35" font-size="28" font-weight="700" font-family="Arial, sans-serif">听、做、说理由</text>
+</svg>

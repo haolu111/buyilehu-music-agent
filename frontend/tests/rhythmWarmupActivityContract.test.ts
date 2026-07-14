@@ -1,0 +1,38 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = dirname(dirname(fileURLToPath(import.meta.url)));
+const activitySource = readFileSync(join(root, "src/activity/RhythmWarmupActivity.tsx"), "utf8");
+const padSource = readFileSync(join(root, "src/music-components/RhythmPad.tsx"), "utf8");
+
+assert.match(activitySource, /buildRhythmPerformanceTimeline/, "activity must judge the expanded rhythm timeline");
+assert.match(activitySource, /judgeRhythmPerformanceTap/, "activity must use one-to-one performance judgement");
+assert.match(activitySource, /buildRhythmWarmupAttemptRecord/, "activity must expose the v2 attempt record");
+assert.match(activitySource, /performance\.now\(\)/, "tap timing must use the real input clock");
+assert.match(activitySource, /phase !== "recording"/, "rhythm pad must be disabled outside the recording phase");
+assert.match(activitySource, /practiceMode/, "activity must expose play-along and echo practice modes");
+assert.match(activitySource, /gradePreset/, "activity must expose primary grade timing presets");
+assert.match(activitySource, /mode: "echo"/, "the standalone teacher example must default to listen-then-reproduce mode");
+assert.match(activitySource, /useState<PracticeMode>\(initialInput\.mode\)/, "agent input must control the requested practice mode");
+assert.match(activitySource, /resolveRhythmExerciseInput/, "activity questions must resolve teacher input and fallback through the shared reviewed rhythm catalog");
+assert.match(activitySource, /exerciseInput\?: RhythmExerciseInput/, "agent integration must be able to pass teacher-selected rhythm material");
+assert.match(activitySource, /resolveRhythmExerciseInput/, "activity must resolve teacher material before falling back to random generation");
+assert.match(activitySource, /教师指定示例/, "review page must expose a teacher-selected material example");
+assert.match(activitySource, /随机兜底/, "review page must expose the no-teacher-material fallback");
+assert.doesNotMatch(activitySource, /const patternIds = rhythmCardInputs\.map/, "activity must not keep a fixed rhythm sequence");
+assert.match(activitySource, /重练当前题/, "activity must let the teacher retry the same question");
+assert.match(activitySource, /再来一组/, "activity must let the teacher draw a different question");
+assert.match(activitySource, /SoundFont preparation timed out/, "audio preparation must not leave the classroom UI loading forever");
+assert.match(activitySource, /prepareSampledInstrument\("acoustic_grand_piano", \{ audition: false \}\)/, "piano must preload silently without adding an attack before the rhythm");
+assert.match(activitySource, /prepareSampledInstrument\("woodblock", \{ audition: false \}\)/, "metronome sound must preload silently");
+assert.match(activitySource, /instrument: "woodblock"/, "count-in must use a separate metronome timbre");
+assert.match(activitySource, /instrument: "acoustic_grand_piano"/, "the displayed rhythm must use piano playback");
+assert.match(activitySource, /baseMidi: 60/, "rhythm attacks must use fixed standard C4 without pitch coding");
+assert.doesNotMatch(activitySource, /baseMidi: correct \? 79 : 67/, "tap correctness must not be encoded as different pitches");
+assert.match(activitySource, /正确通过/, "activity must show an explicit correct round result");
+assert.match(activitySource, /错误需重练/, "activity must show an explicit incorrect round result");
+assert.doesNotMatch(activitySource, /function rhythmStarts/, "playback must not retain a separate hand-written rhythm map");
+assert.match(padSource, /onPointerDown/, "touch and pointer timing must be captured at press-down time");
+assert.match(padSource, /onKeyDown/, "keyboard rhythm taps must be supported");

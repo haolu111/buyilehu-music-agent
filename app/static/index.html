@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>音乐课堂游戏生成智能体</title>
+    <link rel="stylesheet" href="/static/styles.css?v=20260528-direct-tools-layout" />
+  </head>
+  <body data-active-page="home" data-auth-state="checking">
+    <main id="auth-shell" class="auth-shell" aria-label="账号登录">
+      <section class="auth-panel">
+        <div class="auth-brand">
+          <img src="/static/assets/buyilehu-logo-transparent.png" alt="不亦乐乎" />
+        </div>
+
+        <section class="auth-card" data-auth-view="login">
+          <div class="auth-tabs" role="tablist" aria-label="账号操作">
+            <button class="active" type="button" data-auth-tab="login">登录</button>
+            <button type="button" data-auth-tab="register">注册</button>
+            <button type="button" data-auth-tab="forgot">忘记密码</button>
+          </div>
+
+          <form id="login-form" class="auth-form active" data-auth-form="login">
+            <label>
+              <span>邮箱账号</span>
+              <input id="login-email" type="email" autocomplete="email" required />
+            </label>
+            <label>
+              <span>密码</span>
+              <input id="login-password" type="password" autocomplete="current-password" required />
+            </label>
+            <button class="primary-action" type="submit">登录</button>
+          </form>
+
+          <form id="register-form" class="auth-form" data-auth-form="register" hidden>
+            <label>
+              <span>邮箱账号</span>
+              <input id="register-email" type="email" autocomplete="email" required />
+            </label>
+            <button id="register-code-button" class="secondary-action" type="button">发送邮箱验证码</button>
+            <label>
+              <span>邮箱验证码</span>
+              <input id="register-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required />
+            </label>
+            <label>
+              <span>设置密码</span>
+              <input id="register-password" type="password" autocomplete="new-password" minlength="8" required />
+            </label>
+            <label>
+              <span>确认密码</span>
+              <input id="register-confirm-password" type="password" autocomplete="new-password" minlength="8" required />
+            </label>
+            <button class="primary-action" type="submit">完成注册并登录</button>
+          </form>
+
+          <form id="forgot-form" class="auth-form" data-auth-form="forgot" hidden>
+            <label>
+              <span>邮箱账号</span>
+              <input id="forgot-email" type="email" autocomplete="email" required />
+            </label>
+            <button id="forgot-code-button" class="secondary-action" type="button">发送重置验证码</button>
+            <label>
+              <span>邮箱验证码</span>
+              <input id="forgot-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required />
+            </label>
+            <label>
+              <span>新密码</span>
+              <input id="forgot-password" type="password" autocomplete="new-password" minlength="8" required />
+            </label>
+            <label>
+              <span>确认新密码</span>
+              <input id="forgot-confirm-password" type="password" autocomplete="new-password" minlength="8" required />
+            </label>
+            <button class="primary-action" type="submit">重置密码并登录</button>
+          </form>
+
+          <p id="auth-status" class="auth-status" role="status" aria-live="polite">请输入账号密码登录。</p>
+        </section>
+      </section>
+    </main>
+
+    <main id="studio-shell" class="studio-shell app-shell" hidden>
+      <header class="studio-topbar app-header" aria-label="智能体介绍">
+        <div class="app-header-copy">
+          <h1 class="sr-only">音乐课堂游戏生成智能体</h1>
+          <div class="app-header-brand-lockup">
+            <div class="app-header-brand-mark">
+              <img class="app-header-brand-logo" src="/static/assets/buyilehu-logo-transparent.png" alt="不亦乐乎" />
+            </div>
+          </div>
+        </div>
+        <nav class="app-nav" aria-label="功能导航">
+          <button class="app-nav-button active" type="button" data-app-page="home">首页</button>
+          <button class="app-nav-button" type="button" data-app-page="lesson">教案生成</button>
+          <button class="app-nav-button" type="button" data-app-page="direct">直接生成</button>
+          <button class="app-nav-button" type="button" data-app-page="library">我的</button>
+        </nav>
+        <div class="app-header-school-badge" aria-label="学校标识">
+          <img class="app-header-school-logo" src="/static/assets/ecnu-logo.png" alt="华东师范大学" />
+        </div>
+        <div class="app-account" aria-label="当前账号" hidden>
+          <span id="account-email">未登录</span>
+          <button id="logout-button" type="button">退出</button>
+        </div>
+      </header>
+
+      <section id="home-page" class="app-page app-page--home is-active" data-page="home">
+        <section class="home-board" aria-label="首页">
+          <aside class="home-feature-card">
+            <span class="feature-star" aria-hidden="true">★</span>
+            <p class="eyebrow">Music Lesson AI</p>
+            <h2>把音乐课变成能听、能唱、能玩的课堂游戏</h2>
+            <span class="home-feature-divider" aria-hidden="true"></span>
+            <p>老师可以上传教案、乐谱和音频，快速得到适合本节课的音乐小游戏；也可以直接描述想法，生成聆听、表现、创造类互动工具。</p>
+            <ul class="feature-list" aria-label="智能体特色">
+              <li>上传教案生成游戏</li>
+              <li>结合歌曲材料设计任务</li>
+              <li>生成后可播放可操作</li>
+              <li>不满意还能继续修改</li>
+            </ul>
+          </aside>
+
+          <button class="home-illustration-card home-illustration-card--clickable" type="button" data-open-page="lesson" aria-label="进入教案生成">
+            <span class="illustration-action-label">✦ 从教案开始生成</span>
+            <span class="home-cloud home-cloud--one" aria-hidden="true"></span>
+            <span class="home-cloud home-cloud--two" aria-hidden="true"></span>
+            <img
+              class="home-illustration-art"
+              src="/static/assets/music-home-board-image2.png"
+              alt="音乐课堂游戏智能体插画"
+            />
+          </button>
+
+          <section class="home-start-card" aria-label="主入口">
+            <p class="eyebrow">Choose</p>
+            <h3>选择生成方式</h3>
+            <button class="home-main-action home-main-action--lesson" type="button" data-open-page="lesson">
+              <span class="home-main-icon" aria-hidden="true">▤</span>
+              <span class="home-main-copy">
+                <strong>教案生成</strong>
+                <span>上传课例，智能体先给方案</span>
+              </span>
+              <span class="home-main-arrow" aria-hidden="true">›</span>
+            </button>
+            <button class="home-main-action home-main-action--direct secondary" type="button" data-open-page="direct">
+              <span class="home-main-icon" aria-hidden="true">✎</span>
+              <span class="home-main-copy">
+                <strong>直接生成</strong>
+                <span>输入需求，快速生成工具</span>
+              </span>
+              <span class="home-main-arrow" aria-hidden="true">›</span>
+            </button>
+          </section>
+        </section>
+
+        <section class="home-entry-grid home-entry-grid--three" aria-label="功能入口">
+          <button class="home-entry-card featured" type="button" data-open-page="lesson">
+            <span class="home-entry-icon home-entry-icon--lesson" aria-hidden="true">▤</span>
+            <div class="home-entry-copy">
+              <div class="home-entry-heading">
+                <strong>教案生成</strong>
+                <span class="entry-kicker">核心</span>
+              </div>
+              <small>从整节课出发，抓住最适合游戏化的音乐学习任务。</small>
+            </div>
+            <span class="home-entry-arrow" aria-hidden="true">›</span>
+          </button>
+          <button class="home-entry-card" type="button" data-open-page="direct">
+            <span class="home-entry-icon home-entry-icon--direct" aria-hidden="true">♪</span>
+            <div class="home-entry-copy">
+              <div class="home-entry-heading">
+                <strong>直接生成</strong>
+                <span class="entry-kicker">快速</span>
+              </div>
+              <small>描述曲目、年级和目标，生成聆听、表现、创造或小游戏。</small>
+            </div>
+            <span class="home-entry-arrow" aria-hidden="true">›</span>
+          </button>
+          <button class="home-entry-card" type="button" data-open-page="library">
+            <span class="home-entry-icon home-entry-icon--library" aria-hidden="true">✦</span>
+            <div class="home-entry-copy">
+              <div class="home-entry-heading">
+                <strong>我的</strong>
+                <span class="entry-kicker">管理</span>
+              </div>
+              <small>打开作品预览，也可以管理账户和密码。</small>
+            </div>
+            <span class="home-entry-arrow" aria-hidden="true">›</span>
+          </button>
+        </section>
+      </section>
+
+      <section id="lesson-page" class="app-page" data-page="lesson" hidden>
+        <section class="control-card main-dialogue-card app-work-card" aria-label="生成工作区">
+          <img
+            class="dialogue-corner-mascot"
+            src="/static/assets/cute-mascots/mascot-cat.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <div class="main-dialogue-header">
+            <div>
+              <p class="eyebrow">Create</p>
+              <h2 id="work-page-title">教案生成游戏</h2>
+            </div>
+            <p id="work-page-subtitle">上传教案，先确认重点和玩法，再生成网页游戏。</p>
+          </div>
+
+          <section id="lesson-mode-panel" class="dialog-mode-panel dialog-mode-panel--lesson is-active">
+            <section class="lesson-game-card lesson-game-card--embedded" aria-label="上传教案生成游戏">
+              <div class="lesson-game-copy">
+                <p class="eyebrow">Lesson To Game</p>
+                <h2>教案转游戏</h2>
+                <p>上传教案、乐谱或音频，先确认玩法，再生成网页。</p>
+                <div class="lesson-game-points">
+                  <span>识别重点</span>
+                  <span>确认方案</span>
+                  <span>生成游戏</span>
+                </div>
+              </div>
+              <form id="lesson-game-form" class="lesson-game-form">
+                <textarea
+                  id="lesson-text"
+                  rows="6"
+                  placeholder="粘贴教案正文：目标、重点、流程、活动安排。"
+                ></textarea>
+                <div class="lesson-upload-row">
+                  <label class="lesson-file-picker" for="lesson-file">
+                    <span>上传教案</span>
+                    <small>Word / TXT / Markdown / PDF</small>
+                  </label>
+                  <input id="lesson-file" type="file" accept=".docx,.txt,.md,.markdown,.pdf" />
+                </div>
+                <div class="lesson-upload-row">
+                  <label class="lesson-file-picker" for="score-file">
+                    <span>上传乐谱</span>
+                    <small>图片 / PDF / MIDI / MusicXML / 文字谱，可选</small>
+                  </label>
+                  <input id="score-file" type="file" accept=".mid,.midi,.musicxml,.xml,.mxl,.pdf,.png,.jpg,.jpeg,.txt,.md,.markdown" />
+                  <label class="lesson-file-picker" for="audio-file">
+                    <span>上传歌曲音频</span>
+                    <small>MP3 / WAV / M4A，可选</small>
+                  </label>
+                  <input id="audio-file" type="file" accept=".mp3,.wav,.m4a,.aac,.flac" />
+                </div>
+                <textarea
+                  id="song-material-text"
+                  class="lesson-extra-input"
+                  rows="3"
+                  placeholder="也可直接写旋律片段。例：第1乐句：do do sol sol la la sol。"
+                ></textarea>
+                <input
+                  id="lesson-extra"
+                  class="lesson-extra-input"
+                  type="text"
+                  placeholder="补充要求，可不填。例：二年级、小组合作、难度低一点。"
+                />
+                <section id="lesson-proposal-panel" class="lesson-proposal-panel" hidden>
+                  <div class="lesson-proposal-header">
+                    <span>设计方案</span>
+                    <strong id="lesson-proposal-title"></strong>
+                  </div>
+                  <div id="lesson-material-badge" class="lesson-material-badge" hidden></div>
+                  <section id="lesson-score-review" class="lesson-score-review" hidden>
+                    <div class="lesson-score-review-header">
+                      <div>
+                        <span>识谱确认</span>
+                        <strong id="lesson-score-review-title">请核对识别结果</strong>
+                      </div>
+                      <button id="lesson-score-review-apply" class="secondary-action" type="button">用修正文字重新分析</button>
+                    </div>
+                    <p id="lesson-score-review-message"></p>
+                    <textarea
+                      id="lesson-score-review-text"
+                      rows="5"
+                      placeholder="如果识别不准，请在这里改成文字谱。例：第1乐句：2 2 3 5 1 6；第2乐句：6 1 6 2 2 1。"
+                    ></textarea>
+                    <div id="lesson-score-review-attempts" class="lesson-score-review-attempts"></div>
+                  </section>
+                  <p id="lesson-proposal-summary"></p>
+                  <div class="lesson-proposal-grid">
+                    <div>
+                      <h3>学生操作</h3>
+                      <ul id="lesson-proposal-flow"></ul>
+                    </div>
+                    <div>
+                      <h3>判断依据</h3>
+                      <ul id="lesson-proposal-checks"></ul>
+                    </div>
+                  </div>
+                  <section id="lesson-text-material-panel" class="lesson-text-material-panel" hidden>
+                    <div class="lesson-text-material-header">
+                      <div>
+                        <span>文字材料确认</span>
+                        <strong>确认从教案里提取出的音乐材料</strong>
+                      </div>
+                      <button id="lesson-text-material-confirm-button" class="secondary-action" type="button">确认文字材料</button>
+                    </div>
+                    <p id="lesson-text-material-message"></p>
+                    <textarea id="lesson-text-material-input" rows="5" placeholder="例：第1乐句：do re mi sol；第2乐句：sol mi re do"></textarea>
+                  </section>
+                  <section id="lesson-material-binding-panel" class="lesson-material-binding-panel" hidden>
+                    <div class="lesson-material-binding-header">
+                      <div>
+                        <span>材料放置确认</span>
+                        <strong>确认谱子和音频进入正确关卡</strong>
+                      </div>
+                      <label class="lesson-material-binding-confirm">
+                        <input id="lesson-material-binding-confirm" type="checkbox" />
+                        <span>我已确认材料放置</span>
+                      </label>
+                    </div>
+                    <div id="lesson-material-binding-status" class="lesson-material-binding-status"></div>
+                    <div id="lesson-material-binding-list" class="lesson-material-binding-list"></div>
+                  </section>
+                  <div id="lesson-unmatched-editor" class="lesson-proposal-editor" aria-label="确认专属生成规则" hidden>
+                    <label>
+                      <span>教学重点</span>
+                      <input id="lesson-unmatched-edit-focus" type="text" placeholder="例如：sol-mi 音高关系、f/p 力度强弱、切分节奏" />
+                    </label>
+                    <label>
+                      <span>投放环节</span>
+                      <input id="lesson-unmatched-edit-stage" type="text" placeholder="例如：学唱环节、聆听环节、节奏巩固环节" />
+                    </label>
+                    <label>
+                      <span>游戏名称</span>
+                      <input id="lesson-unmatched-edit-game-name" type="text" placeholder="例如：sol-mi 音高小路" />
+                    </label>
+                    <label class="wide">
+                      <span>学生操作</span>
+                      <textarea id="lesson-unmatched-edit-student-flow" rows="4" placeholder="每行写一个步骤，例如：先听辨 sol 和 mi；再拖拽音高角色；播放验证；最后跟琴模唱。"></textarea>
+                    </label>
+                    <label class="wide">
+                      <span>规则标准</span>
+                      <textarea id="lesson-unmatched-edit-rules" rows="4" placeholder="每行写一条规则或评价标准，例如：判断必须来自听到的音高；通关后要唱一唱并说明理由。"></textarea>
+                    </label>
+                  </div>
+                  <section id="lesson-audio-editor" class="lesson-audio-editor" hidden>
+                    <div class="lesson-audio-editor-header">
+                      <div>
+                        <span>音频切片</span>
+                        <strong>手动给每个乐句或题目绑定真实片段</strong>
+                      </div>
+                      <div class="lesson-audio-header-actions">
+                        <button id="lesson-audio-add-button" class="secondary-action" type="button">增加片段</button>
+                        <button id="lesson-audio-save-button" class="secondary-action" type="button">保存切片</button>
+                      </div>
+                    </div>
+                    <p id="lesson-audio-editor-tip">边听边切：播放原音，拖动定位条，点击“设为开始 / 设为结束”，再试听切片确认。</p>
+                    <audio id="lesson-audio-source" controls preload="metadata"></audio>
+                    <div id="lesson-audio-rows" class="lesson-audio-rows"></div>
+                    <div id="lesson-audio-status" class="lesson-audio-status" aria-live="polite"></div>
+                  </section>
+                  <div class="lesson-confirm-actions">
+                    <div id="lesson-confirm-hint" class="lesson-confirm-hint" aria-live="polite"></div>
+                    <button id="lesson-open-config-button" class="primary-action" type="button" hidden>调整游戏参数</button>
+                    <button id="lesson-confirm-button" class="primary-action" type="button" hidden>确认并生成</button>
+                    <button id="lesson-unmatched-confirm-button" class="primary-action" type="button" hidden>确认并生成</button>
+                    <button id="lesson-edit-button" class="secondary-action" type="button">继续调整</button>
+                  </div>
+                </section>
+                <div class="lesson-game-actions">
+                  <button id="lesson-generate-button" class="primary-action" type="submit">分析教案</button>
+                </div>
+              </form>
+            </section>
+          </section>
+        </section>
+      </section>
+
+      <section id="lesson-config-modal" class="lesson-config-modal" role="dialog" aria-modal="true" aria-labelledby="lesson-config-title" hidden>
+        <div class="lesson-config-backdrop" data-lesson-config-close></div>
+        <div class="lesson-config-dialog">
+          <button class="lesson-config-close" type="button" aria-label="关闭参数弹窗" data-lesson-config-close>×</button>
+          <section class="agent-template-panel" aria-label="教师游戏参数配置">
+            <div class="agent-template-panel-header">
+              <div>
+                <span>Classroom Setup</span>
+                <h2 id="lesson-config-title">已匹配游戏参数</h2>
+                <p>模板由智能体根据教案匹配，老师只调整难度、轮数、提示、情境和课堂节奏。</p>
+              </div>
+              <span class="agent-template-badge">不可切换模板</span>
+            </div>
+            <iframe
+              class="agent-template-frame"
+              data-template-context="lesson"
+              src="/template-console/?context=lesson"
+              title="本课游戏设置"
+            ></iframe>
+          </section>
+        </div>
+      </section>
+
+      <section id="direct-page" class="app-page" data-page="direct" hidden>
+        <section class="control-card main-dialogue-card app-work-card" aria-label="直接生成工具">
+          <img
+            class="dialogue-corner-mascot"
+            src="/static/assets/cute-mascots/mascot-cat.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <div class="main-dialogue-header">
+            <div>
+              <p class="eyebrow">Create</p>
+              <h2 id="direct-page-title">直接生成工具</h2>
+            </div>
+            <p>选择工具类型，写下课堂目标，生成可打开、可继续修改的音乐工具。</p>
+          </div>
+
+          <section id="direct-mode-panel" class="dialog-mode-panel dialog-mode-panel--direct">
+            <section class="tool-rail main-tool-rail" aria-label="工具类型">
+              <div class="section-heading">
+                <span>Tool</span>
+                <h2>选择工具</h2>
+              </div>
+              <div class="module-grid" role="radiogroup" aria-label="工具类型">
+                <button class="module-card active" type="button" data-module="listening">
+                  <span class="module-icon listen-icon"></span>
+                  <strong>聆听工具</strong>
+                  <span>音频对比、风格切换。</span>
+                </button>
+                <button class="module-card" type="button" data-module="performance">
+                  <span class="module-icon stage-icon"></span>
+                  <strong>表现闯关</strong>
+                  <span>歌曲学习拆成关卡。</span>
+                </button>
+                <button class="module-card" type="button" data-module="creation">
+                  <span class="module-icon create-icon"></span>
+                  <strong>创造拼图</strong>
+                  <span>拖拽素材，完成创作。</span>
+                </button>
+                <button class="module-card" type="button" data-module="music_game">
+                  <span class="module-icon game-icon"></span>
+                  <strong>音乐小游戏</strong>
+                  <span>节奏、旋律、音色游戏。</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="composer-card composer-card--embedded" aria-label="按需求直接生成">
+              <div class="section-heading">
+                <span>Prompt</span>
+                <h2>描述你的目标</h2>
+              </div>
+              <p class="generate-lede">写下曲目、年级、音乐要素和你希望学生完成的任务。</p>
+              <form id="generate-form" class="need-form">
+                <textarea
+                  id="need-input"
+                  rows="8"
+                  placeholder="例：为二年级《小雨沙沙》生成一个聆听活动：内置三种声音材料“沙锤雨声、木鱼短声、小鼓重声”，学生点击试听后比较音色，选择最像雨声的一项，并从“轻、密、柔和、短促、厚重”中选择两个证据词；答对条件是选“沙锤雨声”且证据包含“轻、密”或“柔和”，最后说出理由。"
+                  required
+                ></textarea>
+                <details class="example-drawer">
+                  <summary>示例提示词</summary>
+                  <div class="prompt-row">
+                    <button type="button" class="prompt-chip" data-prompt="为二年级《小雨沙沙》生成一个聆听活动：内置三种声音材料“沙锤雨声、木鱼短声、小鼓重声”，学生点击试听后比较音色，选择最像雨声的一项，并从“轻、密、柔和、短促、厚重”中选择两个证据词；答对条件是选“沙锤雨声”且证据包含“轻、密”或“柔和”，最后说出理由。">
+                      聆听示例
+                    </button>
+                    <button type="button" class="prompt-chip" data-prompt="为一年级二拍子歌曲《闪烁的小星》生成一个三关表现闯关游戏：第一关听 4 小节音乐并点击每小节第 1 拍，第二关按强拍拍手、弱拍拍腿完成节奏，第三关跟随提示完整唱回一句；每关连续命中 4 次通过，失败可重试。">
+                      表现示例
+                    </button>
+                    <button type="button" class="prompt-chip" data-prompt="为四年级五声音阶创编课生成一个分段连续旋律创造活动：素材固定为 do、re、mi、sol、la 和四分音符、八分音符、二分音符节奏卡；学生拖拽素材拼成 16 小节旋律，每 4 小节一段，规则是每小节 4 拍、结尾落在 do 或 la，支持试听本段和完整作品，满足规则即通关并说明创编理由。">
+                      创造示例
+                    </button>
+                    <button type="button" class="prompt-chip" data-prompt="为三年级旋律乐句结构课生成一个可玩的结构排列小游戏：内置三段旋律 A“do re mi sol”、B“mi sol la sol”、A 再现“do re mi sol”；学生点击试听三段，判断重复与对比，通过拖拽把结构卡排列成 A-B-A；排列正确后通关，并说出哪两段旋律相同、哪一段形成对比。">
+                      小游戏示例
+                    </button>
+                  </div>
+                </details>
+                <div id="polish-panel" class="polish-panel" hidden>
+                  <label for="polished-input">润色描述</label>
+                  <textarea id="polished-input" rows="5"></textarea>
+                  <div class="polish-actions">
+                    <button id="apply-polish-button" type="button">采用这版</button>
+                    <button id="close-polish-button" type="button">关闭</button>
+                  </div>
+                </div>
+                <div class="form-actions">
+                  <button id="polish-button" class="secondary-action" type="button">润色想法</button>
+                  <button class="primary-action" type="submit">生成工具</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="agent-template-panel" aria-label="教师游戏参数配置">
+              <div class="agent-template-panel-header">
+                <div>
+                  <span>Game Config</span>
+                  <h2>游戏参数配置</h2>
+                  <p>直接生成时可以自己挑玩法，再调整难度、皮肤、提示和通关标准。</p>
+                </div>
+                <span class="agent-template-badge">可自定义</span>
+              </div>
+              <iframe
+                class="agent-template-frame"
+                data-template-context="direct"
+                src="/template-console/?context=direct"
+                title="直接生成游戏参数配置"
+                loading="lazy"
+              ></iframe>
+            </section>
+
+            <aside class="conversation-card assistant-card assistant-card--home assistant-card--direct" aria-label="灵感助手">
+              <div class="assistant-header">
+                <div>
+                  <span>Idea Buddy</span>
+                  <h2>灵感助手</h2>
+                </div>
+                <img
+                  class="assistant-mascot"
+                  src="/static/assets/cute-mascots/mascot-cat.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </div>
+              <p class="assistant-lede">想法还不完整时，先让它整理成可生成描述。</p>
+              <div class="chat-panel">
+                <div id="chat-messages" class="chat-messages" aria-live="polite">
+                  <article class="chat-message assistant">
+                    <span>智能体</span>
+                    <p>你可以先随便说课堂难点，我会先和你聊清楚，再整理成能生成的描述。</p>
+                  </article>
+                </div>
+                <form id="chat-form" class="chat-form">
+                  <textarea
+                    id="chat-input"
+                    rows="3"
+                    placeholder="例：一年级《月饼歌》，想让学生理解乐句结构。"
+                    required
+                  ></textarea>
+                  <button id="chat-submit" type="submit">发送</button>
+                </form>
+              </div>
+            </aside>
+          </section>
+        </section>
+      </section>
+
+      <section id="library-page" class="app-page" data-page="library" hidden>
+        <section class="output-card results-dock app-library" aria-label="我的">
+          <header class="my-page-header">
+            <div class="section-heading">
+              <span>Mine</span>
+              <h2>我的</h2>
+            </div>
+            <div class="my-tabs" role="tablist" aria-label="我的页面切换">
+              <button id="my-works-tab" class="active" type="button" data-my-view="works" role="tab" aria-selected="true" aria-controls="my-works-panel">我的作品</button>
+              <button id="my-account-tab" type="button" data-my-view="account" role="tab" aria-selected="false" aria-controls="my-account-panel">我的账户</button>
+            </div>
+          </header>
+
+          <section id="my-works-panel" class="my-panel my-panel--works" data-my-panel="works" role="tabpanel" aria-labelledby="my-works-tab">
+            <section id="direct-result-guide" class="direct-result-guide" data-state="idle" aria-live="polite" hidden>
+              <div class="direct-result-guide-copy">
+                <span class="direct-result-guide-kicker">直接生成</span>
+                <h3 id="direct-result-guide-title">正在生成</h3>
+                <p id="direct-result-guide-message">正在生成，你已经来到“我的作品”。生成完成后，新作品会出现在下方。</p>
+              </div>
+              <div class="direct-result-guide-actions">
+                <a id="direct-result-preview-link" class="direct-result-preview-link" target="_blank" rel="noreferrer" hidden>试玩游戏</a>
+                <button id="direct-result-focus-button" class="direct-result-focus-button" type="button" hidden>继续修改</button>
+              </div>
+            </section>
+            <section id="generation-status-panel" class="generation-status-panel" data-status="idle" aria-live="polite">
+              <header class="generation-status-header">
+                <div>
+                  <span>Now Building</span>
+                  <h3>生成状态</h3>
+                </div>
+                <strong class="generation-status-pill">等待提交</strong>
+              </header>
+              <div id="timeline" class="timeline">
+                <article class="timeline-item idle">
+                  <strong>等待需求</strong>
+                  <p>点击“生成工具”或“确认并生成”后，这里会显示实时进度。</p>
+                </article>
+              </div>
+
+              <section id="job-log" class="job-log" hidden>
+                <div class="job-log-header">
+                  <span>日志</span>
+                  <strong id="job-log-status">等待中</strong>
+                </div>
+                <ol id="job-log-list"></ol>
+              </section>
+            </section>
+
+            <div id="artifact-list" class="artifact-list">
+              <article class="empty-state">
+                <div class="empty-illustration" aria-hidden="true"></div>
+                <strong>还没有生成结果</strong>
+                <p>生成完成后在这里打开和继续修改。</p>
+              </article>
+            </div>
+
+            <section id="artifact-detail-panel" class="artifact-detail-panel" hidden>
+              <div class="artifact-detail-empty">
+                <strong>选择一个作品继续修改</strong>
+                <p>点开卡片后，这里会显示当前作品的预览入口、生成摘要和修改工具。</p>
+              </div>
+            </section>
+          </section>
+
+          <section id="my-account-panel" class="my-panel my-panel--account" data-my-panel="account" role="tabpanel" aria-labelledby="my-account-tab" hidden>
+            <article class="account-card">
+              <div class="account-card-header">
+                <span>Account</span>
+                <h3>我的账户</h3>
+              </div>
+              <dl class="account-info">
+                <div>
+                  <dt>当前邮箱</dt>
+                  <dd id="my-account-email">未登录</dd>
+                </div>
+              </dl>
+              <form id="account-password-form" class="account-form">
+                <label>
+                  <span>邮箱验证码</span>
+                  <input id="account-reset-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required />
+                </label>
+                <button id="account-code-button" class="secondary-action" type="button">发送验证码</button>
+                <label>
+                  <span>新密码</span>
+                  <input id="account-new-password" type="password" autocomplete="new-password" minlength="8" required />
+                </label>
+                <label>
+                  <span>确认新密码</span>
+                  <input id="account-confirm-password" type="password" autocomplete="new-password" minlength="8" required />
+                </label>
+                <button class="primary-action" type="submit">修改密码</button>
+              </form>
+              <p id="account-status" class="account-status" role="status" aria-live="polite"></p>
+              <button id="account-logout-button" class="account-logout-button" type="button">退出登录</button>
+            </article>
+          </section>
+        </section>
+      </section>
+
+    </main>
+
+    <template id="artifact-template">
+      <article class="artifact-card">
+        <div class="artifact-card-preview" role="button" tabindex="0" aria-label="预览作品并继续修改">
+          <iframe class="artifact-preview-frame" title="作品预览" loading="lazy"></iframe>
+          <span class="artifact-preview-empty">暂无预览</span>
+        </div>
+        <button class="artifact-card-main" type="button">
+          <span class="artifact-type"></span>
+          <p class="artifact-mode"></p>
+          <h3></h3>
+          <p class="artifact-subtitle"></p>
+        </button>
+        <dl class="artifact-meta"></dl>
+        <div class="artifact-actions">
+          <button class="artifact-select-button" type="button">继续修改</button>
+          <a class="preview-link" target="_blank" rel="noreferrer">试玩游戏</a>
+          <a class="download-link">下载ZIP</a>
+          <button class="delete-artifact-button" type="button">删除</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="artifact-detail-template">
+      <article class="artifact-detail-card">
+        <header class="artifact-detail-hero">
+          <div>
+            <span class="artifact-type"></span>
+            <p class="artifact-mode"></p>
+            <h3></h3>
+            <p class="artifact-subtitle"></p>
+          </div>
+          <div class="artifact-actions">
+            <a class="preview-link" target="_blank" rel="noreferrer">试玩游戏</a>
+            <a class="download-link">下载ZIP</a>
+            <button class="delete-artifact-button" type="button">删除</button>
+          </div>
+        </header>
+        <dl class="artifact-meta"></dl>
+        <section class="mode-report" hidden>
+          <div class="mode-report-header">
+            <span>质量检查</span>
+            <strong class="mode-report-mode"></strong>
+          </div>
+          <p class="mode-report-summary"></p>
+          <ul class="mode-report-layers"></ul>
+        </section>
+        <section class="runtime-report" hidden>
+          <div class="runtime-report-header">
+            <span>游戏版本</span>
+            <strong class="runtime-status"></strong>
+          </div>
+          <p class="runtime-summary"></p>
+        </section>
+        <section class="template-switch-notice" hidden>
+          <div class="template-switch-notice-header">
+            <span>玩法切换</span>
+            <strong class="template-switch-notice-status"></strong>
+          </div>
+          <p class="template-switch-notice-message"></p>
+          <div class="template-switch-notice-actions"></div>
+        </section>
+        <section class="teacher-confirmation-panel" hidden>
+          <div class="teacher-confirmation-header">
+            <span>材料确认</span>
+            <strong class="teacher-confirmation-status"></strong>
+          </div>
+          <div class="teacher-confirmation-list"></div>
+        </section>
+        <section class="brain-report" hidden>
+          <div class="brain-report-header">
+            <span>智能体规划</span>
+            <strong class="brain-score"></strong>
+          </div>
+          <p class="brain-summary"></p>
+          <div class="brain-columns">
+            <div>
+              <h4>依据</h4>
+              <ul class="brain-decisions"></ul>
+            </div>
+            <div>
+              <h4>自检</h4>
+              <ul class="brain-actions"></ul>
+            </div>
+          </div>
+        </section>
+        <section class="lesson-analysis" hidden>
+          <div class="lesson-analysis-header">
+            <span>教案识别</span>
+            <strong class="lesson-game-name"></strong>
+          </div>
+          <p class="lesson-analysis-material"></p>
+          <p class="lesson-analysis-summary"></p>
+        </section>
+        <section class="execution-report" hidden>
+          <div class="execution-report-header">
+            <span>质量检查</span>
+            <strong class="execution-status"></strong>
+          </div>
+          <p class="execution-summary"></p>
+          <ul class="execution-agents"></ul>
+        </section>
+        <section class="upgrade-panel" hidden>
+          <div class="upgrade-panel-header">
+            <span>八、优化建议</span>
+            <strong class="upgrade-status"></strong>
+          </div>
+          <p class="upgrade-summary"></p>
+          <ul class="upgrade-focus-list"></ul>
+          <button class="upgrade-button" type="button">优化作品</button>
+        </section>
+        <section class="revision-chat-panel">
+          <div class="revision-chat-header">
+            <span>对话修改</span>
+            <button class="revision-chat-apply" type="button" disabled>应用修改</button>
+          </div>
+          <div class="revision-version-context" hidden>
+            <span>当前编辑版本</span>
+            <strong class="revision-version-name"></strong>
+            <p class="revision-version-note"></p>
+          </div>
+          <div class="revision-chat-messages" aria-live="polite">
+            <article class="revision-chat-message assistant">
+              <span>修改助手</span>
+              <p>告诉我你想怎么改当前网页，我会先整理成修改说明，再交给网页修改模型执行。</p>
+            </article>
+          </div>
+          <form class="revision-chat-form" action="javascript:void(0)">
+            <textarea class="revision-chat-input" rows="3" placeholder="例：保留 sol-mi 目标，把第一关再简单一点，按钮更大。"></textarea>
+            <button class="revision-chat-send" type="button">发送理解</button>
+          </form>
+        </section>
+        <form class="revision-form" hidden>
+          <label>继续修改</label>
+          <textarea class="revision-input" rows="3" placeholder="例：第二关更简单；界面更适合低年级；增加双声部。"></textarea>
+          <button type="submit">提交修改</button>
+        </form>
+      </article>
+    </template>
+
+    <script src="/static/app.js?v=20260523-compact-status-v2"></script>
+  </body>
+</html>

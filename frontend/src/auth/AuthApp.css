@@ -1,0 +1,307 @@
+:root {
+  --ivory: #f8f2e5;
+  --linen: #fffaf1;
+  --ink: #17231d;
+  --muted: #657067;
+  --forest: #233f31;
+  --sage: #dfe8d7;
+  --gold: #c99a43;
+  --clay: #b9674f;
+  --teal: #2e8177;
+  --line: rgba(23, 35, 29, 0.12);
+  --panel: rgba(255, 250, 241, 0.84);
+  --shadow-soft: 0 18px 55px rgba(35, 63, 49, 0.12);
+  --shadow-deep: 0 30px 90px rgba(35, 63, 49, 0.18);
+  color: var(--ink);
+  background: var(--ivory);
+  font-family: "Avenir Next", "Gill Sans", "PingFang SC", "Noto Sans SC", sans-serif;
+}
+
+@font-face {
+  font-family: "Buyilehu Play";
+  src: url("/static/assets/fonts/ZCOOLKuaiLe-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.auth-page {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(320px, 540px) minmax(340px, 460px);
+  align-content: center;
+  justify-content: center;
+  gap: clamp(28px, 5vw, 64px);
+  min-height: 100vh;
+  padding: clamp(86px, 12vh, 128px) clamp(18px, 5vw, 72px) clamp(32px, 8vh, 72px);
+  color: var(--ink);
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 15% 12%, rgba(201, 154, 67, 0.23), transparent 26%),
+    radial-gradient(circle at 88% 8%, rgba(46, 129, 119, 0.2), transparent 24%),
+    radial-gradient(circle at 70% 92%, rgba(185, 103, 79, 0.16), transparent 28%),
+    linear-gradient(135deg, #f8f2e5 0%, #eef3e7 58%, #f7e5d7 100%);
+}
+
+.auth-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(35, 63, 49, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(35, 63, 49, 0.05) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 82%);
+}
+
+.auth-school-mark {
+  position: absolute;
+  right: clamp(18px, 4vw, 46px);
+  top: clamp(18px, 4vw, 38px);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.auth-school-mark img {
+  display: block;
+  width: clamp(132px, 17vw, 214px);
+  max-height: 62px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  opacity: 0.8;
+}
+
+.auth-brand-panel,
+.auth-form-panel {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.auth-brand-panel {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.auth-agent-logo {
+  display: block;
+  width: min(590px, 90vw);
+  margin-bottom: -8px;
+  mix-blend-mode: multiply;
+}
+
+.auth-agent-title {
+  margin: 0;
+  color: var(--forest);
+  font-family: "Buyilehu Play", "STKaiti", "KaiTi", "PingFang SC", sans-serif;
+  font-size: clamp(1.32rem, 2.25vw, 1.95rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-shadow: 0 3px 0 rgba(255, 250, 241, 0.72), 0 12px 24px rgba(35, 63, 49, 0.12);
+}
+
+.auth-form-panel {
+  display: grid;
+  align-items: center;
+}
+
+.auth-card {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow-deep);
+  backdrop-filter: blur(18px);
+}
+
+.auth-card :where(.rt-CardInner) {
+  padding: clamp(24px, 4.2vw, 38px);
+}
+
+.auth-card h2 {
+  color: var(--ink);
+  font-size: clamp(1.8rem, 3vw, 2.35rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.form-subtitle {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.auth-card :where(.rt-TabsList) {
+  width: 100%;
+  margin-bottom: 18px;
+  border-bottom-color: var(--line);
+}
+
+.auth-card :where(.rt-TabsTrigger) {
+  flex: 1;
+  min-width: 0;
+  justify-content: center;
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.auth-card :where(.rt-TabsTrigger[data-state="active"]) {
+  color: var(--forest);
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.auth-field {
+  display: grid;
+  gap: 8px;
+  color: var(--forest);
+  font-weight: 900;
+}
+
+.auth-field > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+}
+
+.auth-field svg {
+  color: var(--teal);
+}
+
+.auth-form :where(.rt-TextFieldRoot) {
+  min-height: 48px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.password-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: -4px;
+  border: 0;
+  border-radius: 6px;
+  color: #53645c;
+  background: transparent;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: var(--ink);
+  background: rgba(35, 63, 49, 0.08);
+}
+
+.primary-auth-action,
+.secondary-auth-action {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 8px;
+  font-weight: 900;
+  white-space: normal;
+}
+
+.primary-auth-action {
+  margin-top: 3px;
+  color: var(--linen);
+  background: linear-gradient(135deg, var(--forest), var(--teal));
+  box-shadow: 0 18px 34px rgba(46, 129, 119, 0.22);
+}
+
+.secondary-auth-action {
+  color: var(--forest);
+}
+
+.auth-callout {
+  border-radius: 8px;
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 860px) {
+  .auth-page {
+    grid-template-columns: minmax(0, 520px);
+    gap: 28px;
+    padding-top: 96px;
+  }
+
+  .auth-brand-panel {
+    gap: 12px;
+  }
+
+  .auth-agent-logo {
+    width: min(460px, 84vw);
+  }
+}
+
+@media (max-width: 520px) {
+  .auth-page {
+    padding: 92px 16px 28px;
+  }
+
+  .auth-school-mark {
+    right: 16px;
+    top: 16px;
+  }
+
+  .auth-school-mark img {
+    width: min(164px, 48vw);
+  }
+
+  .auth-agent-logo {
+    width: min(350px, 82vw);
+    margin-bottom: -6px;
+  }
+
+  .auth-agent-title {
+    font-size: clamp(1.18rem, 5.6vw, 1.56rem);
+  }
+
+  .auth-card :where(.rt-CardInner) {
+    padding: 18px;
+  }
+
+  .auth-card :where(.rt-TabsTrigger) {
+    font-size: 0.84rem;
+  }
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="音色徽章">
+  <circle cx="80" cy="80" r="72" fill="#eef7f0"/>
+  <circle cx="70" cy="70" r="34" fill="none" stroke="#173b35" stroke-width="10"/>
+  <path d="M95 95l34 34" stroke="#173b35" stroke-width="12" stroke-linecap="round"/>
+  <path d="M46 44c20-18 46-18 68 0" fill="none" stroke="#f7c948" stroke-width="8" stroke-linecap="round"/>
+</svg>

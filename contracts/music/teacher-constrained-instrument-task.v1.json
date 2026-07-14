@@ -1,0 +1,38 @@
+{
+  "version": "teacher_constrained_instrument_task_v1",
+  "taskKinds": [
+    "free_play",
+    "steady_beat",
+    "rhythm_echo",
+    "melody_sequence",
+    "ensemble_cue",
+    "constrained_composition"
+  ],
+  "gradePresets": ["lower_primary", "middle_primary", "upper_primary"],
+  "eventFields": ["timeMs", "zoneId", "midi"],
+  "timedEventStatuses": ["correct", "early", "late", "extra", "missed", "rest_error"],
+  "compositionRuleFields": [
+    "allowedZoneIds",
+    "allowedMidi",
+    "requiredEventCount",
+    "endingMidi",
+    "requiredBeats",
+    "restWindowsBeats",
+    "requiredRestCount"
+  ],
+  "restWindowDefinition": {
+    "field": "restWindowsBeats",
+    "appliesTo": "constrained_composition",
+    "item": "[startBeat, endBeat)",
+    "studentEventViolation": "rest_window_played:<index>",
+    "requiredRestCount": "When supplied with restWindowsBeats, the number of windows must be within { min, max }."
+  },
+  "evidenceStatuses": ["evidence_pass", "adjust", "participation_only"],
+  "evidenceBoundary": "objective_only",
+  "teacherOnlyJudgements": [
+    "musical_expression",
+    "technique",
+    "ensemble_balance",
+    "creation_reason"
+  ]
+}
