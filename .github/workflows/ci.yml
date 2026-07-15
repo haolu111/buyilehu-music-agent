@@ -49,7 +49,7 @@ jobs:
         app:
           - frontend/teacher-web
           - frontend/student-web
-          - backend/python-capability-library/frontend-demo
+          - frontend/review-console
     defaults:
       run:
         working-directory: ${{ matrix.app }}

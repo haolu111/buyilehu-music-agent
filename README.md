@@ -46,7 +46,7 @@ uvicorn app.main:app --reload --port 8000
 前端：
 
 ```bash
-cd frontend
+cd frontend\review-console
 npm ci
 npm run dev -- --port 5176
 ```

@@ -1,16 +1,18 @@
 .env
-<<<<<<< HEAD
 .env.*
 !.env.example
+.env.local
 .venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.npm-cache/
 node_modules/
-frontend/node_modules/
-frontend/dist/
+dist/
+target/
+*.tsbuildinfo
 frontend/.tmp*
-frontend/tsconfig.tsbuildinfo
+frontend/review-console/.legacy-app-artifacts/
 .music-agent-runtime/
 app/uploads/*
 !app/uploads/.gitkeep
@@ -18,8 +20,4 @@ app/output/*
 !app/output/.gitkeep
 *.log
 .DS_Store
-=======
-.env.local
-.npm-cache/
 %SystemDrive%/
->>>>>>> 9f27bf0 (保存我的本地修改)

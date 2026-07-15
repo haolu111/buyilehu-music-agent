@@ -16,7 +16,7 @@ from app.services.music_education_review_catalog import (
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
-FRONTEND_DIST_DIR = BASE_DIR.parent / "frontend" / "dist"
+FRONTEND_DIST_DIR = BASE_DIR.parent / "frontend" / "review-console" / "dist"
 ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(

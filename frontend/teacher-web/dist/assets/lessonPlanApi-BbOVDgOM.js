@@ -1,1 +1,0 @@
-import{z as e,A as a}from"./index-065GnulA.js";const l={upload(n,t){const s=new FormData;return s.append("file",n),t&&s.append("title",t),e(a.post("/lesson-plans",s))},getLessonPlan(n){return e(a.get(`/lesson-plans/${n}`))},listMine(){return e(a.get("/lesson-plans/mine"))}};export{l};
