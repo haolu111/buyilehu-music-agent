@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.buyilehu.musicagent.infrastructure.capability.RedisStringTests
--------------------------------------------------------------------------------
-Tests run: 15, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.009 s - in com.buyilehu.musicagent.infrastructure.capability.RedisStringTests

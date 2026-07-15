@@ -1,8 +1,3 @@
-# 音乐教育组件总审核台
-
-<<<<<<< HEAD
-这是截图所示的“音乐教育组件总审核台”。它集中审核正式注册的基础与专业组件、课堂活动、完整游戏模板、虚拟教具、虚拟乐器和音乐材料绑定器，并保留审核预览、真实音色试听和全屏预览入口。
-=======
 ## Docker Quick Start
 
 The recommended local setup starts MySQL, Redis, RabbitMQ, the Python capability service,
@@ -57,7 +52,7 @@ npm run dev -- --port 5176
 ```
 
 打开：`http://127.0.0.1:5176/template-console/music-education-review.html`
-=======
+
 ```powershell
 java -version
 mvn -version
@@ -81,7 +76,6 @@ mysql -uroot -p123456 -e "CREATE DATABASE IF NOT EXISTS buyilehu_music_agent DEF
 ```
 
 The local profile runs Flyway automatically. On an empty database, the backend creates the schema from:
->>>>>>> 9f27bf0 (保存我的本地修改)
 
 生产预览可运行：
 
@@ -90,23 +84,21 @@ docker compose up --build
 ```
 
 <<<<<<< HEAD
+
 然后打开：`http://127.0.0.1:8000/template-console/music-education-review.html`
-=======
+
 Local demo users and component definitions are loaded from `db/local`. Existing databases
 without Flyway history are baselined at version 1 and then receive later migrations. Back up
 an existing database before its first migration because version 2 converts legacy MyISAM tables
 to InnoDB and adds uniqueness constraints and query indexes.
 
 If you previously imported `database/buyilehu_music_agent_schema.sql`, recreate the local database before starting the backend. That file is an older schema and does not match the current Java entities.
->>>>>>> 9f27bf0 (保存我的本地修改)
 
-## 安全边界
+安全边界
 
-<<<<<<< HEAD
 - 后端只提供审核目录、确定性审核预览、静态资源和健康检查。
 - 不暴露文件上传、账户、生成任务、模型调用或任意命令执行接口。
 - 审核结果里的“智能体可调用”是正式注册表的受限能力标记，不会从页面执行模型或系统命令。
-=======
 ### 2. Start RabbitMQ and Redis
 
 The generation API publishes jobs to RabbitMQ and stores live progress in Redis. Start both services before the Java backend. The default connections are:
@@ -256,4 +248,3 @@ Student: student001 / 123456
 - `PYTHON_CAPABILITY_CALL_MODE=primary` uses Python-generated activity runtime; `shadow` records it for inspection; `disabled` uses Java fallback runtime.
 - Both frontend apps proxy `/api` requests to `http://localhost:8080`.
 - The backend local profile points to your local MySQL database and uses Flyway migrations to keep the schema aligned with the Java entities.
->>>>>>> 9f27bf0 (保存我的本地修改)
