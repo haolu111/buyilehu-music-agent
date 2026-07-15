@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Clap action card">
-  <rect width="240" height="240" rx="24" fill="#fff7e8"/>
-  <circle cx="120" cy="62" r="26" fill="#ffd166" stroke="#243b53" stroke-width="8"/>
-  <path d="M120 92v58M86 126h68M96 194l24-44 24 44" fill="none" stroke="#243b53" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
-  <path d="M64 86l32 30M176 86l-32 30M48 60l-18-18M192 60l18-18" fill="none" stroke="#e76f51" stroke-linecap="round" stroke-width="9"/>
-</svg>

@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Snap action card">
-  <rect width="240" height="240" rx="24" fill="#fff0f6"/>
-  <circle cx="120" cy="62" r="25" fill="#f6adcd" stroke="#243b53" stroke-width="8"/>
-  <path d="M120 92v58M88 124h64M98 194l22-44 22 44" fill="none" stroke="#243b53" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
-  <path d="M58 84l36 18M182 84l-36 18M48 52l-18-20M192 52l18-20M48 116h24M168 116h24" fill="none" stroke="#b83280" stroke-linecap="round" stroke-width="8"/>
-</svg>

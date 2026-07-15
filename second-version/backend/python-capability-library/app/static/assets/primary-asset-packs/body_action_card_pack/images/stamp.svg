@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Stamp action card">
-  <rect width="240" height="240" rx="24" fill="#eef7ff"/>
-  <circle cx="120" cy="58" r="25" fill="#90cdf4" stroke="#243b53" stroke-width="8"/>
-  <path d="M120 88v58M88 118h64M102 188l18-42 26 42" fill="none" stroke="#243b53" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
-  <path d="M70 204h100M78 184h38M144 184h38M160 174l22-22" fill="none" stroke="#277da1" stroke-linecap="round" stroke-width="9"/>
-</svg>

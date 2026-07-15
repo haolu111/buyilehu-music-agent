@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 180" role="img" aria-label="Music learning reward badge preview">
-  <rect width="560" height="180" fill="#fffaf0"/>
-  <g transform="translate(70 90)"><circle r="48" fill="#ffd166"/><path d="M0-28l9 18 20 3-15 14 4 20-18-10-18 10 4-20-15-14 20-3z" fill="#243b53"/></g>
-  <g transform="translate(210 90)"><circle r="48" fill="#9be7c7"/><path d="M-24 4c12-28 36-28 48 0-12 28-36 28-48 0z" fill="none" stroke="#243b53" stroke-width="8"/><circle r="8" fill="#243b53"/></g>
-  <g transform="translate(350 90)"><circle r="48" fill="#90cdf4"/><path d="M-24 8c12-24 36-24 48 0M-30 28h60M-18-10h36" fill="none" stroke="#243b53" stroke-linecap="round" stroke-width="8"/></g>
-  <g transform="translate(490 90)"><circle r="48" fill="#f6adcd"/><path d="M-20 20V-12l18-10v32l22-12v-32" fill="none" stroke="#243b53" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/></g>
-</svg>

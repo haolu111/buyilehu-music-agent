@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 220" role="img" aria-label="活泼情绪符号图卡">
-  <rect width="320" height="220" rx="18" fill="#ecfbf5"/>
-  <path d="M54 160l38-62 36 42 42-76 42 76 36-42 22 62" fill="none" stroke="#176a5b" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="94" cy="72" r="18" fill="#f1c36a"/>
-  <circle cx="206" cy="58" r="18" fill="#f1c36a"/>
-  <path d="M70 184h180" stroke="#7fcbb6" stroke-width="10" stroke-linecap="round"/>
-  <path d="M238 48l24-18m-1 45l30-4" stroke="#e08545" stroke-width="8" stroke-linecap="round"/>
-</svg>

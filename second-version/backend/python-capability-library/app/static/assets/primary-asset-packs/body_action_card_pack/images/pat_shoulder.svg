@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Pat shoulder action card">
-  <rect width="240" height="240" rx="24" fill="#f1f8e9"/>
-  <circle cx="120" cy="60" r="25" fill="#c5e86c" stroke="#243b53" stroke-width="8"/>
-  <path d="M120 90v58M86 120h68M98 194l22-46 22 46" fill="none" stroke="#243b53" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
-  <path d="M74 104l32 18M166 104l-32 18M56 94l18 10M184 94l-18 10" fill="none" stroke="#5f8d4e" stroke-linecap="round" stroke-width="9"/>
-</svg>

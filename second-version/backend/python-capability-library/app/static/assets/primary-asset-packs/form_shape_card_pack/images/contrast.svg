@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Contrast form card">
-  <rect width="180" height="180" rx="24" fill="#fff0f6"/>
-  <circle cx="62" cy="90" r="42" fill="#ffd166" stroke="#243b53" stroke-width="8"/>
-  <rect x="92" y="48" width="56" height="84" rx="12" fill="#90cdf4" stroke="#243b53" stroke-width="8"/>
-  <path d="M40 142l100-104" stroke="#e76f51" stroke-linecap="round" stroke-width="10"/>
-</svg>

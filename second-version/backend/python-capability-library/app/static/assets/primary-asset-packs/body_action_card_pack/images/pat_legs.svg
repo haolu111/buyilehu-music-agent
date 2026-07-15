@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Pat legs action card">
-  <rect width="240" height="240" rx="24" fill="#e9fff5"/>
-  <circle cx="120" cy="60" r="25" fill="#9be7c7" stroke="#243b53" stroke-width="8"/>
-  <path d="M120 90v58M86 122h68M92 190l28-42 28 42" fill="none" stroke="#243b53" stroke-linecap="round" stroke-linejoin="round" stroke-width="10"/>
-  <path d="M72 178h38M130 178h38M64 158l24 14M176 158l-24 14" fill="none" stroke="#2a9d8f" stroke-linecap="round" stroke-width="9"/>
-</svg>
