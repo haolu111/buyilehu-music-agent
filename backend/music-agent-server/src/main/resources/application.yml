@@ -1,0 +1,101 @@
+spring:
+  application:
+    name: music-agent-server
+  profiles:
+    default: local
+  datasource:
+    hikari:
+      max-lifetime: ${DB_POOL_MAX_LIFETIME:90000}
+      keepalive-time: ${DB_POOL_KEEPALIVE_TIME:30000}
+      idle-timeout: ${DB_POOL_IDLE_TIMEOUT:60000}
+      validation-timeout: ${DB_POOL_VALIDATION_TIMEOUT:5000}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Shanghai
+  flyway:
+    enabled: true
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:true}
+    baseline-version: 1
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: auto
+        default-requeue-rejected: false
+        prefetch: 1
+        concurrency: ${GENERATION_CONSUMER_CONCURRENCY:1}
+        max-concurrency: ${GENERATION_CONSUMER_MAX_CONCURRENCY:3}
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DATABASE:0}
+    timeout: ${REDIS_TIMEOUT:2s}
+  cache:
+    type: ${CACHE_TYPE:redis}
+    redis:
+      time-to-live: ${CACHE_TTL:6h}
+      cache-null-values: false
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  distributed-lock:
+    enabled: ${DISTRIBUTED_LOCK_ENABLED:true}
+    key-prefix: ${DISTRIBUTED_LOCK_KEY_PREFIX:music-agent:lock:}
+    wait-timeout: ${DISTRIBUTED_LOCK_WAIT_TIMEOUT:2s}
+    lease-timeout: ${DISTRIBUTED_LOCK_LEASE_TIMEOUT:30s}
+    retry-interval: ${DISTRIBUTED_LOCK_RETRY_INTERVAL:50ms}
+  async-generation:
+    enabled: ${ASYNC_GENERATION_ENABLED:true}
+    exchange: ${GENERATION_EXCHANGE:music-agent.generation}
+    queue: ${GENERATION_QUEUE:music-agent.generation.jobs}
+    routing-key: ${GENERATION_ROUTING_KEY:generation.job.created}
+    dead-letter-exchange: ${GENERATION_DLX:music-agent.generation.dlx}
+    dead-letter-queue: ${GENERATION_DLQ:music-agent.generation.jobs.dlq}
+    status-channel: ${GENERATION_STATUS_CHANNEL:music-agent:generation:status-events}
+    status-ttl: ${GENERATION_STATUS_TTL:24h}
+    outbox-publish-interval-ms: ${GENERATION_OUTBOX_PUBLISH_INTERVAL_MS:1000}
+    outbox-batch-size: ${GENERATION_OUTBOX_BATCH_SIZE:20}
+    outbox-max-attempts: ${GENERATION_OUTBOX_MAX_ATTEMPTS:10}
+    outbox-processing-timeout: ${GENERATION_OUTBOX_PROCESSING_TIMEOUT:2m}
+    publisher-confirm-timeout: ${GENERATION_PUBLISHER_CONFIRM_TIMEOUT:5s}
+    sse-timeout-ms: ${GENERATION_SSE_TIMEOUT_MS:1800000}
+    sse-heartbeat-ms: ${GENERATION_SSE_HEARTBEAT_MS:15000}
+  storage:
+    root: ${STORAGE_PATH:./storage/uploads}
+  python-capability:
+    enabled: ${PYTHON_CAPABILITY_ENABLED:true}
+    call-mode: ${PYTHON_CAPABILITY_CALL_MODE:shadow}
+    base-url: ${PYTHON_CAPABILITY_BASE_URL:http://localhost:8001}
+    connect-timeout-ms: ${PYTHON_CAPABILITY_CONNECT_TIMEOUT_MS:2000}
+    read-timeout-ms: ${PYTHON_CAPABILITY_READ_TIMEOUT_MS:60000}
+    node-type-activity-id-mappings:
+      entry: lesson_opening_hook
+      meter_experience: meter_body_movement
+      rhythm_game: rhythm_question_answer
+      creation_workshop: xylophone_creation
+      summary: exit_ticket_review

@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ee35602b-23f9-407c-985f-1992922e7f14" name="Changes" comment="combine">
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/dto/response/GenerationJobStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/event/GenerationJobCreatedEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/service/GenerationJobStatusService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/service/GenerationSseService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/config/AsyncGenerationProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/config/GenerationSseConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/config/RabbitGenerationConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/config/RedisGenerationStatusConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/messaging/GenerationJobConsumer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/messaging/GenerationJobDispatchListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/messaging/GenerationJobMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/messaging/SynchronousGenerationJobListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/status/GenerationJobStatusStore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/status/InMemoryGenerationJobStatusStore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/status/RedisGenerationJobStatusStore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/src/test/java/com/buyilehu/musicagent/infrastructure/capability/RedisStringTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/storage/uploads/lesson-plans/dc244af9-d4e0-4f1c-bfcf-c316a7bca443.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/music-agent-server/storage/uploads/lesson-plans/e33effe3-dbb3-4d6d-a0a3-07b6ab0c255e.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/service/GenerationJobService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/service/GenerationJobService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/service/impl/GenerationJobServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/application/service/impl/GenerationJobServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/repository/GenerationJobRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/repository/GenerationJobRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/repository/InteractivePackageRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/infrastructure/repository/InteractivePackageRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/presentation/controller/GenerationJobController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/java/com/buyilehu/musicagent/presentation/controller/GenerationJobController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/music-agent-server/src/test/java/com/buyilehu/musicagent/MusicAgentServerApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/music-agent-server/src/test/java/com/buyilehu/musicagent/MusicAgentServerApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/teacher-web/src/api/packageApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/teacher-web/src/api/packageApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/teacher-web/src/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/teacher-web/src/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/teacher-web/src/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/teacher-web/src/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/teacher-web/src/views/PackageGenerateView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/teacher-web/src/views/PackageGenerateView.vue" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="D:\java1\apache-maven-3.8.6\repository" />
+        <option name="userSettingsFile" value="D:\java1\apache-maven-3.8.6\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="jdkForImporter" value="1.8 (3)" />
+        <option name="workspaceImportForciblyTurnedOn" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="17" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="3FUmqCIc7uyAzgnldbHYRCiAvVd" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "JUnit.PythonCapabilityClientTest.executor": "Run",
+    "JUnit.RedisStringTests.executor": "Run",
+    "JUnit.RedisStringTests.testString.executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.MusicAgentServerApplication.executor": "Run",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/trae-task-lab/buyilehu-music-agent/database",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "MavenSettings",
+    "ts.external.directory.path": "D:\\IntelliJ IDEA 2023.3.4\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql_aurora_aws"
+    ]
+  }
+}]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\trae-task-lab\buyilehu-music-agent\database" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.RedisStringTests">
+    <configuration name="MusicAgentServerApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.buyilehu.musicagent.MusicAgentServerApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.buyilehu.musicagent.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PythonCapabilityClientTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="music-agent-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.buyilehu.musicagent.infrastructure.capability.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.buyilehu.musicagent.infrastructure.capability" />
+      <option name="MAIN_CLASS_NAME" value="com.buyilehu.musicagent.infrastructure.capability.PythonCapabilityClientTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RedisStringTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="music-agent-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.buyilehu.musicagent.infrastructure.capability.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.buyilehu.musicagent.infrastructure.capability" />
+      <option name="MAIN_CLASS_NAME" value="com.buyilehu.musicagent.infrastructure.capability.RedisStringTests" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RedisStringTests.testString" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="music-agent-server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.buyilehu.musicagent.infrastructure.capability.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.buyilehu.musicagent.infrastructure.capability" />
+      <option name="MAIN_CLASS_NAME" value="com.buyilehu.musicagent.infrastructure.capability.RedisStringTests" />
+      <option name="METHOD_NAME" value="testString" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="buyilehu-music-agent" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="buyilehu-music-agent" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MusicAgentServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="REDIS_HOST" value="192.168.68.128" />
+        <env name="REDIS_PORT" value="6379" />
+        <env name="REDIS_PASSWORD" value="123321" />
+        <env name="REDIS_DATABASE" value="0" />
+      </envs>
+      <module name="music-agent-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.buyilehu.musicagent.MusicAgentServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.MusicAgentServerApplication" />
+      <item itemvalue="JUnit.PythonCapabilityClientTest" />
+      <item itemvalue="JUnit.RedisStringTests" />
+      <item itemvalue="JUnit.RedisStringTests.testString" />
+      <item itemvalue="Spring Boot.MusicAgentServerApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.RedisStringTests" />
+        <item itemvalue="JUnit.RedisStringTests.testString" />
+        <item itemvalue="JUnit.PythonCapabilityClientTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-1.8.0_402-corretto-1.8.0_402-4caba194b151-ae57be32" />
+        <option value="jdk-18.0.2-corretto-18.0.2-4caba194b151-5720f15e" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ee35602b-23f9-407c-985f-1992922e7f14" name="Changes" comment="" />
+      <created>1782138210655</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1782138210655</updated>
+      <workItem from="1782138211700" duration="290000" />
+      <workItem from="1782138508949" duration="393000" />
+      <workItem from="1782285098408" duration="990000" />
+      <workItem from="1782374259348" duration="5101000" />
+      <workItem from="1782547399958" duration="8000" />
+      <workItem from="1782547418335" duration="1611000" />
+      <workItem from="1782563513863" duration="2120000" />
+      <workItem from="1783325915036" duration="10075000" />
+      <workItem from="1783748566423" duration="3707000" />
+      <workItem from="1783841739688" duration="8120000" />
+      <workItem from="1783929850379" duration="5532000" />
+      <workItem from="1784012949399" duration="2593000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial framework">
+      <option name="closed" value="true" />
+      <created>1782138740760</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1782138740760</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Initial framework">
+      <option name="closed" value="true" />
+      <created>1782138834405</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1782138834405</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Initial framework">
+      <option name="closed" value="true" />
+      <created>1782374640107</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1782374640107</updated>
+    </task>
+    <task id="LOCAL-00004" summary="v1">
+      <option name="closed" value="true" />
+      <created>1782559122062</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1782559122062</updated>
+    </task>
+    <task id="LOCAL-00005" summary="frontend">
+      <option name="closed" value="true" />
+      <created>1783841927941</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1783841927941</updated>
+    </task>
+    <task id="LOCAL-00006" summary="对文件进行了整理">
+      <option name="closed" value="true" />
+      <created>1783849769698</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1783849769698</updated>
+    </task>
+    <task id="LOCAL-00007" summary="对文件进行了整理">
+      <option name="closed" value="true" />
+      <created>1783849931000</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1783849931000</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Initial framework" />
+    <MESSAGE value="v1" />
+    <MESSAGE value="frontend" />
+    <MESSAGE value="对文件进行了整理" />
+    <option name="LAST_COMMIT_MESSAGE" value="对文件进行了整理" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/buyilehu_music_agent$RedisStringTests.ic" NAME="RedisStringTests Coverage Results" MODIFIED="1784013450774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.buyilehu.musicagent.infrastructure.capability.*</FILTER>
+    </SUITE>
+  </component>
+</project>

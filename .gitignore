@@ -1,4 +1,5 @@
 .env
+<<<<<<< HEAD
 .env.*
 !.env.example
 .venv/
@@ -17,3 +18,8 @@ app/output/*
 !app/output/.gitkeep
 *.log
 .DS_Store
+=======
+.env.local
+.npm-cache/
+%SystemDrive%/
+>>>>>>> 9f27bf0 (保存我的本地修改)

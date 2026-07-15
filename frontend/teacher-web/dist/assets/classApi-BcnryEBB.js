@@ -1,0 +1,1 @@
+import{z as t,A as e}from"./index-065GnulA.js";const l={createClass(s,r=""){return t(e.post("/classes",{className:s,description:r}))},listClasses(){return t(e.get("/classes"))},joinClass(s){return t(e.post("/classes/join",{inviteCode:s}))},listStudents(s){return t(e.get(`/classes/${s}/students`))}};export{l as c};

@@ -22,7 +22,7 @@ assert.match(
 assert.equal(notationSource.includes("𝄾"), false, "八分休止符不应依赖系统字体渲染 Unicode 字符");
 
 const reviewSource = readFileSync(join(root, "src/activity/MusicEducationReviewApp.tsx"), "utf8");
-const rhythmPlaybackSection = reviewSource.match(/function playRhythm[\s\S]*?\n}\n/)?.[0] || "";
+const rhythmPlaybackSection = reviewSource.match(/function playRhythm[\s\S]*?\r?\n}\r?\n/)?.[0] || "";
 assert.match(rhythmPlaybackSection, /playHybridToneSequenceAsync/, "节奏试听应使用真实采样播放通道");
 assert.match(rhythmPlaybackSection, /instrument:\s*["']acoustic_grand_piano["']/, "节奏试听默认使用钢琴音色");
 assert.match(rhythmPlaybackSection, /allowOscillatorFallback:\s*false/, "节奏试听不能回退为振荡器音色");

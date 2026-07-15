@@ -58,13 +58,17 @@ export interface GenerationJob {
   id: number
   lessonPlanId: number
   status: string
+  phase?: string
   progress?: number
+  message?: string
+  errorMessage?: string
   packageId?: number
   versionId?: number
   designProvider?: string
   designModel?: string
   designFallbackReason?: string
   designTraceId?: string
+  updatedAt?: string
 }
 
 export interface PackageInfo {

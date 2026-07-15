@@ -1,0 +1,3 @@
+com\buyilehu\musicagent\application\dto\response\SessionNodeStateResponseTest.class
+com\buyilehu\musicagent\infrastructure\capability\OutboxEventServiceTest.class
+com\buyilehu\musicagent\MusicAgentServerApplicationTests.class

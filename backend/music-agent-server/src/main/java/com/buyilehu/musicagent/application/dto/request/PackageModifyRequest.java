@@ -1,0 +1,36 @@
+package com.buyilehu.musicagent.application.dto.request;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+/**
+ * 教师对已经生成好的课堂互动包进行“局部修改”时，前端传给后端的请求对象。
+ * 我要修改哪个活动节点 nodeId
+ * 这次修改属于什么类型 modifyType
+ * 具体修改配置是什么 config
+ */
+public class PackageModifyRequest {
+    @NotNull
+    @Positive
+    private Long nodeId;
+
+    @NotNull
+    @Positive
+    private Long baseVersionId;
+
+    private String modifyType = "node_config";
+
+    @Valid
+    @NotNull
+    private PackageNodeConfigUpdateRequest config = new PackageNodeConfigUpdateRequest();
+
+    public Long getNodeId() { return nodeId; }
+    public void setNodeId(Long nodeId) { this.nodeId = nodeId; }
+    public Long getBaseVersionId() { return baseVersionId; }
+    public void setBaseVersionId(Long baseVersionId) { this.baseVersionId = baseVersionId; }
+    public String getModifyType() { return modifyType; }
+    public void setModifyType(String modifyType) { this.modifyType = modifyType; }
+    public PackageNodeConfigUpdateRequest getConfig() { return config; }
+    public void setConfig(PackageNodeConfigUpdateRequest config) { this.config = config; }
+}

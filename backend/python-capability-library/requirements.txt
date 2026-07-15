@@ -1,0 +1,7 @@
+imageio-ffmpeg==0.6.0
+openai==2.14.0
+python-dotenv==1.2.1
+fastapi==0.116.1
+uvicorn==0.35.0
+httpx==0.28.1
+langgraph==1.2.9

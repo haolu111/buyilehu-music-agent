@@ -39,12 +39,13 @@ async function load() {
 }
 
 async function saveNode(payload: PackageModifyPayload) {
-  if (!selectedNodeId.value) return
+  const baseVersionId = proposal.value?.packageInfo?.currentVersionId
+  if (!selectedNodeId.value || !baseVersionId) return
   loading.value = true
   message.value = ''
   error.value = ''
   try {
-    const result = await packageApi.updateNodeConfig(packageId, selectedNodeId.value, payload)
+    const result = await packageApi.updateNodeConfig(packageId, selectedNodeId.value, baseVersionId, payload)
     message.value = `已生成 v${result.versionNo}`
     await load()
   } catch (err) {
