@@ -1,0 +1,8 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+withDefaults(defineProps<{ prompt?: string; audioUrl?: string; options?: string[]; evidenceOptions?: string[]; allowExplanation?: boolean }>(), { prompt: '听完音乐后选择你的感受。', audioUrl: '', options: () => ['欢快', '安静', '优美'], evidenceOptions: () => ['速度', '力度', '旋律', '音色'], allowExplanation: true })
+const emit = defineEmits<{ completed: [payload: { result: Record<string, unknown> }] }>()
+const selected = ref(''); const evidence = ref(''); const explanation = ref('')
+function submit() { emit('completed', { result: { choice: selected.value, evidence: evidence.value, explanation: explanation.value } }) }
+</script>
+<template><section class="music-activity"><header><span class="activity-kicker">听辨选择</span><h2>听一听，选一选</h2><p>{{ prompt }}</p></header><audio v-if="audioUrl" class="activity-audio" :src="audioUrl" controls /><p v-else class="activity-media-notice">当前教案未提供音频素材，请根据老师的课堂播放完成听辨。</p><div class="choice-grid"><button v-for="option in options" :key="option" type="button" :class="{ selected: selected === option }" @click="selected = option">{{ option }}</button></div><label class="activity-field">我听到的依据<select v-model="evidence"><option value="">请选择</option><option v-for="item in evidenceOptions" :key="item">{{ item }}</option></select></label><label v-if="allowExplanation" class="activity-field">我的理由<textarea v-model="explanation" rows="3" placeholder="用一句话说说你听到了什么" /></label><div class="activity-actions"><button class="primary-action" type="button" :disabled="!selected || !evidence" @click="submit">提交听辨结果</button></div></section></template>

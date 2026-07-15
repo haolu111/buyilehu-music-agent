@@ -1,0 +1,12 @@
+.idea/
+*.iml
+target/
+.vscode/
+logs/
+storage/uploads/
+**/storage/uploads/
+!.gitkeep
+.env
+.npm-cache/
+.runtime/
+%SystemDrive%/

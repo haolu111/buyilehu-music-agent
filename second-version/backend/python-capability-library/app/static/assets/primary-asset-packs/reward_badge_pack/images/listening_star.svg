@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Listening badge">
+  <circle cx="90" cy="90" r="76" fill="#9be7c7" stroke="#243b53" stroke-width="8"/>
+  <path d="M52 92c19-42 57-42 76 0-19 42-57 42-76 0z" fill="none" stroke="#243b53" stroke-width="9"/>
+  <circle cx="90" cy="92" r="13" fill="#243b53"/>
+  <path d="M40 54l-16-16M140 54l16-16" stroke="#2a9d8f" stroke-linecap="round" stroke-width="8"/>
+</svg>
