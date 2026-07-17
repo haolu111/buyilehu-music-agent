@@ -40,7 +40,7 @@ onMounted(() => { if (!auth.user && auth.isLoggedIn) auth.fetchMe().catch(() => 
     <aside class="sidebar">
       <div class="brand brand-logo-lockup"><img class="brand-logo-image" :src="buyilehuLogo" alt="不亦乐乎" /><strong>教师工作空间</strong></div>
       <nav class="nav" aria-label="主导航">
-        <RouterLink v-for="item in navItems" :key="item.label" :to="item.to" :aria-label="item.label" :class="{ active: isActive(item) }"><component :is="item.icon" :size="18" stroke-width="2" aria-hidden="true" /><span class="nav-label-desktop" aria-hidden="true">{{ item.label }}</span><span class="nav-label-mobile" aria-hidden="true">{{ item.compactLabel }}</span></RouterLink>
+        <RouterLink v-for="item in navItems" :key="item.label" :to="item.to" :aria-label="item.label" active-class="route-match" exact-active-class="route-exact-match" :class="{ active: isActive(item) }"><component :is="item.icon" :size="18" stroke-width="2" aria-hidden="true" /><span class="nav-label-desktop" aria-hidden="true">{{ item.label }}</span><span class="nav-label-mobile" aria-hidden="true">{{ item.compactLabel }}</span></RouterLink>
       </nav>
       <div class="sidebar-art" aria-hidden="true"><img :src="sidebarMusicNotes" alt="" /></div>
     </aside>

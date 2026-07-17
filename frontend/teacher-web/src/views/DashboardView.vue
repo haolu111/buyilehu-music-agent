@@ -75,10 +75,33 @@ function packageNextAction(item: PackageInfo) {
   return '查看详情'
 }
 
+function packageLessonPlanLabel(item: PackageInfo) {
+  const sourcePlanName = item.description?.match(/《([^》]+)》/)?.[1]?.trim()
+  if (sourcePlanName) return `《${sourcePlanName}》教案`
+
+  const packageName = item.title.replace(/互动包$/, '').trim()
+  return packageName ? `${packageName}教案` : '音乐教案'
+}
+
+async function listDashboardClasses() {
+  const classList = await classApi.listClasses()
+  const visibleClasses = classList.slice(0, 2)
+  const studentResults = await Promise.allSettled(
+    visibleClasses.map((item) => classApi.listStudents(item.id)),
+  )
+
+  return classList.map((item, index) => {
+    const studentResult = studentResults[index]
+    return studentResult?.status === 'fulfilled'
+      ? { ...item, studentCount: studentResult.value.length }
+      : item
+  })
+}
+
 async function loadDashboard() {
   loading.value = true
   loadError.value = ''
-  const results = await Promise.allSettled([classroomApi.listActiveSessions(), lessonPlanApi.listMine(), packageApi.listPackages(), classApi.listClasses()])
+  const results = await Promise.allSettled([classroomApi.listActiveSessions(), lessonPlanApi.listMine(), packageApi.listPackages(), listDashboardClasses()])
   if (results[0].status === 'fulfilled') sessions.value = results[0].value
   if (results[1].status === 'fulfilled') plans.value = results[1].value
   if (results[2].status === 'fulfilled') packages.value = results[2].value
@@ -137,7 +160,7 @@ onMounted(() => {
       </article>
 
       <article class="card dashboard-panel continue-panel">
-        <div class="dashboard-panel-heading"><span class="panel-art-icon decoration-cards" :style="{ backgroundImage: `url(${musicDashboardDecorations})` }" aria-hidden="true"></span><h2>下一步</h2><span v-if="continueItems.length">{{ continueItems.length }} 项</span></div>
+        <div class="dashboard-panel-heading"><span class="panel-art-icon decoration-cards" :style="{ backgroundImage: `url(${musicDashboardDecorations})` }" aria-hidden="true"></span><h2>待办事项</h2><span v-if="continueItems.length">{{ continueItems.length }} 项</span></div>
         <div v-if="loadError" class="dashboard-load-error" data-testid="dashboard-load-error">
           <CircleAlert :size="20" aria-hidden="true" />
           <span>{{ loadError }}</span>
@@ -160,7 +183,7 @@ onMounted(() => {
         <div class="section-header"><div class="dashboard-panel-heading"><span class="panel-art-icon decoration-tambourine" :style="{ backgroundImage: `url(${musicDashboardDecorations})` }" aria-hidden="true"></span><h2>最近生成</h2><span v-if="packages.length" class="recent-package-count">共 {{ packages.length }} 个</span></div><RouterLink class="text-link" to="/lesson-plans/history">查看全部 <ArrowRight :size="16" aria-hidden="true" /></RouterLink></div>
         <div v-if="recentPackages.length" class="package-list">
           <article v-for="(item, index) in recentPackages" :key="item.id" class="package-list-item">
-            <RouterLink class="package-card-content" :to="`/packages/${item.id}`"><span class="package-art" :class="`package-art-${index % 4}`" :style="{ backgroundImage: `url(${musicWorkspaceStickers})` }" aria-hidden="true"></span><span class="package-card-copy"><strong>{{ item.title }}</strong><small>{{ item.description || '课堂互动活动包' }}</small></span></RouterLink>
+            <RouterLink class="package-card-content" :to="`/packages/${item.id}`"><span class="package-art" :class="`package-art-${index % 4}`" :style="{ backgroundImage: `url(${musicWorkspaceStickers})` }" aria-hidden="true"></span><span class="package-card-copy"><strong>{{ item.title }}</strong><small>{{ packageLessonPlanLabel(item) }}</small></span></RouterLink>
             <div class="package-card-footer"><span><span class="status-pill">{{ statusText(item.status) }}</span></span><span class="package-card-actions"><RouterLink class="package-detail-action" :to="`/packages/${item.id}`">查看</RouterLink><RouterLink class="package-next-action" :to="packageDestination(item)">{{ packageNextAction(item) }} <ArrowRight :size="15" aria-hidden="true" /></RouterLink></span></div>
           </article>
         </div>
@@ -170,7 +193,7 @@ onMounted(() => {
       <section class="class-management-panel card">
         <div class="section-header"><div class="dashboard-panel-heading"><span class="class-panel-icon"><UsersRound :size="18" aria-hidden="true" /></span><h2>班级管理</h2><span v-if="classes.length" class="recent-package-count">共 {{ classes.length }} 个</span></div><RouterLink class="text-link" to="/classes">查看全部 <ArrowRight :size="16" aria-hidden="true" /></RouterLink></div>
         <div v-if="recentClasses.length" class="dashboard-class-list">
-          <RouterLink v-for="item in recentClasses" :key="item.id" :to="`/classes/${item.id}`"><span class="dashboard-class-icon"><UsersRound :size="19" aria-hidden="true" /></span><span><strong>{{ item.className }}</strong><small>{{ item.description || '音乐课堂班级' }}</small></span><span class="dashboard-student-count"><strong>{{ item.studentCount ?? '—' }}</strong><small>名学生</small></span><ArrowRight :size="17" aria-hidden="true" /></RouterLink>
+          <RouterLink v-for="item in recentClasses" :key="item.id" :to="`/classes/${item.id}`"><span class="dashboard-class-icon"><UsersRound :size="19" aria-hidden="true" /></span><span><strong>{{ item.className }}</strong><small>{{ item.description || '音乐课堂班级' }}</small></span><span class="dashboard-student-count" data-testid="dashboard-class-student-count">{{ item.studentCount ?? 0 }} 人</span><ArrowRight :size="17" aria-hidden="true" /></RouterLink>
         </div>
         <RouterLink v-else class="class-management-empty" to="/classes"><UsersRound :size="21" aria-hidden="true" /><span>{{ loading ? '正在同步班级…' : '还没有班级，前往创建' }}</span><ArrowRight :size="17" aria-hidden="true" /></RouterLink>
       </section>

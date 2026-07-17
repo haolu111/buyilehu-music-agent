@@ -23,5 +23,8 @@ describe('AppShell mobile navigation', () => {
 
     expect(wrapper.findAll('.nav-label-mobile').map((label) => label.text())).toEqual(['首页', '备课', '班级', '上课', '报告'])
     expect(wrapper.findAll('.nav-label-desktop').map((label) => label.text())).toEqual(['工作台', '教案与互动包', '班级与学生', '课堂教学', '数据报告'])
+    const dashboardLink = wrapper.get('a[href="/dashboard"]')
+    expect(dashboardLink.classes()).toContain('active')
+    expect(dashboardLink.classes()).not.toContain('router-link-active')
   })
 })

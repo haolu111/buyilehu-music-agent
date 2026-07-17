@@ -183,7 +183,7 @@ describe('teacher entry flow', () => {
     expect(wrapper.find('input[name="lesson-title"]').exists()).toBe(false)
   })
 
-  it('clears the selected lesson before rejecting an invalid replacement', async () => {
+  it('keeps an accepted lesson when an invalid additional file is rejected', async () => {
     const router = routerFor(LessonUploadView, '/lesson-plans/upload')
     await router.push('/lesson-plans/upload')
     await router.isReady()
@@ -196,8 +196,8 @@ describe('teacher entry flow', () => {
     Object.defineProperty(fileInput.element, 'value', { configurable: true, writable: true, value: 'C:\\fakepath\\坏文件.exe' })
     Object.defineProperty(fileInput.element, 'files', { configurable: true, value: [new File(['bad'], '坏文件.exe')] })
     await fileInput.trigger('change')
-    expect(wrapper.find('input[name="lesson-title"]').exists()).toBe(false)
-    expect(wrapper.get('[data-testid="lesson-upload-primary"]').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('input[name="lesson-title"]').exists()).toBe(true)
+    expect(wrapper.get('[data-testid="lesson-upload-primary"]').attributes('disabled')).toBeUndefined()
     expect((fileInput.element as HTMLInputElement).value).toBe('')
   })
 

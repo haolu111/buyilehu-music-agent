@@ -30,7 +30,7 @@ onMounted(async () => {
 
 <template>
   <AppShell>
-    <div class="page-heading"><div><p class="breadcrumb">班级与学生 / 学生名单</p><h1>{{ classInfo?.className || '班级详情' }}</h1><p>共 {{ students.length }} 名学生</p></div><RouterLink class="button" to="/classes">返回班级列表</RouterLink></div>
+    <div class="page-heading"><div><p class="breadcrumb">班级与学生 / 学生名单</p><h1>{{ classInfo?.className || '班级详情' }}</h1><p>共 {{ students.length }} 人</p></div><RouterLink class="button" to="/classes">返回班级列表</RouterLink></div>
     <p v-if="error" class="error">{{ error }}</p>
     <section class="table-card">
       <table class="data-table student-table"><thead><tr><th>学生</th><th>登录账号</th><th>身份</th><th>状态</th></tr></thead><tbody>

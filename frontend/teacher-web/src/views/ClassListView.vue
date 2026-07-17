@@ -78,9 +78,9 @@ onMounted(() => loadClasses().catch((exception: unknown) => {
       <article v-for="item in filtered" :key="item.id" class="card class-card-teacher">
         <div class="class-card-head">
           <div><span class="status-pill" :class="item.status">{{ statusText(item.status) }}</span><h2>{{ item.className }}</h2><p>{{ item.description || '暂无班级说明' }}</p></div>
-          <span class="student-count-badge"><strong>{{ countsLoading && item.studentCount == null ? '…' : (item.studentCount ?? '—') }}</strong><small>名学生</small></span>
+          <span class="student-count-badge"><strong>{{ countsLoading && item.studentCount == null ? '同步中' : `${item.studentCount ?? 0} 人` }}</strong></span>
         </div>
-        <div class="class-metrics"><span><small>学生人数</small><strong>{{ countsLoading && item.studentCount == null ? '同步中' : `${item.studentCount ?? '—'} 人` }}</strong></span><span><small>邀请码</small><strong>{{ item.inviteCode || '生成中' }}</strong></span></div>
+        <div class="class-metrics"><span><small>学生人数</small><strong>{{ countsLoading && item.studentCount == null ? '同步中' : `${item.studentCount ?? 0} 人` }}</strong></span><span><small>邀请码</small><strong>{{ item.inviteCode || '生成中' }}</strong></span></div>
         <div class="class-actions"><button class="button" :disabled="!item.inviteCode" @click="copyCode(item.inviteCode)">{{ copied === item.inviteCode ? '已复制' : '复制邀请码' }}</button><RouterLink class="button primary-soft" :to="`/classes/${item.id}`">学生名单 →</RouterLink></div>
       </article>
       <div v-if="!filtered.length" class="empty-inline">还没有符合条件的班级</div>

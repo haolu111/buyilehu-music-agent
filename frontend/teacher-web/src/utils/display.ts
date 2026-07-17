@@ -1,7 +1,7 @@
 export const statusLabels: Record<string, string> = {
   active: '使用中', inactive: '已停用', uploaded: '已上传', processing: '解析中',
   success: '解析成功', failed: '解析失败', pending: '等待处理', draft: '草稿',
-  confirmed: '已确认', generated: '已生成', published: '已发布', not_started: '待开始',
+  confirmed: '已确认', generated: '已生成', modified: '已修改', published: '已发布', not_started: '待开始',
   running: '进行中', paused: '已暂停', ended: '已结束', locked: '未开启', unlocked: '已开启',
 }
 
