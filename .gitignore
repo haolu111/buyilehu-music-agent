@@ -22,3 +22,4 @@ app/output/*
 .DS_Store
 %SystemDrive%/
 .deploy/*.zip
+.deploy/*.tar.gz

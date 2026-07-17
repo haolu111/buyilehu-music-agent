@@ -1,8 +1,13 @@
 import request, { unwrap } from './request'
 import type { GenerationJob, PackageInfo, PackageModifyPayload, PackageModifyResult, PackageVersion, ProposalCard } from '../types'
 
+const createIdempotencyKey = () => (
+  globalThis.crypto?.randomUUID?.()
+  ?? `generation-${Date.now()}-${Math.random().toString(36).slice(2)}`
+)
+
 export const packageApi = {
-  createGenerationJob(lessonPlanId: number, preferences: Record<string, unknown> = {}, idempotencyKey = crypto.randomUUID()) {
+  createGenerationJob(lessonPlanId: number, preferences: Record<string, unknown> = {}, idempotencyKey = createIdempotencyKey()) {
     return unwrap<GenerationJob>(request.post('/generation-jobs', { lessonPlanId, preferences }, {
       headers: { 'Idempotency-Key': idempotencyKey },
       // Package generation performs both design and quality-audit model calls.
