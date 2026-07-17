@@ -6,10 +6,12 @@ import java.time.Duration;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonRuntimeBuildRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageBuildRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageDesignRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageNodeRevisionRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonActivityAssessmentRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityAssessmentResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityPackageBuildResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonPackageDesignResponse;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonPackageNodeRevisionResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityError;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityErrorResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityHealthResponse;
@@ -77,6 +79,11 @@ public class PythonCapabilityClient {
 
     public PythonPackageDesignResponse designPackage(PythonPackageDesignRequest request) {
         return exchange("/api/v1/packages/design", HttpMethod.POST, request, PythonPackageDesignResponse.class);
+    }
+
+    public PythonPackageNodeRevisionResponse revisePackageNode(PythonPackageNodeRevisionRequest request) {
+        return exchange("/api/v1/packages/design/nodes/revise", HttpMethod.POST, request,
+                PythonPackageNodeRevisionResponse.class);
     }
 
     public PythonCapabilityAssessmentResponse assessActivity(PythonActivityAssessmentRequest request) {

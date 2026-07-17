@@ -11,8 +11,20 @@ equal(samples.length, 2, "frame drum fallback contains center and edge recording
 
 for (const [, noteName, encoded] of samples) {
   const bytes = Buffer.from(encoded, "base64");
+  const dataChunk = bytes.indexOf(Buffer.from("data"));
+  if (dataChunk < 0) throw new Error(`${noteName} frame-drum fallback has no WAV data chunk`);
+  const dataStart = dataChunk + 8;
+  const dataSize = bytes.readUInt32LE(dataChunk + 4);
   let peak = 0;
-  for (let offset = 44; offset + 1 < bytes.length; offset += 2) peak = Math.max(peak, Math.abs(bytes.readInt16LE(offset)));
-  if (peak < 8_000) throw new Error(`${noteName} frame-drum fallback is effectively silent: PCM peak ${peak}`);
+  let sumSquares = 0;
+  let sampleCount = 0;
+  for (let offset = dataStart; offset + 1 < Math.min(bytes.length, dataStart + dataSize); offset += 2) {
+    const sample = bytes.readInt16LE(offset);
+    peak = Math.max(peak, Math.abs(sample));
+    sumSquares += sample * sample;
+    sampleCount += 1;
+  }
+  const rms = Math.sqrt(sumSquares / Math.max(1, sampleCount));
+  if (peak < 20_000 || rms < 500) throw new Error(`${noteName} frame-drum fallback is effectively silent: PCM peak ${peak}, RMS ${rms}`);
 }
 

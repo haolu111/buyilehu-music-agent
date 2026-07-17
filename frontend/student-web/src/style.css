@@ -589,6 +589,46 @@ textarea:focus,
 }
 
 .student-result-grid > span { border: 1px solid #e4ddd2; border-radius: 9px; background: #fffdf8; }
+
+/* A reviewed classroom activity is the student's primary screen, not a
+   centered preview card. Let it use the complete viewport during play. */
+.reviewed-activity-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
+  padding: 10px 12px 12px;
+  overflow: hidden;
+}
+
+.reviewed-activity-shell > .scene-header {
+  min-height: 68px;
+  margin-bottom: 10px;
+  padding: 9px 16px;
+}
+
+.reviewed-activity-shell > .activity-content {
+  min-width: 0;
+  min-height: 0;
+}
+
+.reviewed-activity-shell buyilehu-reviewed-activity {
+  --reviewed-activity-min-height: 0px;
+  --reviewed-activity-action-gap: 8px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.reviewed-activity-shell buyilehu-reviewed-activity > iframe {
+  min-height: 0 !important;
+  border-radius: 12px !important;
+}
 .assessment-panel { border: 1px solid #b7ddcf; border-radius: 9px; background: var(--student-soft-green); }
 .assessment-panel.temporary { border-color: #ecd79e; background: #fff7dd; }
 
@@ -656,4 +696,125 @@ textarea:focus,
   .activity-journey ol { gap: 13px; }
   .quick-grid { grid-template-columns: 1fr; }
   .classroom-page { padding: 9px 9px 92px; }
+}
+
+/* Full-screen readability pass
+   Student pages should feel like the classroom itself, not a centered preview. */
+html,
+body,
+#app {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-size: 17px;
+  font-weight: 550;
+  line-height: 1.65;
+}
+
+.page-shell,
+.page-shell.narrow {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-inline: clamp(20px, 3vw, 56px);
+}
+
+.classroom-page {
+  width: 100%;
+  max-width: none;
+  padding-inline: clamp(20px, 3vw, 56px);
+}
+
+.scene-header h1,
+.classroom-topbar h1 {
+  font-size: clamp(30px, 2.3vw, 40px);
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+h2,
+.music-activity header h2,
+.task-copy h2 {
+  font-size: clamp(24px, 1.8vw, 32px);
+  font-weight: 900;
+}
+
+p,
+li,
+td,
+input,
+textarea,
+select {
+  font-size: 17px;
+}
+
+button,
+.primary-action,
+.secondary-action,
+.danger-action {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.scene-subtitle,
+.class-description,
+.class-meta,
+.task-copy > p:not(.task-label),
+.student-menu-panel > div span {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+small,
+.scene-status,
+.section-label,
+.card-label,
+.summary-kicker,
+.eyebrow,
+.activity-journey li small,
+.quick-card small,
+.quick-card em,
+.classroom-topbar p {
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.current-classroom h2 {
+  font-size: clamp(38px, 3.1vw, 52px);
+}
+
+.current-classroom {
+  min-height: clamp(340px, 42vh, 520px);
+}
+
+.reviewed-activity-shell {
+  max-width: none;
+  padding-inline: clamp(12px, 1.5vw, 28px);
+}
+
+@media (max-width: 780px) {
+  body {
+    font-size: 16px;
+  }
+
+  .page-shell,
+  .page-shell.narrow,
+  .classroom-page {
+    padding-inline: 14px;
+  }
+
+  p,
+  li,
+  td,
+  input,
+  textarea,
+  select,
+  button,
+  .primary-action,
+  .secondary-action,
+  .danger-action {
+    font-size: 16px;
+  }
 }

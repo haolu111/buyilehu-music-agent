@@ -140,7 +140,7 @@ onMounted(loadHistory)
             </tr>
             <tr v-for="item in submissionsBySession[session.id] || []" :key="item.progressId">
               <td>{{ item.nodeTitle || `环节 #${item.nodeId}` }}</td>
-              <td>{{ item.progressStatus }}</td>
+              <td>{{ statusText(item.progressStatus) }}</td>
               <td>{{ item.score ?? '-' }}</td>
               <td>{{ formatTime(item.lastActiveAt) }}</td>
             </tr>

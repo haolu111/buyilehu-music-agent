@@ -126,6 +126,8 @@ export interface PackageModifyPayload {
   hidden?: boolean
   componentInstanceId?: number
   componentParams?: Record<string, unknown>
+  musicContent?: Record<string, unknown>
+  resolvedMusicContent?: Record<string, unknown>
 }
 
 export interface PackageModifyResult {

@@ -42,7 +42,10 @@ public class LessonToPackageGenerator {
                     requestFactory.buildDesign(parsedLesson, preferences));
             return toActivityChain(response);
         } catch (RuntimeException exception) {
-            return fallback(parsedLesson, preferences, shortMessage(exception));
+            throw new IllegalStateException(
+                    "LangGraph package design or quality audit failed: " + shortMessage(exception),
+                    exception
+            );
         }
     }
 
@@ -61,9 +64,13 @@ public class LessonToPackageGenerator {
                     || !StringUtils.hasText(source.getNodeType()) || !StringUtils.hasText(source.getTitle())) {
                 throw new IllegalStateException("Python Agent returned an invalid design step");
             }
-            steps.add(new ActivityStep(source.getTitle(), source.getActivityId(), source.getNodeType(),
+            ActivityStep step = new ActivityStep(source.getTitle(), source.getActivityId(), source.getNodeType(),
                     index + 1, source.getComponentKeys() == null
-                            ? new ArrayList<String>() : new ArrayList<String>(source.getComponentKeys())));
+                            ? new ArrayList<String>() : new ArrayList<String>(source.getComponentKeys()));
+            step.setRecommendationReason(source.getRecommendationReason());
+            step.setMusicContent(source.getMusicContent());
+            step.setResolvedMusicContent(source.getResolvedMusicContent());
+            steps.add(step);
         }
 
         ActivityChain chain = new ActivityChain();

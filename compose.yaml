@@ -61,10 +61,13 @@ services:
 
   python-capability:
     build:
-      context: ./backend/python-capability-library
+      context: .
+      dockerfile: backend/python-capability-library/Dockerfile
     environment:
+      PACKAGE_AGENT_MODEL_TIMEOUT_SECONDS: ${PACKAGE_AGENT_MODEL_TIMEOUT_SECONDS:-120}
       CHAT_ECNU_API_KEY: ${CHAT_ECNU_API_KEY:-}
       CHAT_ECNU_MODEL: ${CHAT_ECNU_MODEL:-ecnu-max}
+      CHAT_ECNU_CHAT_COMPLETIONS_URL: ${CHAT_ECNU_CHAT_COMPLETIONS_URL:-https://chat.ecnu.edu.cn/open/api/v1/chat/completions}
       DOUBAO_API_KEY: ${DOUBAO_API_KEY:-}
       DOUBAO_MODEL: ${DOUBAO_MODEL:-}
       DOUBAO_BASE_URL: ${DOUBAO_BASE_URL:-https://ark.cn-beijing.volces.com/api/v3}
@@ -104,6 +107,8 @@ services:
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       PYTHON_CAPABILITY_BASE_URL: http://python-capability:8001
       PYTHON_CAPABILITY_CALL_MODE: ${PYTHON_CAPABILITY_CALL_MODE:-primary}
+      # LangGraph package generation invokes the design and audit Agents serially.
+      PYTHON_CAPABILITY_READ_TIMEOUT_MS: ${PYTHON_CAPABILITY_READ_TIMEOUT_MS:-600000}
       STORAGE_PATH: /app/storage/uploads
       TZ: Asia/Shanghai
     ports:
@@ -134,8 +139,8 @@ services:
 
   teacher-web:
     build:
-      context: ./frontend
-      dockerfile: teacher-web/Dockerfile
+      context: .
+      dockerfile: frontend/teacher-web/Dockerfile
     ports:
       - "${TEACHER_WEB_PORT:-5173}:80"
     depends_on:
@@ -151,8 +156,8 @@ services:
 
   student-web:
     build:
-      context: ./frontend
-      dockerfile: student-web/Dockerfile
+      context: .
+      dockerfile: frontend/student-web/Dockerfile
     ports:
       - "${STUDENT_WEB_PORT:-5174}:80"
     depends_on:

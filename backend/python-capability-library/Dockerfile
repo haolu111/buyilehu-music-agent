@@ -5,11 +5,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY backend/python-capability-library/requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app ./app
+COPY backend/python-capability-library/app ./app
 COPY contracts ./contracts
 
 EXPOSE 8001

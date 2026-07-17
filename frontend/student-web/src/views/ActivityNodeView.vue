@@ -189,7 +189,10 @@ onBeforeUnmount(() => window.clearInterval(timer))
 </script>
 
 <template>
-  <main class="page-shell activity-shell">
+  <main
+    class="page-shell activity-shell"
+    :class="{ 'reviewed-activity-shell': Boolean(runtimeConfig?.componentUrl) && !showResult }"
+  >
     <SceneHeader :title="node?.title || '课堂活动'" :subtitle="subtitle" :status="store.currentSession?.status === 'paused' ? '老师已暂停' : activityStatus" />
 
     <section v-if="node" class="activity-content">

@@ -90,6 +90,27 @@ class PackageDesignResponse(BaseModel):
     data: dict[str, Any]
 
 
+class PackageDesignWorkflowRequest(PackageDesignRequest):
+    quality_review_mode: Literal["rules", "hybrid"] = "hybrid"
+
+
+class PackageDesignReviewRequest(BaseModel):
+    decision: Literal["approve", "edit", "reject"]
+    feedback: str = Field(default="", max_length=2000)
+    node_feedback: list[dict[str, Any]] = Field(default_factory=list, max_length=7)
+
+
+class PackageDesignWorkflowResponse(BaseModel):
+    success: Literal[True] = True
+    data: dict[str, Any]
+
+
+class PackageNodeRevisionRequest(BaseModel):
+    lesson: dict[str, Any] = Field(default_factory=dict)
+    node: dict[str, Any]
+    feedback: str = Field(min_length=1, max_length=2000)
+
+
 class ActivityAssessmentRequest(BaseModel):
     activity_id: str = ""
     renderer: str

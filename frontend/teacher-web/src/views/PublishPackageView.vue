@@ -82,7 +82,7 @@ async function publish() {
 }
 
 function describeVersion(item: PackageVersion) {
-  return `版本 ${item.versionNo} / ID ${item.id}`
+  return `版本 ${item.versionNo} / 编号 ${item.id}`
 }
 
 onMounted(loadData)
@@ -108,7 +108,7 @@ onMounted(loadData)
           <strong>{{ packageInfo.title }}</strong>
           <p class="muted">{{ packageInfo.description || '暂无简介' }}</p>
         </div>
-        <span class="tag">当前版本 ID：{{ packageInfo.currentVersionId || '-' }}</span>
+        <span class="tag">当前版本编号：{{ packageInfo.currentVersionId || '-' }}</span>
       </div>
 
       <p class="muted">{{ message }}</p>

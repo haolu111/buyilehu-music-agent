@@ -7,6 +7,10 @@ export default defineConfig({
   server: {
     port: 5174,
     proxy: {
+      '/template-console': {
+        target: 'http://localhost:5176',
+        changeOrigin: true,
+      },
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,

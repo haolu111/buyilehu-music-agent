@@ -1,16 +1,25 @@
-FROM node:22-alpine AS build
+FROM node:22-alpine AS reviewed-activities
 
-WORKDIR /app
-
-COPY teacher-web/package.json teacher-web/package-lock.json ./
+WORKDIR /review-console
+COPY frontend/review-console/package.json frontend/review-console/package-lock.json ./
 RUN npm ci
+COPY frontend/review-console ./
+COPY contracts /contracts
+RUN npm run build
 
-COPY teacher-web ./
+FROM node:22-alpine AS build
+WORKDIR /app
+COPY frontend/teacher-web/package.json frontend/teacher-web/package-lock.json ./
+RUN npm ci
+COPY frontend/teacher-web ./
+COPY frontend/shared-activity-runtime /shared-activity-runtime
 RUN npm run build
 
 FROM nginx:1.27-alpine
 
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=reviewed-activities /review-console/dist /usr/share/nginx/html/template-console
+COPY app/static /usr/share/nginx/html/static
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

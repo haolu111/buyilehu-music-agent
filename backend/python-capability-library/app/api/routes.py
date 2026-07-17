@@ -15,6 +15,10 @@ from app.api.models import (
     PackageBuildResponse,
     PackageDesignRequest,
     PackageDesignResponse,
+    PackageDesignReviewRequest,
+    PackageDesignWorkflowRequest,
+    PackageDesignWorkflowResponse,
+    PackageNodeRevisionRequest,
     PackageNodeBuildData,
     RuntimeBuildData,
     RuntimeBuildRequest,
@@ -25,6 +29,11 @@ from app.api.models import (
 from app.services.assessment.activity_assessment_service import assess_activity_submission
 from app.services.runtime.runtime_api_service import build_runtime_bundle, list_available_toolkits
 from app.services.orchestration.package_design_agent import design_interactive_package
+from app.services.orchestration.package_design_graph import (
+    resume_package_design,
+    revise_package_node,
+    run_package_design,
+)
 from app.services.activities.activity_family_registry import list_activity_families
 
 
@@ -90,6 +99,43 @@ def design_package(payload: PackageDesignRequest) -> PackageDesignResponse:
     return PackageDesignResponse(data=design_interactive_package(
         lesson=payload.lesson,
         preferences=payload.preferences,
+    ))
+
+
+@router.post("/packages/design/workflows", response_model=PackageDesignWorkflowResponse)
+def start_package_design_workflow(
+    payload: PackageDesignWorkflowRequest,
+) -> PackageDesignWorkflowResponse:
+    return PackageDesignWorkflowResponse(data=run_package_design(
+        lesson=payload.lesson,
+        preferences=payload.preferences,
+        require_teacher_review=True,
+        quality_review_mode=payload.quality_review_mode,
+    ))
+
+
+@router.post(
+    "/packages/design/workflows/{workflow_id}/review",
+    response_model=PackageDesignWorkflowResponse,
+)
+def review_package_design_workflow(
+    workflow_id: str,
+    payload: PackageDesignReviewRequest,
+) -> PackageDesignWorkflowResponse:
+    return PackageDesignWorkflowResponse(data=resume_package_design(
+        thread_id=workflow_id,
+        decision=payload.decision,
+        feedback=payload.feedback,
+        node_feedback=payload.node_feedback,
+    ))
+
+
+@router.post("/packages/design/nodes/revise", response_model=PackageDesignResponse)
+def revise_design_node(payload: PackageNodeRevisionRequest) -> PackageDesignResponse:
+    return PackageDesignResponse(data=revise_package_node(
+        lesson=payload.lesson,
+        node=payload.node,
+        feedback=payload.feedback,
     ))
 
 

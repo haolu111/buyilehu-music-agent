@@ -1,6 +1,7 @@
 package com.buyilehu.musicagent;
 
 import com.buyilehu.musicagent.domain.entity.ActivityNode;
+import com.buyilehu.musicagent.domain.entity.GenerationJob;
 import com.buyilehu.musicagent.infrastructure.repository.ActivityNodeRepository;
 import com.buyilehu.musicagent.infrastructure.repository.AssetRepository;
 import com.buyilehu.musicagent.infrastructure.repository.ComponentInstanceRepository;
@@ -182,19 +183,33 @@ class MusicAgentServerApplicationTests {
                         .content("{\"lessonPlanId\":" + lessonPlanId + ",\"preferences\":{\"style\":\"standard\",\"durationMinutes\":40}}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
-                .andExpect(jsonPath("$.data.status").value("success"))
-                .andExpect(jsonPath("$.data.progress").value(100))
-                .andExpect(jsonPath("$.data.packageId").isNumber())
-                .andExpect(jsonPath("$.data.versionId").isNumber())
-                .andExpect(jsonPath("$.data.designProvider").isNotEmpty())
+                .andExpect(jsonPath("$.data.status").value("pending"))
+                .andExpect(jsonPath("$.data.progress").value(5))
                 .andReturn()
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
 
         JsonNode data = objectMapper.readTree(generationResponse).path("data");
         long jobId = data.path("id").asLong();
-        long packageId = data.path("packageId").asLong();
-        long versionId = data.path("versionId").asLong();
+        for (int attempt = 0; attempt < 300; attempt++) {
+            String status = generationJobRepository.findById(jobId)
+                    .map(GenerationJob::getStatus)
+                    .orElse("missing");
+            if ("success".equals(status) || "failed".equals(status)) break;
+            Thread.sleep(100);
+        }
+
+        String completedResponse = mockMvc.perform(get("/api/v1/generation-jobs/" + jobId)
+                        .header("Authorization", "Bearer " + teacherToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.status").value("success"))
+                .andExpect(jsonPath("$.data.progress").value(100))
+                .andExpect(jsonPath("$.data.packageId").isNumber())
+                .andExpect(jsonPath("$.data.versionId").isNumber())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        JsonNode completed = objectMapper.readTree(completedResponse).path("data");
+        long packageId = completed.path("packageId").asLong();
+        long versionId = completed.path("versionId").asLong();
 
         org.assertj.core.api.Assertions.assertThat(generationJobRepository.findById(jobId)).isPresent();
         org.assertj.core.api.Assertions.assertThat(interactivePackageRepository.findById(packageId)).isPresent();

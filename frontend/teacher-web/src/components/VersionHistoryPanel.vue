@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PackageVersion } from '../types'
+import { statusText } from '../utils/display'
 
 defineProps<{
   versions: PackageVersion[]
@@ -20,7 +21,7 @@ defineProps<{
         <strong>v{{ version.versionNo }}</strong>
         <p class="muted">{{ version.remark || '版本记录' }}</p>
       </div>
-      <span class="tag">{{ version.status }}</span>
+      <span class="tag">{{ statusText(version.status) }}</span>
     </div>
   </section>
 </template>

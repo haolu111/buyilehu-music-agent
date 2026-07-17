@@ -5,8 +5,8 @@ import {
   BasicSoundBank,
   SoundBankLoader,
   SpessaSynthProcessor,
-} from "../frontend/node_modules/spessasynth_core/dist/index.js";
-import { ALL_CLASSROOM_SOUNDBANK_BUILD_SPECS } from "../frontend/src/virtual-instruments/core/soundbankBuildPlan.ts";
+} from "../frontend/review-console/node_modules/spessasynth_core/dist/index.js";
+import { ALL_CLASSROOM_SOUNDBANK_BUILD_SPECS } from "../frontend/review-console/src/virtual-instruments/core/soundbankBuildPlan.ts";
 
 const repositoryRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const sourceDirectory = resolve(repositoryRoot, "app/static/assets/midi-js-soundfonts/FluidR3_GM");
@@ -45,9 +45,33 @@ function buildDirectWavMap(sourceByMidi, midiNotes) {
   return Object.fromEntries(midiNotes.map((midi) => {
     const sourcePath = sourceByMidi[midi];
     if (!sourcePath) throw new Error(`Missing direct WAV source for MIDI ${midi}`);
-    const bytes = readFileSync(resolve(repositoryRoot, sourcePath));
+    const bytes = normalizePcm16Wave(readFileSync(resolve(repositoryRoot, sourcePath)), 0.82);
     return [midiToNoteName(midi), `data:audio/wav;base64,${bytes.toString("base64")}`];
   }));
+}
+
+function normalizePcm16Wave(bytes, targetPeak) {
+  const output = Buffer.from(bytes);
+  let cursor = 12;
+  let dataStart = -1;
+  let dataSize = 0;
+  while (cursor + 8 <= output.length) {
+    const id = output.toString("ascii", cursor, cursor + 4);
+    const size = output.readUInt32LE(cursor + 4);
+    if (id === "data") { dataStart = cursor + 8; dataSize = size; break; }
+    cursor += 8 + size + (size % 2);
+  }
+  if (dataStart < 0 || dataSize < 2) throw new Error("Direct WAV source has no PCM data chunk");
+  let peak = 0;
+  for (let offset = dataStart; offset + 1 < dataStart + dataSize; offset += 2) {
+    peak = Math.max(peak, Math.abs(output.readInt16LE(offset)));
+  }
+  if (peak === 0) throw new Error("Direct WAV source is silent");
+  const gain = Math.min(1024, targetPeak * 32767 / peak);
+  for (let offset = dataStart; offset + 1 < dataStart + dataSize; offset += 2) {
+    output.writeInt16LE(Math.max(-32768, Math.min(32767, Math.round(output.readInt16LE(offset) * gain))), offset);
+  }
+  return output;
 }
 
 function trimMidiJsMap(path, midiNotes) {

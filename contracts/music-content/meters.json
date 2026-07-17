@@ -1,0 +1,23 @@
+{
+  "schema_version": "music-content.meters.v1",
+  "meters": {
+    "meter_2_4": {
+      "signature": "2/4",
+      "beats_per_bar": 2,
+      "beat_unit": 4,
+      "accent_pattern": ["strong", "weak"]
+    },
+    "meter_3_4": {
+      "signature": "3/4",
+      "beats_per_bar": 3,
+      "beat_unit": 4,
+      "accent_pattern": ["strong", "weak", "weak"]
+    },
+    "meter_4_4": {
+      "signature": "4/4",
+      "beats_per_bar": 4,
+      "beat_unit": 4,
+      "accent_pattern": ["strong", "weak", "secondary", "weak"]
+    }
+  }
+}

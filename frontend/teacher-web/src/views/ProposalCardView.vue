@@ -8,6 +8,7 @@ import WorkflowStepper from '../components/WorkflowStepper.vue'
 import InteractivePackagePreview from '../components/InteractivePackagePreview.vue'
 import { packageApi } from '../api/packageApi'
 import type { ProposalCard } from '../types'
+import { componentDisplayName, nodeTypeDisplayName } from '../utils/presentationLabels'
 
 const route = useRoute()
 const router = useRouter()
@@ -25,10 +26,6 @@ const technicalEntries = computed(() => contentEntries.value.filter((entry) => !
 const isConfirmed = computed(() => proposal.value?.confirmStatus === 'confirmed')
 const statusText = computed(() => isConfirmed.value ? '已确认' : '待确认')
 
-function nodeTypeLabel(type: string) {
-  const labels: Record<string, string> = { entry: '课堂导入', listening_activity: '听辨活动', rhythm_game: '节奏活动', meter_experience: '节拍体验', singing_practice: '演唱练习', creation_workshop: '音乐创编', melody_activity: '旋律活动', timbre_activity: '音色活动', form_activity: '曲式活动', instrument_activity: '虚拟乐器', ensemble_activity: '合奏活动', summary: '课堂总结' }
-  return labels[type] || type.replace(/_/g, ' ')
-}
 async function loadProposal() { proposal.value = await packageApi.getProposal(packageId) }
 async function confirm() {
   if (isConfirmed.value) return
@@ -68,15 +65,15 @@ onMounted(() => loadProposal().catch((err) => (error.value = err instanceof Erro
         </div>
       </section>
 
-      <section class="proposal-brief" aria-labelledby="proposal-summary-title"><div class="proposal-section-heading"><div><span>01</span><div><h2 id="proposal-summary-title">方案摘要</h2></div></div><span class="agent-badge">AI 生成建议</span></div><dl class="proposal-summary-list"><div v-for="entry in summaryEntries" :key="`${entry.label}-${entry.value}`"><dt>{{ entry.label }}</dt><dd>{{ entry.value }}</dd></div></dl><details v-if="technicalEntries.length" class="proposal-technical"><summary>查看技术详情</summary><dl><div v-for="entry in technicalEntries" :key="`${entry.label}-${entry.value}`"><dt>{{ entry.label }}</dt><dd>{{ entry.value }}</dd></div></dl></details></section>
+      <section class="proposal-brief" aria-labelledby="proposal-summary-title"><div class="proposal-section-heading"><div><span>01</span><div><h2 id="proposal-summary-title">方案摘要</h2></div></div><span class="agent-badge">智能助手生成建议</span></div><dl class="proposal-summary-list"><div v-for="entry in summaryEntries" :key="`${entry.label}-${entry.value}`"><dt>{{ entry.label }}</dt><dd>{{ entry.value }}</dd></div></dl><details v-if="technicalEntries.length" class="proposal-technical"><summary>查看技术详情</summary><dl><div v-for="entry in technicalEntries" :key="`${entry.label}-${entry.value}`"><dt>{{ entry.label }}</dt><dd>{{ entry.value }}</dd></div></dl></details></section>
 
-      <section class="proposal-flow" aria-labelledby="proposal-flow-title"><div class="proposal-section-heading"><div><span>02</span><div><h2 id="proposal-flow-title">课堂活动顺序</h2></div></div><strong>{{ proposal.activityNodes.length }} 个环节</strong></div><ol class="proposal-node-list"><li v-for="(node, index) in proposal.activityNodes" :key="node.id"><div class="proposal-node-index"><span>{{ String(index + 1).padStart(2, '0') }}</span></div><div class="proposal-node-copy"><span>{{ nodeTypeLabel(node.nodeType) }}</span><h3>{{ node.title }}</h3><div v-if="node.components.length" class="proposal-component-tags"><span v-for="component in node.components" :key="component.id">{{ component.name || component.componentKey }}</span></div></div></li></ol></section>
+      <section class="proposal-flow" aria-labelledby="proposal-flow-title"><div class="proposal-section-heading"><div><span>02</span><div><h2 id="proposal-flow-title">课堂活动顺序</h2></div></div><strong>{{ proposal.activityNodes.length }} 个环节</strong></div><ol class="proposal-node-list"><li v-for="(node, index) in proposal.activityNodes" :key="node.id"><div class="proposal-node-index"><span>{{ String(index + 1).padStart(2, '0') }}</span></div><div class="proposal-node-copy"><span>{{ nodeTypeDisplayName(node.nodeType) }}</span><h3>{{ node.title }}</h3><div v-if="node.components.length" class="proposal-component-tags"><span v-for="component in node.components" :key="component.id">{{ componentDisplayName(component.name, component.componentKey) }}</span></div></div></li></ol></section>
 
       <section class="proposal-evidence-grid">
         <details class="proposal-evidence" data-testid="proposal-objectives"><summary><span>03</span> 教学目标</summary><ol class="objective-list"><li v-for="(item, index) in proposal.teachingObjectives" :key="item"><span>{{ index + 1 }}</span><p>{{ item }}</p></li></ol></details>
         <details class="proposal-evidence" data-testid="proposal-source"><summary><span>04</span> 教案依据</summary><ul class="source-section-list"><li v-for="item in proposal.sourceLessonSections" :key="item">{{ item }}</li></ul></details>
       </section>
-      <section v-if="proposal.components.length" class="proposal-components"><div><h2>互动组件</h2></div><div class="proposal-component-tags large"><span v-for="component in proposal.components" :key="component.id">{{ component.name || component.componentKey }}</span></div></section>
+      <section v-if="proposal.components.length" class="proposal-components"><div><h2>互动组件</h2></div><div class="proposal-component-tags large"><span v-for="component in proposal.components" :key="component.id">{{ componentDisplayName(component.name, component.componentKey) }}</span></div></section>
     </div>
     <button class="button primary" type="button" @click="previewOpen = true">预览并测试互动包</button>
     <div v-if="previewOpen && proposal" class="preview-modal" role="dialog" aria-modal="true" aria-label="互动包预览">

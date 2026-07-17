@@ -25,6 +25,9 @@ import com.buyilehu.musicagent.infrastructure.repository.PackageVersionDiffRepos
 import com.buyilehu.musicagent.infrastructure.repository.PackageVersionRepository;
 import com.buyilehu.musicagent.infrastructure.repository.QualityReportRepository;
 import com.buyilehu.musicagent.infrastructure.repository.UserRepository;
+import com.buyilehu.musicagent.infrastructure.capability.PythonCapabilityClient;
+import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageNodeRevisionRequest;
+import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonPackageNodeRevisionResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -49,6 +52,7 @@ public class PackageModifyServiceImpl implements PackageModifyService {
     private final ActivityNodeModifyService activityNodeModifyService;
     private final ComponentConfigService componentConfigService;
     private final ObjectMapper objectMapper;
+    private final PythonCapabilityClient pythonCapabilityClient;
 
     public PackageModifyServiceImpl(InteractivePackageRepository interactivePackageRepository,
                                     PackageVersionRepository packageVersionRepository,
@@ -60,6 +64,7 @@ public class PackageModifyServiceImpl implements PackageModifyService {
                                     UserRepository userRepository,
                                     ActivityNodeModifyService activityNodeModifyService,
                                     ComponentConfigService componentConfigService,
+                                    PythonCapabilityClient pythonCapabilityClient,
                                     ObjectMapper objectMapper) {
         this.interactivePackageRepository = interactivePackageRepository;
         this.packageVersionRepository = packageVersionRepository;
@@ -71,6 +76,7 @@ public class PackageModifyServiceImpl implements PackageModifyService {
         this.userRepository = userRepository;
         this.activityNodeModifyService = activityNodeModifyService;
         this.componentConfigService = componentConfigService;
+        this.pythonCapabilityClient = pythonCapabilityClient;
         this.objectMapper = objectMapper;
     }
 
@@ -99,6 +105,7 @@ public class PackageModifyServiceImpl implements PackageModifyService {
         ActivityNode node = activityNodeRepository.findByIdAndPackageId(request.getNodeId(), packageId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "activity node not found"));
 
+        applyAgentRevisionIfRequested(request, node);
         Map<String, Object> beforeSnapshot = buildSnapshot(packageId);
         activityNodeModifyService.applyNodeConfig(node, request.getConfig());
         activityNodeRepository.save(node);
@@ -149,6 +156,62 @@ public class PackageModifyServiceImpl implements PackageModifyService {
         response.setVersionNo(toVersion.getVersionNo());
         response.setMessage("修改已保存并生成新版本");
         return response;
+    }
+
+    private void applyAgentRevisionIfRequested(PackageModifyRequest request, ActivityNode node) {
+        if (request.getFeedback() == null || request.getFeedback().trim().isEmpty()) {
+            return;
+        }
+        PythonPackageNodeRevisionRequest revisionRequest = new PythonPackageNodeRevisionRequest();
+        Map<String, Object> currentNode = readNodeConfig(node);
+        currentNode.put("title", node.getTitle());
+        currentNode.put("node_type", node.getNodeType());
+        Object capabilityActivityId = currentNode.get("capabilityActivityId");
+        if (capabilityActivityId != null) {
+            currentNode.put("activity_id", capabilityActivityId);
+            currentNode.put("entity_id", capabilityActivityId);
+        }
+        if (currentNode.containsKey("musicContent")) {
+            currentNode.put("music_content", currentNode.get("musicContent"));
+        }
+        revisionRequest.setNode(currentNode);
+        revisionRequest.setFeedback(request.getFeedback().trim());
+        PythonPackageNodeRevisionResponse response = pythonCapabilityClient.revisePackageNode(revisionRequest);
+        if (response == null || response.getData() == null || response.getData().getNode() == null) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "Agent did not return a node revision");
+        }
+        Map<String, Object> allowed = new HashMap<String, Object>();
+        for (String key : new String[] {
+                "title", "description", "difficulty", "rhythmCardCount", "hintEnabled", "hidden"
+        }) {
+            if (response.getData().getNode().containsKey(key)) {
+                allowed.put(key, response.getData().getNode().get(key));
+            }
+        }
+        Map<String, Object> revisedNode = response.getData().getNode();
+        if (revisedNode.get("music_content") instanceof Map) {
+            allowed.put("musicContent", revisedNode.get("music_content"));
+        }
+        if (revisedNode.get("resolved_music_content") instanceof Map) {
+            allowed.put("resolvedMusicContent", revisedNode.get("resolved_music_content"));
+        }
+        PackageNodeConfigUpdateRequest generated = objectMapper.convertValue(
+                allowed, PackageNodeConfigUpdateRequest.class);
+        request.setConfig(generated);
+        request.setModifyType("agent_node_revision");
+    }
+
+    private Map<String, Object> readNodeConfig(ActivityNode node) {
+        if (node.getConfigJson() == null || node.getConfigJson().trim().isEmpty()) {
+            return new HashMap<String, Object>();
+        }
+        try {
+            return objectMapper.readValue(
+                    node.getConfigJson(),
+                    new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+        } catch (Exception exception) {
+            return new HashMap<String, Object>();
+        }
     }
 
     private Map<String, Object> buildSnapshot(Long packageId) {

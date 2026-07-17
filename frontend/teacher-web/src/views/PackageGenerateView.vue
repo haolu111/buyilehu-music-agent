@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { Clock3, FileText, Settings2, Sparkles, UsersRound } from 'lucide-vue-next'
 import { useRoute, useRouter } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
@@ -24,11 +24,39 @@ const flow = ref('teacher')
 const theme = ref('auto')
 let statusSubscription: AbortController | null = null
 
+const generationProgress = computed(() => Math.max(0, Math.min(100, Number(job.value?.progress || 0))))
+const generationPhase = computed(() => {
+  if (job.value?.message) return job.value.message
+  const progress = generationProgress.value
+  if (progress < 35) return '教学设计 Agent 正在生成活动结构'
+  if (progress < 50) return '正在匹配一一对应的活动组件'
+  if (progress < 75) return 'LangGraph 正在构建素材并执行教学质量审计'
+  if (progress < 85) return '正在执行结构与业务校验'
+  if (progress < 95) return '正在生成正式共享活动组件'
+  return '正在保存活动包和审核报告'
+})
+const generationSteps = computed(() => {
+  const progress = generationProgress.value
+  return [
+    { key: 'design', label: '教学设计', detail: '生成活动结构', start: 10, done: 35 },
+    { key: 'matching', label: '组件匹配', detail: '建立活动与组件一一映射', start: 40, done: 50 },
+    { key: 'materials', label: '活动构建', detail: '构建音乐素材与运行参数', start: 55, done: 75 },
+    { key: 'audit', label: '质量审计', detail: '质量 Agent 与业务规则校验', start: 78, done: 85 },
+    { key: 'persist', label: '保存发布', detail: '保存共享配置与审核报告', start: 88, done: 100 },
+  ].map((step) => ({
+    ...step,
+    state: progress >= step.done ? 'done' : progress >= step.start ? 'active' : 'waiting',
+  }))
+})
+
 async function handleStatus(status: GenerationJob) {
   job.value = status
   if (status.status === 'failed') {
     loading.value = false
-    error.value = status.errorMessage || '生成失败，请稍后重试'
+    const detail = status.errorMessage || ''
+    error.value = detail.includes('timed out')
+      ? '教学设计服务响应超时。本次任务已停止，请重新生成；系统会在审计模型超时时自动使用规则审计。'
+      : detail || '生成失败，请稍后重试'
     statusSubscription?.abort()
   } else if (status.packageId) {
     loading.value = false
@@ -116,6 +144,18 @@ onUnmounted(() => statusSubscription?.abort())
       </details>
 
       <p v-if="error" class="error" role="alert">{{ error }}</p>
+      <section v-if="loading && job" class="generation-progress" aria-live="polite">
+        <div><strong>{{ generationPhase }}</strong><span>{{ generationProgress }}%</span></div>
+        <progress :value="generationProgress" max="100">{{ generationProgress }}%</progress>
+        <ol class="generation-timeline" aria-label="生成步骤">
+          <li v-for="step in generationSteps" :key="step.key" :class="`is-${step.state}`">
+            <i aria-hidden="true">{{ step.state === 'done' ? '✓' : step.state === 'active' ? '●' : '' }}</i>
+            <span><strong>{{ step.label }}</strong><small>{{ step.detail }}</small></span>
+            <em>{{ step.state === 'done' ? '已完成' : step.state === 'active' ? '进行中' : '等待中' }}</em>
+          </li>
+        </ol>
+        <small>生成任务已在后台运行，页面状态会实时更新。</small>
+      </section>
       <div class="button-row end">
         <button class="button primary" data-testid="generate-package" :disabled="loading || !lessonPlanId" @click="generate">
           <Sparkles :size="18" aria-hidden="true" /> {{ loading ? '正在生成方案…' : '生成活动方案' }}

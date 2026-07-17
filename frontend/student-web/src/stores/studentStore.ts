@@ -65,6 +65,16 @@ export const useStudentStore = defineStore('student', () => {
     return loadJoinedClasses()
   }
 
+  async function refreshProfile() {
+    if (!isAuthed.value) return profile.value
+    const user = await authApi.me()
+    profile.value = profile.value
+      ? { ...profile.value, user }
+      : { token: token.value, user }
+    localStorage.setItem('student_profile', JSON.stringify(profile.value))
+    return profile.value
+  }
+
   async function loadClassroomHistory() {
     classroomHistory.value = await classroomApi.listClassroomHistory()
     return classroomHistory.value
@@ -144,6 +154,7 @@ export const useStudentStore = defineStore('student', () => {
     loading.value = true
     error.value = ''
     try {
+      await refreshProfile().catch(() => undefined)
       try {
         await loadJoinedClasses()
       } catch (loadError) {
@@ -236,6 +247,7 @@ export const useStudentStore = defineStore('student', () => {
     submitCurrentNode,
     loadJoinedClasses,
     ensureJoinedClassesLoaded,
+    refreshProfile,
     syncCurrentClass,
   }
 })

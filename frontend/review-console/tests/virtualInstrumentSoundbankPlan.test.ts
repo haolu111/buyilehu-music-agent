@@ -19,10 +19,11 @@ assertDeepEqual(
 const frameDrumPlan = VIRTUAL_INSTRUMENT_SOUNDBANK_BUILD_PLAN.find((item) => item.instrumentId === "virtual_frame_drum");
 assertEqual(frameDrumPlan?.sourceId, "vcsl_frame_drum_cc0", "frame drum uses an exact CC0 frame-drum recording, not a conga proxy");
 assertEqual(frameDrumPlan?.outputFormat, "sf2", "custom frame-drum bank honestly declares uncompressed SoundFont2");
+assertEqual(frameDrumPlan?.drum, false, "custom frame-drum bank uses its independent melodic preset instead of GM channel 10");
 assertEqual(
-  VIRTUAL_INSTRUMENT_SOUNDBANK_BUILD_PLAN.slice(4).every((item) => item.drum),
+  VIRTUAL_INSTRUMENT_SOUNDBANK_BUILD_PLAN.slice(5).every((item) => item.drum),
   true,
-  "classroom percussion is extracted from the real GM drum preset",
+  "remaining classroom percussion is extracted from the real GM drum preset",
 );
 assertDeepEqual(
   VIRTUAL_INSTRUMENT_SOUNDBANK_BUILD_PLAN.find((item) => item.instrumentId === "virtual_woodblock")?.midiNotes,

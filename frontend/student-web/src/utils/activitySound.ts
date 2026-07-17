@@ -72,6 +72,17 @@ export function playRhythmPattern(pattern: string) {
   for (let index = 0; index < hits; index += 1) tone(196, 0.08, index * 0.12, 0.12, 'square')
 }
 
+export function playRhythmSequence(sequence: string[], beatSeconds = 0.56) {
+  sequence.forEach((token, beatIndex) => {
+    const normalized = token.toLowerCase()
+    if (normalized === 'rest' || token.trim() === '-') return
+    const hits = normalized.includes('ti-ti') ? 2 : 1
+    for (let hit = 0; hit < hits; hit += 1) {
+      tone(196, 0.09, beatIndex * beatSeconds + hit * beatSeconds / hits, hit === 0 ? 0.16 : 0.12, 'square')
+    }
+  })
+}
+
 export function playMeter(beats: number) {
   for (let index = 0; index < beats; index += 1) {
     tone(index === 0 ? 880 : 587.33, 0.09, index * 0.32, index === 0 ? 0.13 : 0.09, 'triangle')

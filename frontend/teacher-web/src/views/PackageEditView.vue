@@ -9,6 +9,7 @@ import ActivityNodeEditView from './ActivityNodeEditView.vue'
 import InteractivePackagePreview from '../components/InteractivePackagePreview.vue'
 import { packageApi } from '../api/packageApi'
 import type { PackageModifyPayload, PackageVersion, ProposalCard } from '../types'
+import { componentDisplayName, nodeTypeDisplayName } from '../utils/presentationLabels'
 
 const route = useRoute()
 const packageId = Number(route.params.packageId)
@@ -19,6 +20,7 @@ const loading = ref(false)
 const message = ref('')
 const error = ref('')
 const draft = ref<PackageModifyPayload>({})
+const nodeFeedback = ref('')
 
 const selectedNode = computed(() =>
   proposal.value?.activityNodes.find((node) => node.id === selectedNodeId.value) || null,
@@ -52,6 +54,27 @@ async function saveNode(payload: PackageModifyPayload) {
     await load()
   } catch (err) {
     error.value = err instanceof Error ? err.message : '保存失败'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function reviseSelectedNode() {
+  const baseVersionId = proposal.value?.packageInfo?.currentVersionId
+  const feedback = nodeFeedback.value.trim()
+  if (!selectedNodeId.value || !baseVersionId || !feedback) return
+  loading.value = true
+  message.value = ''
+  error.value = ''
+  try {
+    const result = await packageApi.reviseNodeWithAgent(
+      packageId, selectedNodeId.value, baseVersionId, feedback,
+    )
+    message.value = `Agent 已只修改当前节点，并生成 v${result.versionNo}`
+    nodeFeedback.value = ''
+    await load()
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Agent 修改节点失败'
   } finally {
     loading.value = false
   }
@@ -91,7 +114,7 @@ onMounted(load)
         >
           <span>{{ node.sortOrder }}</span>
           <strong>{{ node.title }}</strong>
-          <small>{{ node.nodeType }}</small>
+          <small>{{ nodeTypeDisplayName(node.nodeType) }}</small>
         </button>
       </div>
 
@@ -110,8 +133,34 @@ onMounted(load)
       <p><strong>{{ selectedNode.title }}</strong></p>
       <p class="muted">组件数量：{{ selectedNode.components.length }}</p>
       <span v-for="component in selectedNode.components" :key="component.id" class="tag">
-        {{ component.name || component.componentKey }}
+        {{ componentDisplayName(component.name, component.componentKey) }}
       </span>
+      <div class="agent-node-revision">
+        <div>
+          <p class="eyebrow">节点修改建议</p>
+          <h3>让 Agent 只修改“{{ selectedNode.title }}”</h3>
+          <p class="muted">其他活动节点及其顺序保持不变。请具体说明难度、时长、活动方式或提示策略。</p>
+        </div>
+        <textarea
+          v-model="nodeFeedback"
+          data-testid="node-agent-feedback"
+          maxlength="2000"
+          rows="4"
+          placeholder="例如：这个活动对三年级偏难，请保留活动目标，把节奏卡数量降到 4，并增加一次教师示范提示。"
+        />
+        <div class="button-row">
+          <small class="muted">{{ nodeFeedback.length }} / 2000</small>
+          <button
+            class="button primary"
+            data-testid="revise-node-with-agent"
+            type="button"
+            :disabled="loading || !nodeFeedback.trim()"
+            @click="reviseSelectedNode"
+          >
+            {{ loading ? 'Agent 修改中…' : '提交建议并修改当前节点' }}
+          </button>
+        </div>
+      </div>
     </section>
     <section v-if="selectedNode && proposal" class="card stack live-preview-panel">
       <div>

@@ -21,3 +21,4 @@ app/output/*
 *.log
 .DS_Store
 %SystemDrive%/
+.deploy/*.zip

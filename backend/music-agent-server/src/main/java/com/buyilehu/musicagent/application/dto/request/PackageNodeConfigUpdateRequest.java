@@ -24,6 +24,8 @@ public class PackageNodeConfigUpdateRequest {
     private Long componentInstanceId;
 
     private Map<String, Object> componentParams = new HashMap<>();
+    private Map<String, Object> musicContent = new HashMap<>();
+    private Map<String, Object> resolvedMusicContent = new HashMap<>();
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -41,4 +43,8 @@ public class PackageNodeConfigUpdateRequest {
     public void setComponentInstanceId(Long componentInstanceId) { this.componentInstanceId = componentInstanceId; }
     public Map<String, Object> getComponentParams() { return componentParams; }
     public void setComponentParams(Map<String, Object> componentParams) { this.componentParams = componentParams; }
+    public Map<String, Object> getMusicContent() { return musicContent; }
+    public void setMusicContent(Map<String, Object> musicContent) { this.musicContent = musicContent; }
+    public Map<String, Object> getResolvedMusicContent() { return resolvedMusicContent; }
+    public void setResolvedMusicContent(Map<String, Object> resolvedMusicContent) { this.resolvedMusicContent = resolvedMusicContent; }
 }

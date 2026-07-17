@@ -15,7 +15,7 @@ const microphoneState = ref<'idle' | 'checking' | 'ready' | 'denied'>('idle')
 const showExitConfirm = ref(false)
 let timer = 0
 
-const studentName = computed(() => store.profile?.displayName || store.profile?.username || '小小音乐家')
+const studentName = computed(() => store.profile?.user?.realName || store.profile?.user?.username || '小小音乐家')
 const className = computed(() => store.currentClass?.className || '我的班级')
 const allNodes = computed(() => store.currentSession?.nodeStates || [])
 const isFlowNode = (node?: ActivityNode | null) => {

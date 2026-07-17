@@ -12,7 +12,7 @@ const toast = ref('')
 const soundEnabled = ref(localStorage.getItem('student_sound_enabled') !== 'false')
 let timer = 0
 
-const studentName = computed(() => store.profile?.displayName || store.profile?.username || '小小音乐家')
+const studentName = computed(() => store.profile?.user?.realName || store.profile?.user?.username || '小小音乐家')
 const avatarText = computed(() => studentName.value.slice(0, 1))
 const teacherName = computed(() => store.currentClass?.teacherName || '授课老师')
 const classLine = computed(() => [store.currentClass?.schoolName, store.currentClass?.className, teacherName.value].filter(Boolean).join(' · '))

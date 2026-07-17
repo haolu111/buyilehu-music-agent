@@ -8,8 +8,8 @@ import {
   BasicSoundBank,
   SampleTypes,
   SoundBankLoader,
-} from "../frontend/node_modules/spessasynth_core/dist/index.js";
-import { ALL_CLASSROOM_SOUNDBANK_BUILD_SPECS } from "../frontend/src/virtual-instruments/core/soundbankBuildPlan.ts";
+} from "../frontend/review-console/node_modules/spessasynth_core/dist/index.js";
+import { ALL_CLASSROOM_SOUNDBANK_BUILD_SPECS } from "../frontend/review-console/src/virtual-instruments/core/soundbankBuildPlan.ts";
 
 const repositoryRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const sourcePath = resolve(
@@ -79,6 +79,7 @@ function buildVcslFrameDrumBank() {
   for (const source of frameDrumSources) {
     const wavPath = resolve(repositoryRoot, "third_party/audio/VCSL/frame-drum", source.file);
     const wav = decodePcm16Wave(readFileSync(wavPath));
+    normalizeFloatAudio(wav.audio, 0.82);
     const sample = new BasicSample(
       source.name,
       wav.sampleRate,
@@ -104,6 +105,16 @@ function buildVcslFrameDrumBank() {
   bank.addPresets(preset);
   bank.flush();
   return bank;
+}
+
+function normalizeFloatAudio(audio, targetPeak) {
+  let peak = 0;
+  for (const sample of audio) peak = Math.max(peak, Math.abs(sample));
+  if (peak === 0) throw new Error("VCSL frame-drum source is silent");
+  const gain = Math.min(1024, targetPeak / peak);
+  for (let index = 0; index < audio.length; index += 1) {
+    audio[index] = Math.max(-1, Math.min(1, audio[index] * gain));
+  }
 }
 
 function decodePcm16Wave(bytes) {

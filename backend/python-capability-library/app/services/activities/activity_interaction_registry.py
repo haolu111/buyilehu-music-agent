@@ -5,6 +5,7 @@ from typing import Any
 
 from app.services.activities.activity_registry import ACTIVITY_TEMPLATE_REGISTRY
 from app.services.activities.activity_family_registry import get_activity_family
+from app.services.music_content.music_content_registry import capability_for
 
 
 SUPPORTED_RENDERERS = frozenset({
@@ -21,6 +22,32 @@ SUPPORTED_RENDERERS = frozenset({
     "virtual-instrument",
     "ensemble-roles",
 })
+
+# These are the reviewed, runnable activity implementations delivered by
+# frontend/review-console. New package designs may only select this catalog.
+# The URL is consumed unchanged by both teacher-web and student-web.
+REVIEWED_ACTIVITY_COMPONENTS: dict[str, str] = {
+    "rhythm_warmup": "/template-console/rhythm-preview.html",
+    "strong_weak_beat_circle": "/template-console/strong-weak-beat-preview.html",
+    "steady_beat_walk": "/template-console/steady-beat-walk-preview.html",
+    "rhythm_question_answer": "/template-console/rhythm-question-preview.html",
+    "body_percussion_builder": "/template-console/body-percussion-preview.html",
+    "phrase_singing_practice": "/template-console/phrase-singing-preview.html",
+    "lyrics_rhythm_reading": "/template-console/lyrics-rhythm-preview.html",
+    "solfege_echo_singing": "/template-console/solfege-echo-preview.html",
+    "melody_contour_trace": "/template-console/melody-contour-preview.html",
+    "simple_score_following": "/template-console/simple-score-preview.html",
+    "listen_choose_explain": "/template-console/listening-choice-preview.html",
+    "lesson_opening_hook": "/template-console/lesson-opening-preview.html",
+    "theme_return_action": "/template-console/theme-return-action-preview.html",
+    "graphic_score_create": "/template-console/graphic-score-preview.html",
+    "instrument_family_sorting": "/template-console/instrument-family-preview.html",
+    "xylophone_creation": "/template-console/pentatonic-melody-preview.html",
+    "orff_percussion_ensemble": "/template-console/orff-ensemble-preview.html",
+    "group_relay_performance": "/template-console/group-relay-preview.html",
+    "show_and_peer_feedback": "/template-console/peer-feedback-preview.html",
+    "exit_ticket_review": "/template-console/exit-ticket-preview.html",
+}
 
 _RENDERER_ACTIVITIES: dict[str, tuple[str, ...]] = {
     "meter-compare": (
@@ -83,9 +110,14 @@ for _renderer, _activity_ids in _RENDERER_ACTIVITIES.items():
         ACTIVITY_INTERACTION_REGISTRY[_activity_id] = {
             "activity_id": _activity_id,
             "name": str(_activity.get("name") or _activity_id),
-            "renderer": _renderer,
+            # renderer is the formal one-to-one activity component identity.
+            # legacy_renderer remains only for old records and assessment data.
+            "renderer": f"activity:{_activity_id}",
+            "legacy_renderer": _renderer,
+            "component_url": REVIEWED_ACTIVITY_COMPONENTS.get(_activity_id),
             "node_type": _NODE_TYPES[_renderer],
             "component_keys": [_renderer.replace("-", "_")],
+            "music_content_capability": capability_for(_activity_id),
             **get_activity_family(_activity_id),
         }
 
@@ -96,11 +128,11 @@ if _uncategorized:
 
 def list_agent_activity_specs() -> list[dict[str, Any]]:
     return [deepcopy(spec) for spec in ACTIVITY_INTERACTION_REGISTRY.values()
-            if spec["renderer"] in SUPPORTED_RENDERERS]
+            if spec.get("component_url")]
 
 
 def get_activity_interaction(activity_id: str) -> dict[str, Any]:
     spec = ACTIVITY_INTERACTION_REGISTRY.get(str(activity_id or ""))
-    if spec is None or spec["renderer"] not in SUPPORTED_RENDERERS:
+    if spec is None:
         raise ValueError(f"activity has no supported student renderer: {activity_id}")
     return deepcopy(spec)

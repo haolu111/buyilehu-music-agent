@@ -12,10 +12,15 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string
-  userId: number
-  username: string
-  displayName?: string
-  role: 'teacher' | 'student'
+  tokenType?: string
+  expiresIn?: number
+  user: {
+    id: number
+    username: string
+    realName?: string
+    role: 'teacher' | 'student'
+    status?: string
+  }
 }
 
 export interface ClassInfo {
@@ -62,8 +67,9 @@ export interface ActivityRuntimeConfig {
   nodeType?: 'activity' | 'game' | 'instrument_task'
   family?: string
   variant?: string
-  renderer: ActivityRenderer
+  renderer: ActivityRenderer | `activity:${string}`
   legacyRenderer?: ActivityRenderer
+  componentUrl?: string
   props?: Record<string, unknown>
   assets?: Array<Record<string, unknown>>
   assessment?: { resultType?: string; maxScore?: number }

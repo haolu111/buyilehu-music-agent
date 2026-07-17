@@ -21,6 +21,21 @@ def build_primary_music_game_runtime(
 ) -> dict[str, Any]:
     if composition.get("status") != "ready":
         return _empty_runtime("missing_material")
+    template_id = composition.get("selected_game_template")
+    if template_id in {
+        "beat_guardian_core",
+        "rhythm_echo_core",
+        "timbre_detective_core",
+        "form_treasure_core",
+        "composition_puzzle_core",
+        "pitch_ladder_core",
+        "solfege_target_core",
+    }:
+        return _formal_game_runtime(
+            template_id=str(template_id),
+            composition=composition,
+            request=request,
+        )
     if composition.get("selected_activity_id") in {"picture_listening_intro", "listen_choose_explain"}:
         return _listening_choice_runtime(composition=composition, request=request)
     if composition.get("selected_activity_id") == "lesson_opening_hook":
@@ -67,23 +82,17 @@ def build_primary_music_game_runtime(
         "ensemble_conductor_rehearsal",
     }:
         return _music_classroom_suite_runtime(composition=composition, request=request)
-    template_id = composition.get("selected_game_template")
-    if template_id not in {
-        "beat_guardian_core",
-        "rhythm_echo_core",
-        "timbre_detective_core",
-        "form_treasure_core",
-        "composition_puzzle_core",
-        "pitch_ladder_core",
-        "solfege_target_core",
-    }:
-        return _empty_runtime("template_runtime_not_connected")
+    return _empty_runtime("template_runtime_not_connected")
 
+
+def _formal_game_runtime(
+    *, template_id: str, composition: dict[str, Any], request: dict[str, Any],
+) -> dict[str, Any]:
     available = request.get("available_materials") if isinstance(request.get("available_materials"), dict) else {}
-    payload = _template_payload(str(template_id), composition, available)
+    payload = _template_payload(template_id, composition, available)
     instance = build_game_instance(payload)
     config = deepcopy(instance["config"])
-    _apply_music_runtime_overrides(config, str(template_id), composition, available)
+    _apply_music_runtime_overrides(config, template_id, composition, available)
     instance["config"] = config
     state = {
         "workflow": {
@@ -112,7 +121,7 @@ def build_primary_music_game_runtime(
     return {
         "runtime_builder_version": RUNTIME_BUILDER_VERSION,
         "student_game_state": state,
-        "student_entry": "/template-console/student-game.html",
+        "student_entry": f"/template-console/student-game.html?template={template_id}&review=1",
         "runtime_status": "ready",
     }
 

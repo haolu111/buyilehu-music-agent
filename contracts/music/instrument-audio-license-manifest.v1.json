@@ -60,7 +60,7 @@
       "redistribution": true,
       "attribution": "Versilian Community Sample Library (VCSL) Frame Drum recordings, dedicated to the public domain under CC0 1.0; custom SoundFont2 and WAV fallback derived from the same exact samples.",
       "primary": { "path": "/runtime-assets/virtual-instruments/audio/virtual_frame_drum.sf2", "format": "sf2", "sha256": "055859f23f5d943ffcbac441124f04f2215a30b7c6f5f8e739e00a29716f6577", "sizeBytes": 256684 },
-      "fallback": { "path": "/runtime-assets/virtual-instruments/audio/virtual_frame_drum-wav-map.js", "format": "legacy-wav-map", "sha256": "897f5c3106d50094295061300b864840b780f8cd317fb58069b39b050720b037", "sizeBytes": 681352 }
+      "fallback": { "path": "/runtime-assets/virtual-instruments/audio/virtual_frame_drum-wav-map.js", "format": "legacy-wav-map", "sha256": "a4b6a4f3f88756bfe705071c532e2d806576071a269a19b20c5680d83adbc070", "sizeBytes": 681352 }
     },
     {
       "instrumentId": "virtual_snare_drum",

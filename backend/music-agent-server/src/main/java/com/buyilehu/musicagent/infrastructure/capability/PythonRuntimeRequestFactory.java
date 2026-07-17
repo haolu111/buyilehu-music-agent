@@ -72,8 +72,11 @@ public class PythonRuntimeRequestFactory {
         composition.put("selected_activity_id", activityId);
         composition.put("selected_node_type", nodeConfig.getNodeType());
         composition.put("selected_node_title", nodeConfig.getTitle());
+        composition.put("selected_node_reason", nodeConfig.getRecommendationReason());
         composition.put("sort_order", nodeConfig.getSortOrder());
         composition.put("component_keys", new ArrayList<String>(safeList(nodeConfig.getComponentKeys())));
+        composition.put("music_content", nodeConfig.getMusicContent());
+        composition.put("resolved_music_content", nodeConfig.getResolvedMusicContent());
         String interactiveNodeType = resolveInteractiveNodeType(nodeConfig);
         composition.put("interactive_node_type", interactiveNodeType);
         if ("game".equals(interactiveNodeType)) {
@@ -100,13 +103,13 @@ public class PythonRuntimeRequestFactory {
         if ("game".equals(interactiveNodeType)) {
             Map<String, Object> game = new LinkedHashMap<String, Object>();
             game.put("templateId", componentValue(nodeConfig, "game:"));
-            game.put("prompt", nodeConfig.getTitle());
+            game.put("prompt", reasonOrTitle(nodeConfig));
             request.put("game", game);
         } else if ("instrument_task".equals(interactiveNodeType)) {
             Map<String, Object> task = new LinkedHashMap<String, Object>();
             task.put("kind", componentValue(nodeConfig, "instrument_task:"));
             task.put("instrumentId", componentValue(nodeConfig, "instrument:"));
-            task.put("prompt", nodeConfig.getTitle());
+            task.put("prompt", reasonOrTitle(nodeConfig));
             task.put("gradePreset", gradePreset(parsedLesson.getGrade()));
             request.put("instrument_task", task);
         }
@@ -144,7 +147,13 @@ public class PythonRuntimeRequestFactory {
         node.put("node_type", nodeConfig.getNodeType());
         node.put("sort_order", nodeConfig.getSortOrder());
         node.put("component_keys", new ArrayList<String>(safeList(nodeConfig.getComponentKeys())));
+        node.put("recommendation_reason", nodeConfig.getRecommendationReason());
         return node;
+    }
+
+    private String reasonOrTitle(ActivityNodeConfig nodeConfig) {
+        String reason = nodeConfig == null ? null : nodeConfig.getRecommendationReason();
+        return reason == null || reason.trim().isEmpty() ? nodeConfig.getTitle() : reason;
     }
 
     private <T> List<T> safeList(List<T> values) {

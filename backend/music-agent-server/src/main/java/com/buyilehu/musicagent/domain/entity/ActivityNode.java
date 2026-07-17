@@ -29,7 +29,7 @@ public class ActivityNode extends BaseEntity {
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder = 0;
 
-    @Column(name = "config_json", columnDefinition = "TEXT")
+    @Column(name = "config_json", columnDefinition = "MEDIUMTEXT")
     private String configJson;
 
     public ActivityNode() {

@@ -6,6 +6,7 @@ import SubmissionResult from '../components/SubmissionResult.vue'
 import WorkflowStepper from '../components/WorkflowStepper.vue'
 import { classroomApi } from '../api/classroomApi'
 import type { ClassroomSession, StudentSubmission } from '../types'
+import { nodeTypeDisplayName } from '../utils/presentationLabels'
 
 const route = useRoute()
 const sessionId = Number(route.params.sessionId)
@@ -176,7 +177,7 @@ onBeforeUnmount(() => window.clearInterval(timer))
         <div v-for="node in session.nodeStates" :key="node.id" class="list-line">
           <div>
             <strong>{{ node.sortOrder }}. {{ node.title }}</strong>
-            <p class="muted">{{ node.nodeType }} / {{ statusText(node.status) }}</p>
+            <p class="muted">{{ nodeTypeDisplayName(node.nodeType) }} / {{ statusText(node.status) }}</p>
           </div>
           <button class="button" type="button" :disabled="session.status !== 'running' || node.status === 'unlocked'" @click="unlock(node.activityNodeId)">
             解锁

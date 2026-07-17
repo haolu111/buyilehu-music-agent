@@ -14,6 +14,9 @@ public class ActivityNodeConfig {
     private List<String> componentKeys = new ArrayList<>();
     private String capabilityActivityId;
     private String capabilitySource;
+    private String recommendationReason;
+    private Map<String, Object> musicContent = new LinkedHashMap<String, Object>();
+    private Map<String, Object> resolvedMusicContent = new LinkedHashMap<String, Object>();
     private Map<String, Object> toolkit = new LinkedHashMap<String, Object>();
     private Map<String, Object> runtime = new LinkedHashMap<String, Object>();
     private Map<String, Object> mediaSessionPreview;
@@ -33,6 +36,12 @@ public class ActivityNodeConfig {
     public void setCapabilityActivityId(String capabilityActivityId) { this.capabilityActivityId = capabilityActivityId; }
     public String getCapabilitySource() { return capabilitySource; }
     public void setCapabilitySource(String capabilitySource) { this.capabilitySource = capabilitySource; }
+    public String getRecommendationReason() { return recommendationReason; }
+    public void setRecommendationReason(String recommendationReason) { this.recommendationReason = recommendationReason; }
+    public Map<String, Object> getMusicContent() { return musicContent; }
+    public void setMusicContent(Map<String, Object> musicContent) { this.musicContent = musicContent; }
+    public Map<String, Object> getResolvedMusicContent() { return resolvedMusicContent; }
+    public void setResolvedMusicContent(Map<String, Object> resolvedMusicContent) { this.resolvedMusicContent = resolvedMusicContent; }
     public Map<String, Object> getToolkit() { return toolkit; }
     public void setToolkit(Map<String, Object> toolkit) { this.toolkit = toolkit; }
     public Map<String, Object> getRuntime() { return runtime; }

@@ -32,6 +32,19 @@ function StudentGameRuntime() {
   const [state, setState] = useState<StudentGameState>(() => providedState ?? createStudentGameReviewState(reviewTemplateId));
 
   useEffect(() => {
+    const receiveRuntimeConfig = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type !== "buyilehu:load-music-content") return;
+      const nextState = event.data?.config?.studentGameState;
+      if (!nextState || typeof nextState !== "object") return;
+      setState(nextState as StudentGameState);
+    };
+    window.addEventListener("message", receiveRuntimeConfig);
+    window.parent?.postMessage({ type: "buyilehu:activity-ready" }, window.location.origin);
+    return () => window.removeEventListener("message", receiveRuntimeConfig);
+  }, []);
+
+  useEffect(() => {
     if (!isReview || providedState) return;
     let cancelled = false;
     void fetch(`/api/game-templates/${encodeURIComponent(reviewTemplateId)}`)

@@ -19,6 +19,9 @@ public class ComponentMatcher {
             config.setNodeType(step.getNodeType());
             config.setSortOrder(step.getSortOrder());
             config.setComponentKeys(new ArrayList<>(step.getComponentKeys()));
+            config.setRecommendationReason(step.getRecommendationReason());
+            config.setMusicContent(step.getMusicContent());
+            config.setResolvedMusicContent(step.getResolvedMusicContent());
             configs.add(config);
         }
         return configs;

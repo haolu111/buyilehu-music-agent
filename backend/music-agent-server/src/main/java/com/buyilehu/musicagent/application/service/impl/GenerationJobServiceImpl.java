@@ -7,6 +7,7 @@ import com.buyilehu.musicagent.application.generator.LessonToPackageGenerator;
 import com.buyilehu.musicagent.application.generator.ProposalCardGenerator;
 import com.buyilehu.musicagent.application.service.ComponentRegistryService;
 import com.buyilehu.musicagent.application.service.GenerationJobService;
+import com.buyilehu.musicagent.application.service.GenerationJobEventPublisher;
 import com.buyilehu.musicagent.application.service.PythonRuntimeIntegrationService;
 import com.buyilehu.musicagent.application.service.MusicValidationService;
 import com.buyilehu.musicagent.application.service.PackageService;
@@ -34,6 +35,7 @@ import com.buyilehu.musicagent.infrastructure.repository.AssetRepository;
 import com.buyilehu.musicagent.infrastructure.repository.ComponentInstanceRepository;
 import com.buyilehu.musicagent.infrastructure.repository.GenerationJobRepository;
 import com.buyilehu.musicagent.infrastructure.repository.LessonPlanRepository;
+import com.buyilehu.musicagent.infrastructure.repository.InteractivePackageRepository;
 import com.buyilehu.musicagent.infrastructure.repository.PackageVersionRepository;
 import com.buyilehu.musicagent.infrastructure.repository.ProposalCardRepository;
 import com.buyilehu.musicagent.infrastructure.repository.QualityReportRepository;
@@ -44,14 +46,17 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class GenerationJobServiceImpl implements GenerationJobService {
     private final GenerationJobRepository generationJobRepository;
+    private final InteractivePackageRepository interactivePackageRepository;
     private final LessonPlanRepository lessonPlanRepository;
     private final UserRepository userRepository;
     private final PackageService packageService;
@@ -68,8 +73,11 @@ public class GenerationJobServiceImpl implements GenerationJobService {
     private final ProposalCardRepository proposalCardRepository;
     private final QualityReportRepository qualityReportRepository;
     private final ObjectMapper objectMapper;
+    private final Executor generationExecutor;
+    private final GenerationJobEventPublisher eventPublisher;
 
     public GenerationJobServiceImpl(GenerationJobRepository generationJobRepository,
+                                    InteractivePackageRepository interactivePackageRepository,
                                     LessonPlanRepository lessonPlanRepository,
                                     UserRepository userRepository,
                                     PackageService packageService,
@@ -85,8 +93,11 @@ public class GenerationJobServiceImpl implements GenerationJobService {
                                     AssetRepository assetRepository,
                                     ProposalCardRepository proposalCardRepository,
                                     QualityReportRepository qualityReportRepository,
-                                    ObjectMapper objectMapper) {
+                                    ObjectMapper objectMapper,
+                                    @Qualifier("generationExecutor") Executor generationExecutor,
+                                    GenerationJobEventPublisher eventPublisher) {
         this.generationJobRepository = generationJobRepository;
+        this.interactivePackageRepository = interactivePackageRepository;
         this.lessonPlanRepository = lessonPlanRepository;
         this.userRepository = userRepository;
         this.packageService = packageService;
@@ -103,10 +114,11 @@ public class GenerationJobServiceImpl implements GenerationJobService {
         this.proposalCardRepository = proposalCardRepository;
         this.qualityReportRepository = qualityReportRepository;
         this.objectMapper = objectMapper;
+        this.generationExecutor = generationExecutor;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
-    @Transactional
     public GenerationJobResponse createAndGenerate(CreateGenerationJobRequest request) {
         User currentUser = getCurrentUser();
         if (currentUser.getRole() != UserRole.teacher) {
@@ -120,16 +132,49 @@ public class GenerationJobServiceImpl implements GenerationJobService {
         }
 
         GenerationJob job = createJob(lessonPlan, currentUser, request.getPreferences());
-        try {
-            ParsedLesson parsedLesson = parseLesson(lessonPlan.getParsedJson());
-            GeneratePreferences preferences = request.getPreferences() == null
-                    ? new GeneratePreferences()
-                    : request.getPreferences();
+        SecurityContext callerContext = SecurityContextHolder.createEmptyContext();
+        callerContext.setAuthentication(SecurityContextHolder.getContext().getAuthentication());
+        GeneratePreferences preferences = request.getPreferences() == null
+                ? new GeneratePreferences()
+                : request.getPreferences();
+        GenerationJobResponse response = GenerationJobResponse.progress(
+                job, "queued", "任务已创建，正在等待生成线程");
+        generationExecutor.execute(() -> {
+            SecurityContext previousContext = SecurityContextHolder.getContext();
+            try {
+                SecurityContextHolder.setContext(callerContext);
+                generate(job.getId(), lessonPlan.getId(), currentUser.getId(), preferences);
+            } finally {
+                SecurityContextHolder.setContext(previousContext);
+            }
+        });
+        eventPublisher.publish(response);
+        return response;
+    }
 
+    private void generate(Long jobId, Long lessonPlanId, Long userId, GeneratePreferences preferences) {
+        GenerationJob job = generationJobRepository.findById(jobId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "生成任务不存在"));
+        try {
+            LessonPlan lessonPlan = lessonPlanRepository.findById(lessonPlanId)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "教案不存在"));
+            User currentUser = userRepository.findById(userId)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.UNAUTHORIZED, "登录用户不存在"));
+            ParsedLesson parsedLesson = parseLesson(lessonPlan.getParsedJson());
+
+            updateProgress(job, 10, "design", "教学设计 Agent 正在生成活动结构");
             ActivityChain chain = lessonToPackageGenerator.generate(parsedLesson, preferences);
+            updateProgress(job, 35, "design_completed", "活动结构生成完成");
+            updateProgress(job, 40, "component_matching", "正在为每个活动匹配唯一共享组件");
             List<ActivityNodeConfig> nodeConfigs = componentMatcher.match(chain, parsedLesson);
+            updateProgress(job, 50, "component_matched", "活动与共享组件映射完成");
+            updateProgress(job, 55, "material_building", "LangGraph 正在构建活动素材与运行参数");
             pythonRuntimeIntegrationService.enrichNodes(parsedLesson, preferences, nodeConfigs);
+            updateProgress(job, 75, "material_built", "活动素材与运行参数构建完成");
+            updateProgress(job, 78, "quality_auditing", "教学质量评估 Agent 正在审计活动包");
             QualityCheckResult quality = musicValidationService.validate(chain, nodeConfigs);
+            updateProgress(job, 85, "quality_audited", "教学质量审计与业务校验完成");
+            updateProgress(job, 88, "persisting", "正在保存节点、组件、素材和审核报告");
 
             InteractivePackage pkg = packageService.createPackage(lessonPlan, parsedLesson, job.getId());
             PackageVersion version = createInitialVersion(pkg, currentUser, chain, nodeConfigs);
@@ -137,31 +182,55 @@ public class GenerationJobServiceImpl implements GenerationJobService {
             savePlaceholderAssets(pkg, currentUser);
             saveProposalCard(job, pkg, chain, quality);
             saveQualityReport(pkg, version, quality);
+            updateProgress(job, 95, "publishing", "正在生成教师端和学生端共享活动配置");
 
             job.setStatus("success");
             job.setProgress(100);
             job.setFinishedAt(LocalDateTime.now());
             generationJobRepository.save(job);
-            return GenerationJobResponse.from(job, pkg.getId(), version.getId(), chain);
+            eventPublisher.publish(GenerationJobResponse.from(job, pkg.getId(), version.getId(), chain));
         } catch (RuntimeException exception) {
             job.setStatus("failed");
             job.setProgress(100);
             job.setErrorMessage(exception.getMessage());
             job.setFinishedAt(LocalDateTime.now());
             generationJobRepository.save(job);
-            throw exception;
+            eventPublisher.publish(GenerationJobResponse.progress(
+                    job, "failed", exception.getMessage() == null ? "生成任务失败" : exception.getMessage()));
         }
+    }
+
+    @Override
+    public GenerationJobResponse getJob(Long jobId) {
+        GenerationJob job = generationJobRepository.findById(jobId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "生成任务不存在"));
+        if (!getCurrentUserId().equals(job.getCreatedBy())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "无权查看该生成任务");
+        }
+        InteractivePackage pkg = interactivePackageRepository.findByGenerationJobId(jobId).orElse(null);
+        PackageVersion version = pkg == null
+                ? null
+                : packageVersionRepository.findFirstByPackageIdOrderByVersionNoDesc(pkg.getId()).orElse(null);
+        return GenerationJobResponse.from(job, pkg == null ? null : pkg.getId(),
+                version == null ? null : version.getId());
+    }
+
+    private void updateProgress(GenerationJob job, int progress, String phase, String message) {
+        job.setStatus("running");
+        job.setProgress(progress);
+        generationJobRepository.save(job);
+        eventPublisher.publish(GenerationJobResponse.progress(job, phase, message));
     }
 
     private GenerationJob createJob(LessonPlan lessonPlan, User currentUser, GeneratePreferences preferences) {
         GenerationJob job = new GenerationJob();
         job.setLessonPlanId(lessonPlan.getId());
         job.setCreatedBy(currentUser.getId());
-        job.setStatus("running");
-        job.setProgress(10);
+        job.setStatus("pending");
+        job.setProgress(5);
         job.setStartedAt(LocalDateTime.now());
         job.setRequestParams(toJson(preferences == null ? new GeneratePreferences() : preferences));
-        return generationJobRepository.save(job);
+        return generationJobRepository.saveAndFlush(job);
     }
 
     private ParsedLesson parseLesson(String parsedJson) {

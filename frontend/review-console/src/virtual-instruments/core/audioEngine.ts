@@ -26,6 +26,17 @@ export class AudioEngineRouter implements VirtualInstrumentAudioEngine {
     this.activeEngine = null;
     this.activeEngineId = null;
     this.fallbackReason = null;
+    // The VCSL frame-drum fallback contains the exact audited center/edge
+    // recordings. Its custom SF2 can be parsed without exposing a playable
+    // preset in every SpessaSynth/browser combination, which looks "ready"
+    // while producing silence. Prefer the deterministic recordings here.
+    if (instrumentId === "virtual_frame_drum") {
+      this.fallbackReason = "手鼓使用经审计的 VCSL 鼓心/鼓边真实采样";
+      await this.fallback.initialize(instrumentId);
+      this.activeEngine = this.fallback;
+      this.activeEngineId = this.activeEngine.id;
+      return;
+    }
     try {
       await this.primary.initialize(instrumentId);
       this.activeEngine = this.primary;

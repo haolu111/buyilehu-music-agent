@@ -63,6 +63,7 @@ const replayer = new PerformanceReplayer({
 });
 
 async function initialize(): Promise<void> {
+  if (state.value === "ready") return;
   if (state.value === "loading") return;
   state.value = "loading"; errorMessage.value = ""; loadingStage.value = "正在准备音频引擎";
   try {
@@ -120,7 +121,14 @@ function noteOff(event: PointerEvent): void {
   const zone = activePointers.get(event.pointerId);
   if (!zone) return;
   stopRoll(event.pointerId); activePointers.delete(event.pointerId);
-  engine?.noteOff(zone.midi); recorder.noteOff(zone.midi, zone.id); emit("noteoff", zone);
+  // Percussion samples need a short natural attack/decay. A quick mouse or
+  // touch release must not stop the recording before its transient is heard.
+  if (instrument.value.family === "percussion") {
+    window.setTimeout(() => engine?.noteOff(zone.midi), 220);
+  } else {
+    engine?.noteOff(zone.midi);
+  }
+  recorder.noteOff(zone.midi, zone.id); emit("noteoff", zone);
   const next = new Set(activeZoneIds.value); next.delete(zone.id); activeZoneIds.value = next;
 }
 

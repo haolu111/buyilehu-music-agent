@@ -5,6 +5,8 @@ export const packageApi = {
   createGenerationJob(lessonPlanId: number, preferences: Record<string, unknown> = {}, idempotencyKey = crypto.randomUUID()) {
     return unwrap<GenerationJob>(request.post('/generation-jobs', { lessonPlanId, preferences }, {
       headers: { 'Idempotency-Key': idempotencyKey },
+      // Package generation performs both design and quality-audit model calls.
+      timeout: 180000,
     }))
   },
   getGenerationJob(jobId: number) {
@@ -97,6 +99,15 @@ export const packageApi = {
   },
   modifyPackage(packageId: number, nodeId: number, baseVersionId: number, payload: PackageModifyPayload) {
     return unwrap<PackageModifyResult>(request.post(`/packages/${packageId}/modify`, { nodeId, baseVersionId, config: payload }))
+  },
+  reviseNodeWithAgent(packageId: number, nodeId: number, baseVersionId: number, feedback: string) {
+    return unwrap<PackageModifyResult>(request.post(`/packages/${packageId}/modify`, {
+      nodeId,
+      baseVersionId,
+      modifyType: 'agent_node_revision',
+      feedback,
+      config: {},
+    }))
   },
   listVersions(packageId: number) {
     return unwrap<PackageVersion[]>(request.get(`/packages/${packageId}/versions`))
