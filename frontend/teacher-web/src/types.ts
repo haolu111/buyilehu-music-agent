@@ -100,6 +100,7 @@ export interface ProposalCard {
     title: string
     nodeType: string
     sortOrder: number
+    configJson?: string
     components: ComponentView[]
   }>
   components: ComponentView[]

@@ -7,14 +7,12 @@ import java.util.Map;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonRuntimeBuildRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonActivityAssessmentRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageBuildRequest;
-import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageDesignRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.request.PythonPackageNodeBuildRequest;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityAssessmentResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityPackageBuildResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityHealthResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityRuntimeBuildResponse;
 import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonCapabilityToolkitsResponse;
-import com.buyilehu.musicagent.infrastructure.capability.dto.response.PythonPackageDesignResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -129,27 +127,6 @@ class PythonCapabilityClientTest {
         assertThat(response.getData().getSchemaVersion()).isEqualTo("activity-package.v1");
         assertThat(response.getData().getNodes().get(0).getActivityRuntime().get("renderer").asText())
                 .isEqualTo("rhythm-drag");
-        server.verify();
-    }
-
-    @Test
-    void shouldPostPackageDesignAndReadLangGraphTrace() {
-        PythonPackageDesignRequest request = new PythonPackageDesignRequest();
-        request.setLesson(java.util.Collections.<String, Object>singletonMap("course_name", "rhythm"));
-
-        server.expect(once(), requestTo(BASE_URL + "/api/v1/packages/design"))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().json("{\"lesson\":{\"course_name\":\"rhythm\"},\"preferences\":{}}"))
-                .andRespond(withSuccess(
-                        "{\"success\":true,\"data\":{\"schema_version\":\"package-design.v1\",\"title\":\"Rhythm\",\"reasoning_summary\":\"Lesson aligned\",\"steps\":[],\"design\":{\"provider\":\"chat_ecnu\",\"model\":\"ecnu-max\",\"fallback_reason\":null,\"trace_id\":\"trace-1\",\"workflow_engine\":\"langgraph\",\"workflow_steps\":[\"prepare\",\"finalize\"],\"tool_calls\":[\"package_design_model\"]}}}",
-                        MediaType.APPLICATION_JSON));
-
-        PythonPackageDesignResponse response = client.designPackage(request);
-
-        assertThat(response.isSuccess()).isTrue();
-        assertThat(response.getData().getDesign().getWorkflowEngine()).isEqualTo("langgraph");
-        assertThat(response.getData().getDesign().getWorkflowSteps()).containsExactly("prepare", "finalize");
-        assertThat(response.getData().getDesign().getToolCalls()).containsExactly("package_design_model");
         server.verify();
     }
 

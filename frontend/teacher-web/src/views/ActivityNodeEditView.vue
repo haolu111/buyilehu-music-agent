@@ -10,12 +10,17 @@ defineProps<{
 
 const emit = defineEmits<{
   save: [payload: PackageModifyPayload]
+  change: [payload: PackageModifyPayload]
 }>()
 
 let componentParams: Record<string, unknown> = {}
 
 function save(payload: PackageModifyPayload) {
   emit('save', { ...payload, componentParams })
+}
+
+function preview(payload: PackageModifyPayload) {
+  emit('change', { ...payload, componentParams })
 }
 </script>
 
@@ -26,10 +31,11 @@ function save(payload: PackageModifyPayload) {
       <ActivityNodeConfigForm
         :initial-title="proposal.activityNodes.find((node) => node.id === selectedNodeId)?.title"
         @save="save"
+        @change="preview"
       />
       <div class="sub-panel">
         <h3>组件参数</h3>
-        <ComponentParamEditor @change="componentParams = $event" />
+        <ComponentParamEditor @change="componentParams = $event; preview({})" />
       </div>
     </template>
     <p v-else class="muted">请选择左侧活动节点</p>

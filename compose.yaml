@@ -88,18 +88,20 @@ services:
       context: ./backend/music-agent-server
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
       DB_HOST: mysql
       DB_PORT: 3306
       DB_NAME: ${DB_NAME:-buyilehu_music_agent}
       DB_USERNAME: root
       DB_PASSWORD: ${DB_PASSWORD:-123456}
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: ""
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: ""
+
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
       PYTHON_CAPABILITY_BASE_URL: http://python-capability:8001
       PYTHON_CAPABILITY_CALL_MODE: ${PYTHON_CAPABILITY_CALL_MODE:-primary}
       STORAGE_PATH: /app/storage/uploads
@@ -129,6 +131,40 @@ services:
       retries: 20
       start_period: 40s
     restart: unless-stopped
+
+  teacher-web:
+    build:
+      context: ./frontend
+      dockerfile: teacher-web/Dockerfile
+    ports:
+      - "${TEACHER_WEB_PORT:-5173}:80"
+    depends_on:
+      java-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  student-web:
+    build:
+      context: ./frontend
+      dockerfile: student-web/Dockerfile
+    ports:
+      - "${STUDENT_WEB_PORT:-5174}:80"
+    depends_on:
+      java-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped  
 
 volumes:
   mysql-data:

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "music-media-session.v1",
+  "version": "music_media_session_v1",
+  "title": "Music Media Session V1",
+  "type": "object",
+  "required": ["version", "sessionId", "gradePreset", "sourceAssets", "tracks", "transport", "recordingPolicy", "networkMode"],
+  "properties": {
+    "version": { "const": "music_media_session_v1" },
+    "sessionId": { "type": "string", "minLength": 1 },
+    "gradePreset": { "enum": ["lower_primary", "middle_primary", "upper_primary"] },
+    "sourceAssets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "url", "label", "rightsStatus"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "enum": ["teacher_upload", "platform_authorized", "soundfont_generated"] },
+          "url": { "type": "string" },
+          "label": { "type": "string" },
+          "rightsStatus": { "enum": ["teacher_confirmation_required", "platform_authorized", "generated_reference"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "scoreTimeline": { "$ref": "normalized-score-timeline.v1.json" },
+    "tracks": { "type": "array", "items": { "type": "object" } },
+    "transport": {
+      "type": "object",
+      "required": ["bpm", "playbackRate", "transposeSemitones", "countInBars"],
+      "properties": {
+        "bpm": { "type": "number", "minimum": 40, "maximum": 208 },
+        "playbackRate": { "type": "number", "minimum": 0.5, "maximum": 1.25 },
+        "transposeSemitones": { "type": "integer", "minimum": -6, "maximum": 6 },
+        "countInBars": { "type": "integer", "minimum": 0, "maximum": 2 },
+        "loop": {
+          "type": "object",
+          "required": ["startSeconds", "endSeconds"],
+          "properties": { "startSeconds": { "type": "number", "minimum": 0 }, "endSeconds": { "type": "number", "exclusiveMinimum": 0 } },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "recordingPolicy": { "const": "local_session_only" },
+    "networkMode": { "const": "single_device_classroom" }
+  },
+  "additionalProperties": false
+}

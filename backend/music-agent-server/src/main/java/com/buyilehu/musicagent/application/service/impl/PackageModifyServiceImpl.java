@@ -17,7 +17,6 @@ import com.buyilehu.musicagent.domain.entity.PackageVersionDiff;
 import com.buyilehu.musicagent.domain.entity.QualityReport;
 import com.buyilehu.musicagent.domain.entity.User;
 import com.buyilehu.musicagent.domain.entity.UserRole;
-import com.buyilehu.musicagent.infrastructure.lock.DistributedLockManager;
 import com.buyilehu.musicagent.infrastructure.repository.ActivityNodeRepository;
 import com.buyilehu.musicagent.infrastructure.repository.ComponentInstanceRepository;
 import com.buyilehu.musicagent.infrastructure.repository.InteractivePackageRepository;
@@ -35,7 +34,7 @@ import java.util.Map;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PackageModifyServiceImpl implements PackageModifyService {
@@ -50,8 +49,6 @@ public class PackageModifyServiceImpl implements PackageModifyService {
     private final ActivityNodeModifyService activityNodeModifyService;
     private final ComponentConfigService componentConfigService;
     private final ObjectMapper objectMapper;
-    private final DistributedLockManager distributedLockManager;
-    private final TransactionTemplate transactionTemplate;
 
     public PackageModifyServiceImpl(InteractivePackageRepository interactivePackageRepository,
                                     PackageVersionRepository packageVersionRepository,
@@ -63,9 +60,7 @@ public class PackageModifyServiceImpl implements PackageModifyService {
                                     UserRepository userRepository,
                                     ActivityNodeModifyService activityNodeModifyService,
                                     ComponentConfigService componentConfigService,
-                                    ObjectMapper objectMapper,
-                                    DistributedLockManager distributedLockManager,
-                                    TransactionTemplate transactionTemplate) {
+                                    ObjectMapper objectMapper) {
         this.interactivePackageRepository = interactivePackageRepository;
         this.packageVersionRepository = packageVersionRepository;
         this.activityNodeRepository = activityNodeRepository;
@@ -77,36 +72,26 @@ public class PackageModifyServiceImpl implements PackageModifyService {
         this.activityNodeModifyService = activityNodeModifyService;
         this.componentConfigService = componentConfigService;
         this.objectMapper = objectMapper;
-        this.distributedLockManager = distributedLockManager;
-        this.transactionTemplate = transactionTemplate;
     }
 
     @Override
-    public PackageModifyResponse updateNodeConfig(Long packageId, Long nodeId, Long baseVersionId,
-                                                  PackageNodeConfigUpdateRequest request) {
+    @Transactional
+    public PackageModifyResponse updateNodeConfig(Long packageId, Long nodeId, PackageNodeConfigUpdateRequest request) {
         PackageModifyRequest modifyRequest = new PackageModifyRequest();
         modifyRequest.setNodeId(nodeId);
-        modifyRequest.setBaseVersionId(baseVersionId);
         modifyRequest.setModifyType("node_config");
         modifyRequest.setConfig(request);
         return modify(packageId, modifyRequest);
     }
 
     @Override
+    @Transactional
     public PackageModifyResponse modify(Long packageId, PackageModifyRequest request) {
-        return distributedLockManager.executeWithLock("package-modify:" + packageId,
-                () -> transactionTemplate.execute(status -> modifyInTransaction(packageId, request)));
-    }
-
-    private PackageModifyResponse modifyInTransaction(Long packageId, PackageModifyRequest request) {
         User teacher = getCurrentTeacher();
         InteractivePackage pkg = interactivePackageRepository.findById(packageId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "package not found"));
         if (!teacher.getId().equals(pkg.getOwnerId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN, "package access denied");
-        }
-        if (!request.getBaseVersionId().equals(pkg.getCurrentVersionId())) {
-            throw new BusinessException(ErrorCode.CONFLICT, "课程包已被更新，请刷新后重新编辑");
         }
 
         PackageVersion fromVersion = packageVersionRepository.findFirstByPackageIdOrderByVersionNoDesc(packageId)

@@ -57,7 +57,9 @@ class MusicCapabilityApiTests(unittest.TestCase):
         self.assertTrue(payload["success"])
         self.assertEqual(payload["data"]["activity_id"], "phrase_singing_practice")
         self.assertEqual(payload["data"]["runtime"]["runtime_status"], "ready")
-        self.assertEqual(payload["data"]["activity_runtime"]["schemaVersion"], "activity-runtime.v1")
+        self.assertEqual(payload["data"]["activity_runtime"]["schemaVersion"], "interactive-node-runtime.v2")
+        self.assertEqual(payload["data"]["activity_runtime"]["family"], "phrase_singing")
+        self.assertEqual(payload["data"]["activity_runtime"]["variant"], "whole_phrase")
         self.assertEqual(
             payload["data"]["runtime"]["student_game_state"]["config"]["activity_id"],
             "phrase_singing_practice",
@@ -81,6 +83,9 @@ class MusicCapabilityApiTests(unittest.TestCase):
             self.assertIn(interaction["renderer"], SUPPORTED_RENDERERS)
             bundle = build_runtime_bundle(activity_id=activity_id, composition=None, request=None)
             self.assertEqual(bundle["activity_runtime"]["renderer"], interaction["renderer"])
+            self.assertEqual(bundle["activity_runtime"]["nodeType"], "activity")
+            self.assertTrue(bundle["activity_runtime"]["family"])
+            self.assertTrue(bundle["activity_runtime"]["variant"])
             self.assertNotEqual(bundle["activity_runtime"]["renderer"], "completion")
 
     def test_new_activity_runtime_contracts(self) -> None:
@@ -139,6 +144,63 @@ class MusicCapabilityApiTests(unittest.TestCase):
         self.assertEqual(payload["nodes"][0]["client_ref"], "node-1")
         self.assertEqual(payload["nodes"][0]["activity_runtime"]["renderer"], "rhythm-drag")
 
+    def test_game_is_a_formal_interactive_node(self) -> None:
+        response = self.client.post("/api/v1/runtime/build", json={
+            "activity_id": "rhythm_question_answer",
+            "composition": {
+                "interactive_node_type": "game",
+                "selected_game_template": "rhythm_echo_core",
+            },
+            "request": {
+                "game": {
+                    "templateId": "rhythm_echo_core",
+                    "prompt": "听完以后再模仿。",
+                },
+            },
+        })
+        self.assertEqual(response.status_code, 200)
+        runtime = response.json()["data"]["activity_runtime"]
+        self.assertEqual(runtime["nodeType"], "game")
+        self.assertEqual(runtime["variant"], "rhythm_echo_core")
+        self.assertEqual(runtime["renderer"], "rhythm-drag")
+
+    def test_virtual_instrument_task_has_objective_evidence_contract(self) -> None:
+        response = self.client.post("/api/v1/runtime/build", json={
+            "activity_id": "rhythm_warmup",
+            "composition": {"interactive_node_type": "instrument_task"},
+            "request": {
+                "instrument_task": {
+                    "kind": "steady_beat",
+                    "instrumentId": "virtual_frame_drum",
+                    "gradePreset": "middle_primary",
+                    "bpm": 60,
+                },
+            },
+        })
+        self.assertEqual(response.status_code, 200)
+        runtime = response.json()["data"]["activity_runtime"]
+        self.assertEqual(runtime["nodeType"], "instrument_task")
+        self.assertEqual(runtime["variant"], "steady_beat")
+        self.assertEqual(runtime["assessment"]["mode"], "instrument_evidence")
+
+        assessment = self.client.post("/api/v1/assessments/grade", json={
+            "activity_id": "rhythm_warmup",
+            "renderer": "virtual-instrument",
+            "result": {
+                "events": [
+                    {"timeMs": 0, "zoneId": "center"},
+                    {"timeMs": 1000, "zoneId": "center"},
+                    {"timeMs": 2000, "zoneId": "center"},
+                    {"timeMs": 3000, "zoneId": "center"},
+                ],
+            },
+            "assessment": runtime["assessment"],
+        })
+        self.assertEqual(assessment.status_code, 200)
+        result = assessment.json()["data"]
+        self.assertEqual(result["mode"], "instrument_evidence")
+        self.assertEqual(result["score"], 100)
+
     @patch("app.services.orchestration.package_design_agent._call_model")
     @patch("app.services.orchestration.package_design_agent._doubao_config")
     @patch("app.services.orchestration.package_design_agent._ecnu_config")
@@ -169,47 +231,8 @@ class MusicCapabilityApiTests(unittest.TestCase):
         self.assertEqual(data["schema_version"], "package-design.v1")
         self.assertEqual(data["design"]["provider"], "chat_ecnu")
         self.assertEqual(data["design"]["model"], "ecnu-max")
-        self.assertEqual(data["design"]["workflow_engine"], "langgraph")
-        self.assertIn("package_design_model", data["design"]["tool_calls"])
-        self.assertIn("validate_package_design", data["design"]["tool_calls"])
         self.assertEqual(len(data["steps"]), 4)
         self.assertEqual(data["steps"][1]["activity_id"], "steady_beat_walk")
-
-    @patch("app.services.orchestration.package_design_agent._call_model")
-    @patch("app.services.orchestration.package_design_agent._doubao_config")
-    @patch("app.services.orchestration.package_design_agent._ecnu_config")
-    def test_package_design_retries_next_provider_after_validation_failure(
-        self, ecnu_config, doubao_config, call_model
-    ) -> None:
-        ecnu_config.return_value = {
-            "provider": "chat_ecnu", "enabled": True, "model": "ecnu-max",
-            "api_key": "test", "url": "https://example.test",
-        }
-        doubao_config.return_value = {
-            "provider": "doubao", "enabled": True, "model": "doubao-test",
-            "api_key": "test", "base_url": "https://example.test",
-        }
-        call_model.side_effect = [
-            {"steps": []},
-            {"steps": [
-                {"activity_id": "lesson_opening_hook"},
-                {"activity_id": "steady_beat_walk"},
-                {"activity_id": "exit_ticket_review"},
-            ]},
-        ]
-
-        response = self.client.post("/api/v1/packages/design", json={
-            "lesson": {"course_name": "节拍课"},
-            "preferences": {},
-        })
-
-        self.assertEqual(response.status_code, 200)
-        design = response.json()["data"]["design"]
-        self.assertEqual(design["provider"], "doubao")
-        self.assertEqual(call_model.call_count, 2)
-        self.assertIn("chat_ecnu: model must return 3 to 7 steps", design["fallback_reason"])
-        self.assertIn("provider:chat_ecnu:invalid", design["workflow_steps"])
-        self.assertIn("provider:doubao:validated", design["workflow_steps"])
 
     @patch("app.services.orchestration.package_design_agent._doubao_config")
     @patch("app.services.orchestration.package_design_agent._ecnu_config")
@@ -226,8 +249,6 @@ class MusicCapabilityApiTests(unittest.TestCase):
         data = response.json()["data"]
         self.assertEqual(data["design"]["provider"], "rule_fallback")
         self.assertIn("chat_ecnu: not configured", data["design"]["fallback_reason"])
-        self.assertEqual(data["design"]["workflow_engine"], "langgraph")
-        self.assertIn("rule_package_design", data["design"]["tool_calls"])
 
 
 if __name__ == "__main__":

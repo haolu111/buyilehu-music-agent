@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name = "activity_nodes")
@@ -33,10 +32,6 @@ public class ActivityNode extends BaseEntity {
     @Column(name = "config_json", columnDefinition = "TEXT")
     private String configJson;
 
-    @Version
-    @Column(name = "lock_version", nullable = false)
-    private Long lockVersion = 0L;
-
     public ActivityNode() {
     }
 
@@ -53,5 +48,4 @@ public class ActivityNode extends BaseEntity {
     public void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }
     public String getConfigJson() { return configJson; }
     public void setConfigJson(String configJson) { this.configJson = configJson; }
-    public Long getLockVersion() { return lockVersion; }
 }

@@ -6,7 +6,6 @@ import com.buyilehu.musicagent.infrastructure.repository.AssetRepository;
 import com.buyilehu.musicagent.infrastructure.repository.ComponentInstanceRepository;
 import com.buyilehu.musicagent.infrastructure.repository.GenerationJobRepository;
 import com.buyilehu.musicagent.infrastructure.repository.InteractivePackageRepository;
-import com.buyilehu.musicagent.infrastructure.repository.OutboxEventRepository;
 import com.buyilehu.musicagent.infrastructure.repository.PackageVersionRepository;
 import com.buyilehu.musicagent.infrastructure.repository.ProposalCardRepository;
 import com.buyilehu.musicagent.infrastructure.repository.QualityReportRepository;
@@ -17,14 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -32,41 +25,18 @@ import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(properties = "app.async-generation.enabled=false")
+@SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers(disabledWithoutDocker = true)
 class MusicAgentServerApplicationTests {
-    @Container
-    private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.0.36")
-            .withDatabaseName("buyilehu_music_agent_test")
-            .withUsername("test")
-            .withPassword("test");
-
-    @DynamicPropertySource
-    static void databaseProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", MYSQL::getJdbcUrl);
-        registry.add("spring.datasource.username", MYSQL::getUsername);
-        registry.add("spring.datasource.password", MYSQL::getPassword);
-        registry.add("spring.flyway.locations",
-                () -> "classpath:db/migration,classpath:db/local");
-        registry.add("app.storage.root", () -> "target/test-uploads");
-        registry.add("spring.cache.type", () -> "none");
-        registry.add("app.distributed-lock.enabled", () -> "false");
-    }
-
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private GenerationJobRepository generationJobRepository;
@@ -92,29 +62,12 @@ class MusicAgentServerApplicationTests {
     @Autowired
     private QualityReportRepository qualityReportRepository;
 
-    @Autowired
-    private OutboxEventRepository outboxEventRepository;
-
     @Test
     void contextLoadsAndHealthEndpointIsPublic() throws Exception {
         mockMvc.perform(get("/api/v1/system/health"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(jsonPath("$.data.status").value("UP"));
-    }
-
-    @Test
-    void flywayCreatesTransactionalSchemaAndCoreIndexes() {
-        String engine = jdbcTemplate.queryForObject(
-                "SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'generation_jobs'",
-                String.class);
-        Integer versionIndexCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() "
-                        + "AND TABLE_NAME = 'package_versions' AND INDEX_NAME = 'uk_package_versions_package_no'",
-                Integer.class);
-
-        org.assertj.core.api.Assertions.assertThat(engine).isEqualToIgnoringCase("InnoDB");
-        org.assertj.core.api.Assertions.assertThat(versionIndexCount).isEqualTo(1);
     }
 
     @Test
@@ -222,16 +175,11 @@ class MusicAgentServerApplicationTests {
     void teacherGeneratesInteractivePackageFromLessonPlan() throws Exception {
         String teacherToken = loginAndGetToken("teacher001", "123456");
         long lessonPlanId = uploadTxtLessonPlanAndGetId(teacherToken);
-        long jobCountBefore = generationJobRepository.count();
-        String idempotencyKey = "generation-test-" + lessonPlanId;
-        String requestBody = "{\"lessonPlanId\":" + lessonPlanId
-                + ",\"preferences\":{\"style\":\"standard\",\"durationMinutes\":40}}";
 
         String generationResponse = mockMvc.perform(post("/api/v1/generation-jobs")
                         .header("Authorization", "Bearer " + teacherToken)
-                        .header("Idempotency-Key", idempotencyKey)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
+                        .content("{\"lessonPlanId\":" + lessonPlanId + ",\"preferences\":{\"style\":\"standard\",\"durationMinutes\":40}}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(jsonPath("$.data.status").value("success"))
@@ -248,28 +196,12 @@ class MusicAgentServerApplicationTests {
         long packageId = data.path("packageId").asLong();
         long versionId = data.path("versionId").asLong();
 
-        mockMvc.perform(post("/api/v1/generation-jobs")
-                        .header("Authorization", "Bearer " + teacherToken)
-                        .header("Idempotency-Key", idempotencyKey)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.id").value(jobId));
-        org.assertj.core.api.Assertions.assertThat(generationJobRepository.count())
-                .isEqualTo(jobCountBefore + 1);
-
         org.assertj.core.api.Assertions.assertThat(generationJobRepository.findById(jobId)).isPresent();
         org.assertj.core.api.Assertions.assertThat(interactivePackageRepository.findById(packageId)).isPresent();
         org.assertj.core.api.Assertions.assertThat(packageVersionRepository.findById(versionId)).isPresent();
         org.assertj.core.api.Assertions.assertThat(proposalCardRepository.findByPackageId(packageId)).hasSize(1);
         org.assertj.core.api.Assertions.assertThat(assetRepository.findByPackageId(packageId)).hasSize(1);
         org.assertj.core.api.Assertions.assertThat(qualityReportRepository.findByPackageId(packageId)).hasSize(1);
-        org.assertj.core.api.Assertions.assertThat(outboxEventRepository
-                .findByAggregateTypeAndAggregateIdAndEventType(
-                        "generation_job", jobId, "generation_job.created"))
-                .get()
-                .extracting(com.buyilehu.musicagent.domain.entity.OutboxEvent::getStatus)
-                .isEqualTo("published");
 
         List<ActivityNode> nodes = activityNodeRepository.findByPackageIdOrderBySortOrderAsc(packageId);
         org.assertj.core.api.Assertions.assertThat(nodes).hasSizeBetween(3, 7);
@@ -280,42 +212,6 @@ class MusicAgentServerApplicationTests {
         List<Long> nodeIds = nodes.stream().map(ActivityNode::getId).collect(Collectors.toList());
         org.assertj.core.api.Assertions.assertThat(componentInstanceRepository.findByActivityNodeIdIn(nodeIds))
                 .isNotEmpty();
-
-        String confirmResponse = mockMvc.perform(post("/api/v1/packages/" + packageId + "/proposal/confirm")
-                        .header("Authorization", "Bearer " + teacherToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.packageInfo.currentVersionId").value(versionId))
-                .andReturn()
-                .getResponse()
-                .getContentAsString(StandardCharsets.UTF_8);
-        long confirmedVersionId = objectMapper.readTree(confirmResponse)
-                .path("data").path("packageInfo").path("currentVersionId").asLong();
-
-        Long lockVersionBefore = interactivePackageRepository.findById(packageId)
-                .orElseThrow(AssertionError::new)
-                .getLockVersion();
-        long nodeId = nodes.get(0).getId();
-        mockMvc.perform(patch("/api/v1/packages/" + packageId + "/nodes/" + nodeId + "/config")
-                        .header("Authorization", "Bearer " + teacherToken)
-                        .header("X-Package-Version", confirmedVersionId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"description\":\"并发编辑测试\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.fromVersionId").value(confirmedVersionId))
-                .andExpect(jsonPath("$.data.toVersionId").isNumber());
-
-        Long lockVersionAfter = interactivePackageRepository.findById(packageId)
-                .orElseThrow(AssertionError::new)
-                .getLockVersion();
-        org.assertj.core.api.Assertions.assertThat(lockVersionAfter).isGreaterThan(lockVersionBefore);
-
-        mockMvc.perform(patch("/api/v1/packages/" + packageId + "/nodes/" + nodeId + "/config")
-                        .header("Authorization", "Bearer " + teacherToken)
-                        .header("X-Package-Version", confirmedVersionId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"description\":\"过期编辑\"}"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.code").value(40900));
     }
 
     private long uploadTxtLessonPlanAndGetId(String teacherToken) throws Exception {

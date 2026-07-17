@@ -1,6 +1,5 @@
 package com.buyilehu.musicagent.domain.entity;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,9 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "component_definitions")
-public class ComponentDefinition extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class ComponentDefinition extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

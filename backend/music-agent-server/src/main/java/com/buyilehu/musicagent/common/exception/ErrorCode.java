@@ -7,8 +7,6 @@ public enum ErrorCode {
     FORBIDDEN(40300, "无权访问该资源"),
     ACTIVITY_LOCKED(40301, "当前活动尚未由老师开启"),
     RESOURCE_NOT_FOUND(40400, "资源不存在"),
-    CONFLICT(40900, "资源状态冲突"),
-    DEPENDENCY_UNAVAILABLE(50300, "依赖服务暂不可用"),
     INTERNAL_ERROR(50000, "服务器内部错误");
 
     private final int code;

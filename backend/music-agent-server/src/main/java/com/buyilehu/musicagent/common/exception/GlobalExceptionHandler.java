@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -34,14 +32,6 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.fail(ErrorCode.PARAM_ERROR.code(), ErrorCode.PARAM_ERROR.message()));
     }
 
-    @ExceptionHandler({ObjectOptimisticLockingFailureException.class, DataIntegrityViolationException.class})
-    public ResponseEntity<ApiResponse<Void>> handleStateConflict(Exception exception) {
-        log.warn("State conflict: {}", exception.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ApiResponse.fail(ErrorCode.CONFLICT.code(), ErrorCode.CONFLICT.message()));
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleUnexpectedException(Exception exception) {
         log.error("Unhandled server exception", exception);
@@ -62,10 +52,6 @@ public class GlobalExceptionHandler {
                 return HttpStatus.FORBIDDEN;
             case RESOURCE_NOT_FOUND:
                 return HttpStatus.NOT_FOUND;
-            case CONFLICT:
-                return HttpStatus.CONFLICT;
-            case DEPENDENCY_UNAVAILABLE:
-                return HttpStatus.SERVICE_UNAVAILABLE;
             default:
                 return HttpStatus.INTERNAL_SERVER_ERROR;
         }

@@ -5,8 +5,7 @@ import com.buyilehu.musicagent.application.dto.request.PackageNodeConfigUpdateRe
 import com.buyilehu.musicagent.application.dto.response.PackageModifyResponse;
 
 public interface PackageModifyService {
-    PackageModifyResponse updateNodeConfig(Long packageId, Long nodeId, Long baseVersionId,
-                                           PackageNodeConfigUpdateRequest request);
+    PackageModifyResponse updateNodeConfig(Long packageId, Long nodeId, PackageNodeConfigUpdateRequest request);
 
     PackageModifyResponse modify(Long packageId, PackageModifyRequest request);
 }

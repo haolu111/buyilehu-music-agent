@@ -6,6 +6,7 @@ import AppShell from '../components/AppShell.vue'
 import WorkflowStepper from '../components/WorkflowStepper.vue'
 import VersionHistoryPanel from '../components/VersionHistoryPanel.vue'
 import ActivityNodeEditView from './ActivityNodeEditView.vue'
+import InteractivePackagePreview from '../components/InteractivePackagePreview.vue'
 import { packageApi } from '../api/packageApi'
 import type { PackageModifyPayload, PackageVersion, ProposalCard } from '../types'
 
@@ -17,6 +18,7 @@ const selectedNodeId = ref<number | null>(null)
 const loading = ref(false)
 const message = ref('')
 const error = ref('')
+const draft = ref<PackageModifyPayload>({})
 
 const selectedNode = computed(() =>
   proposal.value?.activityNodes.find((node) => node.id === selectedNodeId.value) || null,
@@ -93,7 +95,12 @@ onMounted(load)
         </button>
       </div>
 
-      <ActivityNodeEditView :proposal="proposal" :selected-node-id="selectedNodeId" @save="saveNode" />
+      <ActivityNodeEditView
+        :proposal="proposal"
+        :selected-node-id="selectedNodeId"
+        @save="saveNode"
+        @change="draft = $event"
+      />
 
       <VersionHistoryPanel :versions="versions" />
     </section>
@@ -105,6 +112,19 @@ onMounted(load)
       <span v-for="component in selectedNode.components" :key="component.id" class="tag">
         {{ component.name || component.componentKey }}
       </span>
+    </section>
+    <section v-if="selectedNode && proposal" class="card stack live-preview-panel">
+      <div>
+        <p class="eyebrow">实时预览</p>
+        <h2>修改后的学生端效果</h2>
+        <p class="muted">参数变化会立即显示；点击保存后才会生成新版本。</p>
+      </div>
+      <InteractivePackagePreview
+        :nodes="proposal.activityNodes"
+        :selected-node-id="selectedNodeId"
+        :draft="draft"
+        mode="single"
+      />
     </section>
   </AppShell>
 </template>

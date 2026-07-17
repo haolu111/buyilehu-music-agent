@@ -8,6 +8,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   save: [payload: PackageModifyPayload]
+  change: [payload: PackageModifyPayload]
 }>()
 
 const form = reactive<PackageModifyPayload>({
@@ -25,6 +26,8 @@ watch(
     if (title) form.title = title
   },
 )
+
+watch(form, () => emit('change', { ...form }), { deep: true, immediate: true })
 </script>
 
 <template>

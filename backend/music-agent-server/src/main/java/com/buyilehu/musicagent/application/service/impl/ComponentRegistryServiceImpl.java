@@ -3,7 +3,6 @@ package com.buyilehu.musicagent.application.service.impl;
 import com.buyilehu.musicagent.application.service.ComponentRegistryService;
 import com.buyilehu.musicagent.domain.entity.ComponentDefinition;
 import com.buyilehu.musicagent.infrastructure.repository.ComponentDefinitionRepository;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,6 @@ public class ComponentRegistryServiceImpl implements ComponentRegistryService {
 
     @Override
     @Transactional
-    @Cacheable(cacheNames = "componentDefinitions", key = "#componentKey", sync = true)
     public ComponentDefinition getOrCreate(String componentKey) {
         return componentDefinitionRepository.findByComponentKey(componentKey)
                 .orElseGet(() -> {

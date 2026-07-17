@@ -33,6 +33,8 @@ const runtimeConfig = computed(() => node.value?.runtimeConfig || null)
 
 const activityKind = computed(() => {
   const type = rawNodeType.value.toLowerCase()
+  if (type === 'instrument_task') return 'instrument'
+  if (type === 'game') return 'game'
   if (type.includes('summary')) return 'summary'
   if (type.includes('creation')) return 'creation'
   if (type.includes('rhythm')) return 'game'

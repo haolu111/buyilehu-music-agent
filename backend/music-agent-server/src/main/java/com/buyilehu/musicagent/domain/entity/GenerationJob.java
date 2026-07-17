@@ -39,12 +39,6 @@ public class GenerationJob extends BaseEntity {
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
 
-    @Column(name = "idempotency_key", length = 64)
-    private String idempotencyKey;
-
-    @Column(name = "request_hash", length = 64)
-    private String requestHash;
-
     public GenerationJob() {
     }
 
@@ -65,8 +59,4 @@ public class GenerationJob extends BaseEntity {
     public void setStartedAt(LocalDateTime startedAt) { this.startedAt = startedAt; }
     public LocalDateTime getFinishedAt() { return finishedAt; }
     public void setFinishedAt(LocalDateTime finishedAt) { this.finishedAt = finishedAt; }
-    public String getIdempotencyKey() { return idempotencyKey; }
-    public void setIdempotencyKey(String idempotencyKey) { this.idempotencyKey = idempotencyKey; }
-    public String getRequestHash() { return requestHash; }
-    public void setRequestHash(String requestHash) { this.requestHash = requestHash; }
 }

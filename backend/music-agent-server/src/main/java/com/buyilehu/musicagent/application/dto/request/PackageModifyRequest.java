@@ -15,10 +15,6 @@ public class PackageModifyRequest {
     @Positive
     private Long nodeId;
 
-    @NotNull
-    @Positive
-    private Long baseVersionId;
-
     private String modifyType = "node_config";
 
     @Valid
@@ -27,8 +23,6 @@ public class PackageModifyRequest {
 
     public Long getNodeId() { return nodeId; }
     public void setNodeId(Long nodeId) { this.nodeId = nodeId; }
-    public Long getBaseVersionId() { return baseVersionId; }
-    public void setBaseVersionId(Long baseVersionId) { this.baseVersionId = baseVersionId; }
     public String getModifyType() { return modifyType; }
     public void setModifyType(String modifyType) { this.modifyType = modifyType; }
     public PackageNodeConfigUpdateRequest getConfig() { return config; }

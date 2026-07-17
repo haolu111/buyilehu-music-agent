@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Section C form card">
+  <rect width="180" height="180" rx="24" fill="#e9fff5"/>
+  <path d="M90 30l62 116H28z" fill="#9be7c7" stroke="#243b53" stroke-linejoin="round" stroke-width="8"/>
+  <text x="90" y="115" font-family="Arial, sans-serif" font-size="62" font-weight="700" text-anchor="middle" fill="#243b53">C</text>
+</svg>

@@ -2,20 +2,16 @@ package com.buyilehu.musicagent.application.service.impl;
 
 import com.buyilehu.musicagent.application.dto.request.CreateGenerationJobRequest;
 import com.buyilehu.musicagent.application.dto.response.GenerationJobResponse;
-import com.buyilehu.musicagent.application.dto.response.GenerationJobStatus;
-import com.buyilehu.musicagent.application.event.GenerationJobCreatedEvent;
 import com.buyilehu.musicagent.application.generator.ComponentMatcher;
 import com.buyilehu.musicagent.application.generator.LessonToPackageGenerator;
 import com.buyilehu.musicagent.application.generator.ProposalCardGenerator;
 import com.buyilehu.musicagent.application.service.ComponentRegistryService;
 import com.buyilehu.musicagent.application.service.GenerationJobService;
-import com.buyilehu.musicagent.application.service.GenerationJobStatusService;
 import com.buyilehu.musicagent.application.service.PythonRuntimeIntegrationService;
 import com.buyilehu.musicagent.application.service.MusicValidationService;
 import com.buyilehu.musicagent.application.service.PackageService;
 import com.buyilehu.musicagent.common.exception.BusinessException;
 import com.buyilehu.musicagent.common.exception.ErrorCode;
-import com.buyilehu.musicagent.config.AsyncGenerationProperties;
 import com.buyilehu.musicagent.domain.entity.ActivityNode;
 import com.buyilehu.musicagent.domain.entity.Asset;
 import com.buyilehu.musicagent.domain.entity.ComponentDefinition;
@@ -42,22 +38,16 @@ import com.buyilehu.musicagent.infrastructure.repository.PackageVersionRepositor
 import com.buyilehu.musicagent.infrastructure.repository.ProposalCardRepository;
 import com.buyilehu.musicagent.infrastructure.repository.QualityReportRepository;
 import com.buyilehu.musicagent.infrastructure.repository.UserRepository;
-import com.buyilehu.musicagent.infrastructure.outbox.OutboxEventService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.annotation.Propagation;
 
 @Service
 public class GenerationJobServiceImpl implements GenerationJobService {
@@ -78,10 +68,6 @@ public class GenerationJobServiceImpl implements GenerationJobService {
     private final ProposalCardRepository proposalCardRepository;
     private final QualityReportRepository qualityReportRepository;
     private final ObjectMapper objectMapper;
-    private final GenerationJobStatusService statusService;
-    private final ApplicationEventPublisher eventPublisher;
-    private final OutboxEventService outboxEventService;
-    private final AsyncGenerationProperties asyncGenerationProperties;
 
     public GenerationJobServiceImpl(GenerationJobRepository generationJobRepository,
                                     LessonPlanRepository lessonPlanRepository,
@@ -99,11 +85,7 @@ public class GenerationJobServiceImpl implements GenerationJobService {
                                     AssetRepository assetRepository,
                                     ProposalCardRepository proposalCardRepository,
                                     QualityReportRepository qualityReportRepository,
-                                    ObjectMapper objectMapper,
-                                    GenerationJobStatusService statusService,
-                                    ApplicationEventPublisher eventPublisher,
-                                    OutboxEventService outboxEventService,
-                                    AsyncGenerationProperties asyncGenerationProperties) {
+                                    ObjectMapper objectMapper) {
         this.generationJobRepository = generationJobRepository;
         this.lessonPlanRepository = lessonPlanRepository;
         this.userRepository = userRepository;
@@ -121,15 +103,11 @@ public class GenerationJobServiceImpl implements GenerationJobService {
         this.proposalCardRepository = proposalCardRepository;
         this.qualityReportRepository = qualityReportRepository;
         this.objectMapper = objectMapper;
-        this.statusService = statusService;
-        this.eventPublisher = eventPublisher;
-        this.outboxEventService = outboxEventService;
-        this.asyncGenerationProperties = asyncGenerationProperties;
     }
 
     @Override
     @Transactional
-    public GenerationJobStatus create(CreateGenerationJobRequest request, String idempotencyKey) {
+    public GenerationJobResponse createAndGenerate(CreateGenerationJobRequest request) {
         User currentUser = getCurrentUser();
         if (currentUser.getRole() != UserRole.teacher) {
             throw new BusinessException(ErrorCode.FORBIDDEN, "只有教师可以生成互动包");
@@ -141,168 +119,49 @@ public class GenerationJobServiceImpl implements GenerationJobService {
             throw new BusinessException(ErrorCode.FORBIDDEN, "只能基于自己的教案生成互动包");
         }
 
-        String normalizedKey = normalizeIdempotencyKey(idempotencyKey);
-        String preferencesJson = toJson(request.getPreferences() == null
-                ? new GeneratePreferences() : request.getPreferences());
-        String requestHash = sha256(request.getLessonPlanId() + ":" + preferencesJson);
-        if (normalizedKey != null) {
-            GenerationJob existing = generationJobRepository
-                    .findByCreatedByAndIdempotencyKey(currentUser.getId(), normalizedKey)
-                    .orElse(null);
-            if (existing != null) {
-                if (!requestHash.equals(existing.getRequestHash())) {
-                    throw new BusinessException(ErrorCode.CONFLICT,
-                            "Idempotency-Key 已用于不同的生成请求");
-                }
-                return statusService.find(existing);
-            }
-        }
+        GenerationJob job = createJob(lessonPlan, currentUser, request.getPreferences());
+        try {
+            ParsedLesson parsedLesson = parseLesson(lessonPlan.getParsedJson());
+            GeneratePreferences preferences = request.getPreferences() == null
+                    ? new GeneratePreferences()
+                    : request.getPreferences();
 
-        GenerationJob job = createJob(lessonPlan, currentUser, preferencesJson, normalizedKey, requestHash);
-        GenerationJobStatus status = statusService.queued(job);
-        outboxEventService.recordGenerationJobCreated(job.getId());
-        if (!asyncGenerationProperties.isEnabled()) {
-            eventPublisher.publishEvent(new GenerationJobCreatedEvent(job.getId()));
+            ActivityChain chain = lessonToPackageGenerator.generate(parsedLesson, preferences);
+            List<ActivityNodeConfig> nodeConfigs = componentMatcher.match(chain, parsedLesson);
+            pythonRuntimeIntegrationService.enrichNodes(parsedLesson, preferences, nodeConfigs);
+            QualityCheckResult quality = musicValidationService.validate(chain, nodeConfigs);
+
+            InteractivePackage pkg = packageService.createPackage(lessonPlan, parsedLesson, job.getId());
+            PackageVersion version = createInitialVersion(pkg, currentUser, chain, nodeConfigs);
+            saveNodesAndComponents(pkg, nodeConfigs);
+            savePlaceholderAssets(pkg, currentUser);
+            saveProposalCard(job, pkg, chain, quality);
+            saveQualityReport(pkg, version, quality);
+
+            job.setStatus("success");
+            job.setProgress(100);
+            job.setFinishedAt(LocalDateTime.now());
+            generationJobRepository.save(job);
+            return GenerationJobResponse.from(job, pkg.getId(), version.getId(), chain);
+        } catch (RuntimeException exception) {
+            job.setStatus("failed");
+            job.setProgress(100);
+            job.setErrorMessage(exception.getMessage());
+            job.setFinishedAt(LocalDateTime.now());
+            generationJobRepository.save(job);
+            throw exception;
         }
-        return status;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public GenerationJobStatus getStatus(Long jobId) {
-        GenerationJob job = findJob(jobId);
-        if (!job.getCreatedBy().equals(getCurrentUserId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN, "无权访问该生成任务");
-        }
-        return statusService.find(job);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public GenerationJobResponse execute(Long jobId) {
-        GenerationJob job = generationJobRepository.findByIdForUpdate(jobId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "生成任务不存在"));
-        if ("success".equals(job.getStatus())) {
-            return responseFromStatus(statusService.find(job));
-        }
-        if ("failed".equals(job.getStatus())) {
-            throw new IllegalStateException("Generation job has already failed");
-        }
-
-        User currentUser = userRepository.findById(job.getCreatedBy())
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "任务创建人不存在"));
-        LessonPlan lessonPlan = lessonPlanRepository.findById(job.getLessonPlanId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "教案不存在"));
-
-        job.setStatus("running");
-        job.setProgress(5);
-        job.setStartedAt(LocalDateTime.now());
-        generationJobRepository.save(job);
-        statusService.progress(job, "parsing", 10, "正在读取教案解析结果");
-
-        ParsedLesson parsedLesson = parseLesson(lessonPlan.getParsedJson());
-        GeneratePreferences preferences = parsePreferences(job.getRequestParams());
-        statusService.progress(job, "designing", 25, "正在设计课堂活动链");
-        ActivityChain chain = lessonToPackageGenerator.generate(parsedLesson, preferences);
-
-        statusService.progress(job, "matching", 50, "正在匹配互动组件");
-        List<ActivityNodeConfig> nodeConfigs = componentMatcher.match(chain, parsedLesson);
-        statusService.progress(job, "enriching", 65, "正在构建互动组件运行参数");
-        pythonRuntimeIntegrationService.enrichNodes(parsedLesson, preferences, nodeConfigs);
-        statusService.progress(job, "validating", 75, "正在校验音乐教学方案");
-        QualityCheckResult quality = musicValidationService.validate(chain, nodeConfigs);
-
-        statusService.progress(job, "persisting", 85, "正在保存互动包");
-        InteractivePackage pkg = packageService.createPackage(lessonPlan, parsedLesson, job.getId());
-        PackageVersion version = createInitialVersion(pkg, currentUser, chain, nodeConfigs);
-        saveNodesAndComponents(pkg, nodeConfigs);
-        savePlaceholderAssets(pkg, currentUser);
-        saveProposalCard(job, pkg, chain, quality);
-        saveQualityReport(pkg, version, quality);
-
-        job.setStatus("success");
-        job.setProgress(100);
-        job.setFinishedAt(LocalDateTime.now());
-        generationJobRepository.save(job);
-        return GenerationJobResponse.from(job, pkg.getId(), version.getId(), chain);
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void fail(Long jobId, Throwable error) {
-        GenerationJob job = findJob(jobId);
-        if ("success".equals(job.getStatus())) {
-            return;
-        }
-        job.setStatus("failed");
-        job.setProgress(100);
-        job.setErrorMessage(errorMessage(error));
-        job.setFinishedAt(LocalDateTime.now());
-        generationJobRepository.save(job);
-        statusService.failed(job);
-    }
-
-    private GenerationJob createJob(LessonPlan lessonPlan, User currentUser, String preferencesJson,
-                                    String idempotencyKey, String requestHash) {
+    private GenerationJob createJob(LessonPlan lessonPlan, User currentUser, GeneratePreferences preferences) {
         GenerationJob job = new GenerationJob();
         job.setLessonPlanId(lessonPlan.getId());
         job.setCreatedBy(currentUser.getId());
-        job.setStatus("queued");
-        job.setProgress(0);
-        job.setRequestParams(preferencesJson);
-        job.setIdempotencyKey(idempotencyKey);
-        job.setRequestHash(requestHash);
+        job.setStatus("running");
+        job.setProgress(10);
+        job.setStartedAt(LocalDateTime.now());
+        job.setRequestParams(toJson(preferences == null ? new GeneratePreferences() : preferences));
         return generationJobRepository.save(job);
-    }
-
-    private String normalizeIdempotencyKey(String value) {
-        if (value == null || value.trim().isEmpty()) {
-            return null;
-        }
-        String normalized = value.trim();
-        if (normalized.length() > 64 || !normalized.matches("[A-Za-z0-9._:-]+")) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST, "Idempotency-Key 格式不正确");
-        }
-        return normalized;
-    }
-
-    private String sha256(String value) {
-        try {
-            byte[] digest = MessageDigest.getInstance("SHA-256")
-                    .digest(value.getBytes(StandardCharsets.UTF_8));
-            StringBuilder result = new StringBuilder(digest.length * 2);
-            for (byte item : digest) {
-                result.append(String.format("%02x", item & 0xff));
-            }
-            return result.toString();
-        } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("SHA-256 is unavailable", exception);
-        }
-    }
-
-    private GenerationJob findJob(Long jobId) {
-        return generationJobRepository.findById(jobId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND, "生成任务不存在"));
-    }
-
-    private GeneratePreferences parsePreferences(String requestParams) {
-        try {
-            return objectMapper.readValue(requestParams, GeneratePreferences.class);
-        } catch (Exception exception) {
-            return new GeneratePreferences();
-        }
-    }
-
-    private GenerationJobResponse responseFromStatus(GenerationJobStatus status) {
-        return new GenerationJobResponse(status.getId(), status.getLessonPlanId(), status.getPackageId(),
-                status.getVersionId(), status.getStatus(), status.getProgress(), status.getErrorMessage(),
-                status.getDesignProvider(), status.getDesignModel(), status.getDesignFallbackReason(),
-                status.getDesignTraceId());
-    }
-
-    private String errorMessage(Throwable error) {
-        String message = error.getMessage();
-        return message == null || message.trim().isEmpty() ? error.getClass().getSimpleName() : message;
     }
 
     private ParsedLesson parseLesson(String parsedJson) {

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @Validated
@@ -36,10 +35,8 @@ public class PackageModifyController {
     @PatchMapping("/{packageId}/nodes/{nodeId}/config")
     public ApiResponse<PackageModifyResponse> updateNodeConfig(@PathVariable @Positive Long packageId,
                                                                @PathVariable @Positive Long nodeId,
-                                                               @RequestHeader("X-Package-Version") @Positive Long baseVersionId,
                                                                @Valid @RequestBody PackageNodeConfigUpdateRequest request) {
-        return ApiResponse.success(packageModifyService.updateNodeConfig(
-                packageId, nodeId, baseVersionId, request));
+        return ApiResponse.success(packageModifyService.updateNodeConfig(packageId, nodeId, request));
     }
 
     @PostMapping("/{packageId}/modify")

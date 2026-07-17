@@ -7,8 +7,7 @@ spring:
   jpa:
     show-sql: false
   flyway:
-    enabled: true
-    locations: classpath:db/migration,classpath:db/local
+    enabled: false
 
 logging:
   level:

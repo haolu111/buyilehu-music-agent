@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AppShell from '../components/AppShell.vue'
 import LessonWorkspaceNav from '../components/LessonWorkspaceNav.vue'
 import WorkflowStepper from '../components/WorkflowStepper.vue'
+import InteractivePackagePreview from '../components/InteractivePackagePreview.vue'
 import { packageApi } from '../api/packageApi'
 import type { ProposalCard } from '../types'
 
@@ -14,6 +15,7 @@ const packageId = Number(route.params.packageId)
 const proposal = ref<ProposalCard | null>(null)
 const loading = ref(false)
 const error = ref('')
+const previewOpen = ref(false)
 const contentEntries = computed(() => (proposal.value?.content?.split(/\r?\n/).map((line) => line.trim()).filter(Boolean) || []).map((line) => {
   const separator = line.search(/[：:]/)
   return separator > 0 ? { label: line.slice(0, separator).trim(), value: line.slice(separator + 1).trim() } : { label: '方案说明', value: line }
@@ -75,6 +77,16 @@ onMounted(() => loadProposal().catch((err) => (error.value = err instanceof Erro
         <details class="proposal-evidence" data-testid="proposal-source"><summary><span>04</span> 教案依据</summary><ul class="source-section-list"><li v-for="item in proposal.sourceLessonSections" :key="item">{{ item }}</li></ul></details>
       </section>
       <section v-if="proposal.components.length" class="proposal-components"><div><h2>互动组件</h2></div><div class="proposal-component-tags large"><span v-for="component in proposal.components" :key="component.id">{{ component.name || component.componentKey }}</span></div></section>
+    </div>
+    <button class="button primary" type="button" @click="previewOpen = true">预览并测试互动包</button>
+    <div v-if="previewOpen && proposal" class="preview-modal" role="dialog" aria-modal="true" aria-label="互动包预览">
+      <div class="preview-modal-card">
+        <div class="section-header compact">
+          <div><p class="eyebrow">发布前检查</p><h2>完整互动包预览与测试</h2></div>
+          <button class="button" type="button" @click="previewOpen = false">关闭</button>
+        </div>
+        <InteractivePackagePreview :nodes="proposal.activityNodes" mode="package" />
+      </div>
     </div>
   </AppShell>
 </template>

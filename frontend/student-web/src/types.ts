@@ -58,8 +58,12 @@ export type ActivityRenderer =
   | 'completion'
 
 export interface ActivityRuntimeConfig {
-  schemaVersion: 'activity-runtime.v1'
+  schemaVersion: 'activity-runtime.v1' | 'interactive-node-runtime.v2'
+  nodeType?: 'activity' | 'game' | 'instrument_task'
+  family?: string
+  variant?: string
   renderer: ActivityRenderer
+  legacyRenderer?: ActivityRenderer
   props?: Record<string, unknown>
   assets?: Array<Record<string, unknown>>
   assessment?: { resultType?: string; maxScore?: number }

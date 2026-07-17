@@ -5,6 +5,7 @@ import os
 import urllib.error
 import urllib.request
 from typing import Any
+from uuid import uuid4
 
 from app.services.core.env_bootstrap import ensure_env_loaded
 from app.services.activities.activity_interaction_registry import (
@@ -16,13 +17,51 @@ from app.services.activities.activity_interaction_registry import (
 ALLOWED_ACTIVITIES: dict[str, dict[str, Any]] = {
     spec["activity_id"]: spec for spec in list_agent_activity_specs()
 }
+ALLOWED_GAMES = {
+    "rhythm_echo_core": "节奏回声",
+    "beat_guardian_core": "节拍守卫",
+    "pitch_ladder_core": "音高阶梯",
+    "solfege_target_core": "唱名目标",
+    "timbre_detective_core": "音色侦探",
+    "form_treasure_core": "曲式寻宝",
+    "composition_puzzle_core": "创编拼图",
+}
+ALLOWED_INSTRUMENT_TASKS = {
+    "free_play", "steady_beat", "rhythm_echo", "melody_sequence",
+    "ensemble_cue", "constrained_composition",
+}
 
 
 def design_interactive_package(*, lesson: dict[str, Any], preferences: dict[str, Any]) -> dict[str, Any]:
     ensure_env_loaded()
-    from app.services.orchestration.package_design_workflow import run_package_design_workflow
+    trace_id = str(uuid4())
+    errors: list[str] = []
+    providers = [_ecnu_config(), _doubao_config()]
+    for config in providers:
+        if not config.get("enabled"):
+            errors.append(f"{config['provider']}: not configured")
+            continue
+        try:
+            payload = _call_model(config, lesson=lesson, preferences=preferences)
+            chain = _validate_design(payload, lesson=lesson)
+            chain["design"] = {
+                "provider": config["provider"],
+                "model": config["model"],
+                "fallback_reason": "; ".join(errors) or None,
+                "trace_id": trace_id,
+            }
+            return chain
+        except Exception as exc:
+            errors.append(f"{config['provider']}: {_short_error(exc)}")
 
-    return run_package_design_workflow(lesson=lesson, preferences=preferences)
+    fallback = _rule_fallback(lesson)
+    fallback["design"] = {
+        "provider": "rule_fallback",
+        "model": None,
+        "fallback_reason": "; ".join(errors),
+        "trace_id": trace_id,
+    }
+    return fallback
 
 
 def _ecnu_config() -> dict[str, Any]:
@@ -111,22 +150,51 @@ def _validate_design(payload: dict[str, Any], *, lesson: dict[str, Any]) -> dict
     for index, raw in enumerate(raw_steps):
         if not isinstance(raw, dict):
             raise ValueError("each step must be an object")
+        interactive_node_type = str(raw.get("node_type") or "activity").strip()
         activity_id = str(raw.get("activity_id") or "").strip()
+        component_keys: list[str] = []
+        default_title = ""
+        if interactive_node_type == "game":
+            template_id = str(raw.get("template_id") or "").strip()
+            if template_id not in ALLOWED_GAMES:
+                raise ValueError(f"game is not allowed: {template_id}")
+            activity_id = activity_id or "rhythm_question_answer"
+            component_keys = [f"game:{template_id}"]
+            default_title = ALLOWED_GAMES[template_id]
+        elif interactive_node_type == "instrument_task":
+            task_kind = str(raw.get("task_kind") or "").strip()
+            if task_kind not in ALLOWED_INSTRUMENT_TASKS:
+                raise ValueError(f"instrument task is not allowed: {task_kind}")
+            instrument_id = str(raw.get("instrument_id") or (
+                "virtual_piano" if task_kind == "melody_sequence" else "virtual_frame_drum"
+            )).strip()
+            activity_id = activity_id or (
+                "xylophone_creation" if task_kind == "melody_sequence" else "rhythm_warmup"
+            )
+            component_keys = [f"instrument_task:{task_kind}", f"instrument:{instrument_id}"]
+            default_title = "虚拟乐器任务"
+        else:
+            interactive_node_type = "activity"
         try:
             spec = get_activity_interaction(activity_id)
         except ValueError:
             raise ValueError(f"activity is not allowed: {activity_id}")
-        title = str(raw.get("title") or spec["name"]).strip()[:60] or spec["name"]
+        title = str(raw.get("title") or default_title or spec["name"]).strip()[:60] or spec["name"]
+        if not component_keys:
+            component_keys = list(spec["component_keys"])
         steps.append({
             "activity_id": activity_id,
             "title": title,
-            "node_type": spec["node_type"],
+            "node_type": interactive_node_type if interactive_node_type != "activity" else spec["node_type"],
             "sort_order": index + 1,
-            "component_keys": list(spec["component_keys"]),
+            "component_keys": component_keys,
+            "family": spec["family"],
+            "variant": spec["variant"],
         })
     course_name = str(lesson.get("course_name") or "音乐课")
     return {
         "schema_version": "package-design.v1",
+        "design_version": "interactive-package-design.v2",
         "title": str(payload.get("title") or f"{course_name}互动课堂").strip()[:100],
         "reasoning_summary": str(payload.get("reasoning_summary") or "根据教案目标组织课堂活动。")[:500],
         "steps": steps,

@@ -6,7 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 @Entity
 @Table(name = "interactive_packages")
@@ -36,10 +35,6 @@ public class InteractivePackage extends BaseEntity {
     @Column(name = "current_version_id")
     private Long currentVersionId;
 
-    @Version
-    @Column(name = "lock_version", nullable = false)
-    private Long lockVersion = 0L;
-
     public InteractivePackage() {
     }
 
@@ -58,5 +53,4 @@ public class InteractivePackage extends BaseEntity {
     public void setStatus(String status) { this.status = status; }
     public Long getCurrentVersionId() { return currentVersionId; }
     public void setCurrentVersionId(Long currentVersionId) { this.currentVersionId = currentVersionId; }
-    public Long getLockVersion() { return lockVersion; }
 }
