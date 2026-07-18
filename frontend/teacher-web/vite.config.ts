@@ -3,6 +3,9 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
+  resolve: {
+    extensions: ['.ts', '.tsx', '.vue', '.mjs', '.js', '.jsx', '.json'],
+  },
   test: {
     environment: 'happy-dom',
     globals: true,

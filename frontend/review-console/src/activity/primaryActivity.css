@@ -4172,18 +4172,45 @@ body {
   font-size: 18px;
 }
 
-.steady-walk-record pre {
-  background: #172721;
-  border-radius: 8px;
-  color: #fffdfa;
-  font-size: 11px;
-  line-height: 1.45;
+.steady-walk-record-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
   margin: 0;
-  max-height: 220px;
-  overflow: auto;
-  padding: 12px;
-  white-space: pre-wrap;
-  word-break: break-word;
+}
+
+.steady-walk-record-grid > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(23, 106, 91, 0.14);
+  border-radius: 8px;
+  background: #f7fbf8;
+}
+
+.steady-walk-record-grid dt {
+  color: #52645d;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.steady-walk-record-grid dd {
+  margin: 0;
+  color: #172721;
+  font-size: 16px;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.steady-walk-record-grid .steady-walk-record-suggestion {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 760px) {
+  .steady-walk-record-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .melody-contour-board {

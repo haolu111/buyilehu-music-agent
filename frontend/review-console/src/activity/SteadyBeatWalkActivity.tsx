@@ -11,7 +11,6 @@ import {
   type SteadyBeatWalkJudgement
 } from "./steadyBeatWalkLogic";
 import "./primaryActivity.css";
-import { ReadableData } from "./ReadableData";
 
 type SteadyBeatWalkState = {
   workflow?: {
@@ -184,7 +183,18 @@ export function SteadyBeatWalkActivity({ state = window.__STEADY_BEAT_WALK_STATE
 
             <section className="primary-tool steady-walk-record">
               <Text weight="bold">行走记录</Text>
-              <ReadableData value={record} />
+              <dl className="steady-walk-record-grid">
+                <div><dt>节拍</dt><dd>{record.meter}</dd></div>
+                <div><dt>速度</dt><dd>{record.bpm} BPM</dd></div>
+                <div><dt>尝试次数</dt><dd>{record.totalAttempts} 次</dd></div>
+                <div><dt>正确次数</dt><dd>{record.correctCount} 次</dd></div>
+                <div><dt>准确率</dt><dd>{record.accuracy} 分</dd></div>
+                <div><dt>课堂行走准备</dt><dd>{record.readyForClassWalk ? "已准备好" : "需要继续练习"}</dd></div>
+                <div className="steady-walk-record-suggestion">
+                  <dt>教师建议</dt>
+                  <dd>{record.teacherSuggestion}</dd>
+                </div>
+              </dl>
             </section>
           </aside>
         </Grid>
