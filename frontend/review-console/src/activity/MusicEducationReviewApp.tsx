@@ -17,6 +17,7 @@ import {
 } from "../shared/instrumentTimbreCatalog";
 import { playHybridToneSequenceAsync } from "../shared/realAudio";
 import { formalRhythmName } from "./rhythmNaming";
+import { ReadableData } from "./ReadableData";
 import { FIRST_BATCH_COMPONENTS } from "../shared/musicMediaContracts";
 import {
   REVIEW_CATEGORIES,
@@ -578,7 +579,7 @@ function ReviewPreviewPanel({ item, preview, loading, copyStatus, onCopy }: {
           {preview.full_screen_url ? <Button highContrast asChild><a href={preview.full_screen_url} target="_blank" rel="noreferrer"><ExternalLink size={16} />{item.category === "teaching_aid" ? "打开调用该教具的课堂活动" : "全屏打开"}</a></Button> : null}
         </Flex>
         {copyStatus ? <span className="music-review-copy-status">{copyStatus}</span> : null}
-        <details className="music-review-technical-details"><summary>技术信息与质量门禁</summary><pre>{JSON.stringify(preview.technical_details, null, 2)}</pre></details>
+        <details className="music-review-technical-details"><summary>技术信息与质量检查</summary><ReadableData value={preview.technical_details} /></details>
       </> : null}
     </aside>
   );
@@ -594,7 +595,7 @@ function isEvidenceOnlyRole(item: ReviewCatalogItem) {
 }
 
 function KeyValuePreview({ title, value }: { title: string; value: unknown }) {
-  return <div className="music-review-demo-block"><strong>{title}</strong><pre>{JSON.stringify(value, null, 2)}</pre></div>;
+  return <div className="music-review-demo-block"><strong>{title}</strong><ReadableData value={value} /></div>;
 }
 
 function implementationLabel(status: ReviewCatalogItem["implementation_status"]) {

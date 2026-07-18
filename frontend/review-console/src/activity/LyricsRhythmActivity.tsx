@@ -46,6 +46,7 @@ import {
 } from "./lyricsTrainingFlow";
 import { formalRhythmName } from "./rhythmNaming";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type LyricsRhythmState = {
   workflow?: {
@@ -414,7 +415,7 @@ export function LyricsRhythmActivity({ state = window.__LYRICS_RHYTHM_STATE__ ??
                 <p><strong>教师判断：</strong>歌词、咬字、音准、气息、乐句和表现。</p>
                 <p><strong>材料：</strong>{resolved.usingExampleMaterial ? "组件审核示例" : sourceLabel(activePhrase.source)}</p>
                 <p><strong>素养：</strong>{alignment.primary_competency ?? "艺术表现"}</p>
-                {activeRecord ? <details className="lyrics-record-detail"><summary>本句 v2 JSON</summary><pre>{JSON.stringify(activeRecord, null, 2)}</pre></details> : null}
+                {activeRecord ? <details className="lyrics-record-detail"><summary>本句活动记录</summary><ReadableData value={activeRecord} /></details> : null}
               </div>
             </details>
           </aside>

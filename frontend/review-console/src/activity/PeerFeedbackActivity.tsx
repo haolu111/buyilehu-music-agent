@@ -10,6 +10,7 @@ import {
   updatePeerFeedbackSuggestion
 } from "./peerFeedbackLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type PeerFeedbackState = {
   workflow?: {
@@ -161,7 +162,7 @@ export function PeerFeedbackActivity({ state = window.__PEER_FEEDBACK_STATE__ ??
 
             <section className="primary-tool peer-feedback-record">
               <Text weight="bold">展示评价记录</Text>
-              <pre aria-label="展示评价记录导出 JSON">{JSON.stringify(record, null, 2)}</pre>
+              <ReadableData value={record} />
             </section>
 
             <section className="primary-tool classroom-prompts">

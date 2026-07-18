@@ -9,6 +9,7 @@ import {
   evaluateLessonOpening
 } from "./lessonOpeningLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type LessonOpeningState = {
   workflow?: {
@@ -215,7 +216,7 @@ export function LessonOpeningActivity({ state = window.__LESSON_OPENING_STATE__ 
                 生成开场卡
               </Button>
               {submitted ? <Text size="2" color="green">开场卡已保存。{config.next_activity_hint}</Text> : null}
-              <pre aria-label="课堂导入记录导出 JSON">{recordExport}</pre>
+              <ReadableData value={recordExport} />
             </section>
           </aside>
         </Grid>

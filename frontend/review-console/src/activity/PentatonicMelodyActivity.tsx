@@ -13,6 +13,7 @@ import {
   type PentatonicCreationEvent
 } from "./pentatonicMelodyLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type PentatonicMelodyState = {
   workflow?: {
@@ -246,7 +247,7 @@ export function PentatonicMelodyActivity({ state = window.__PENTATONIC_MELODY_ST
                 <span>回放：{creationSummary.auditionCount} 次</span>
               </div>
               <p>{creationSummary.teacherNextStep}</p>
-              <pre aria-label="五声创编记录导出 JSON">{creationExport}</pre>
+              <ReadableData value={creationExport} />
             </section>
 
             <section className="primary-tool classroom-prompts">

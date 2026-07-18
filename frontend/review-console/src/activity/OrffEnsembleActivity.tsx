@@ -23,6 +23,7 @@ import {
   type OrffCriterionStatus
 } from "./orffEnsembleLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type OrffEnsembleState = {
   workflow?: {
@@ -325,7 +326,7 @@ export function OrffEnsembleActivity({ state = window.__ORFF_ENSEMBLE_STATE__ ??
               <div className="ensemble-summary-box">
                 <Text weight="bold">教师下一步</Text>
                 <p>{performanceSummary.teacherNextStep}</p>
-                <pre aria-label="奥尔夫小组表现导出 JSON">{performanceExport}</pre>
+                <ReadableData value={performanceExport} />
               </div>
             </section>
 
@@ -355,7 +356,7 @@ export function OrffEnsembleActivity({ state = window.__ORFF_ENSEMBLE_STATE__ ??
                   </span>
                 ))}
               </div>
-              <pre aria-label="奥尔夫合奏录制导出 JSON">{sessionExport}</pre>
+              <ReadableData value={sessionExport} />
             </section>
 
             <section className="primary-tool classroom-prompts">

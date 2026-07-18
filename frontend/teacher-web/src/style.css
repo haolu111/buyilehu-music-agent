@@ -2883,3 +2883,150 @@ textarea {
   .package-detail-actions { grid-template-columns: 1fr; }
   .login-card { width: calc(100% - 28px); padding: 26px 20px; }
 }
+
+/* Full-screen package preview: keep controls in their own rows and give the
+   reviewed activity every remaining pixel instead of a narrow device card. */
+.preview-modal {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  padding: 0;
+  overflow: hidden;
+  background: rgba(20, 49, 47, 0.22);
+}
+
+.preview-modal-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 12px clamp(12px, 1.5vw, 26px);
+  overflow: hidden;
+  border-radius: 0;
+  background: #fffaf0;
+}
+
+.preview-modal-card > .section-header {
+  min-height: 58px;
+  margin: 0;
+}
+
+.preview-modal-card > .package-preview,
+.preview-modal-card .package-preview {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.preview-modal-card .preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+
+.preview-modal-card .preview-toolbar > div {
+  min-width: 0;
+}
+
+.preview-modal-card .preview-toolbar h2,
+.preview-modal-card .preview-toolbar p {
+  margin-block: 3px;
+}
+
+.preview-modal-card .preview-flow {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.preview-modal-card .preview-flow button {
+  flex: 0 0 auto;
+}
+
+.preview-modal-card .preview-device {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 12px;
+  background: #f2f6f3;
+}
+
+.preview-modal-card .preview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 7px 10px;
+}
+
+.preview-modal-card buyilehu-reviewed-activity {
+  --reviewed-activity-action-gap: 8px;
+  --reviewed-activity-min-height: 0px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.preview-modal-card buyilehu-reviewed-activity > iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  border-radius: 8px !important;
+}
+
+.preview-modal-card buyilehu-reviewed-activity > button {
+  min-height: 40px;
+  margin-top: 8px !important;
+  font-size: 15px;
+}
+
+.preview-modal-card .preview-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 42px;
+}
+
+@media (max-height: 760px) {
+  .preview-modal-card {
+    gap: 6px;
+    padding-block: 7px;
+  }
+
+  .preview-modal-card > .section-header {
+    min-height: 48px;
+  }
+
+  .preview-modal-card .preview-toolbar p {
+    display: none;
+  }
+}

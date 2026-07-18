@@ -11,6 +11,7 @@ import {
   type SteadyBeatWalkJudgement
 } from "./steadyBeatWalkLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type SteadyBeatWalkState = {
   workflow?: {
@@ -183,7 +184,7 @@ export function SteadyBeatWalkActivity({ state = window.__STEADY_BEAT_WALK_STATE
 
             <section className="primary-tool steady-walk-record">
               <Text weight="bold">行走记录</Text>
-              <pre aria-label="稳定拍行走记录导出 JSON">{JSON.stringify(record, null, 2)}</pre>
+              <ReadableData value={record} />
             </section>
           </aside>
         </Grid>

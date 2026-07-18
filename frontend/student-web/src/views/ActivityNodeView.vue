@@ -107,7 +107,7 @@ const assessmentSource = computed(() => {
   if (!value) return '课堂评分'
   if (value.mode === 'service_fallback' || value.mode === 'ai_fallback') return '临时评分'
   const provider = (value.provider || '').toLowerCase()
-  if (provider.includes('ecnu')) return 'ECNU 智能评分'
+  if (provider.includes('ecnu')) return '智能评分'
   if (provider.includes('doubao')) return '豆包智能评分'
   if (value.mode === 'rule') return '系统自动评分'
   if (value.mode === 'completion') return '完成记录'
@@ -190,8 +190,8 @@ onBeforeUnmount(() => window.clearInterval(timer))
 
 <template>
   <main
-    class="page-shell activity-shell"
-    :class="{ 'reviewed-activity-shell': Boolean(runtimeConfig?.componentUrl) && !showResult }"
+    class="page-shell activity-shell reviewed-activity-shell"
+    :class="{ 'activity-result-shell': showResult }"
   >
     <SceneHeader :title="node?.title || '课堂活动'" :subtitle="subtitle" :status="store.currentSession?.status === 'paused' ? '老师已暂停' : activityStatus" />
 

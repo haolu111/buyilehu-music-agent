@@ -10,6 +10,7 @@ import {
   type ExitTicketSubmission
 } from "./exitTicketLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type ExitTicketState = {
   workflow?: {
@@ -176,8 +177,8 @@ export function ExitTicketActivity({ state = window.__EXIT_TICKET_STATE__ ?? def
               <p>已记录 {classSummary.total} 张出口票。</p>
               <p>最多依据：{classSummary.topEvidence || "待提交"}</p>
               <p>{classSummary.reviewSuggestion}</p>
-              <Text as="p" size="1" color="gray">导出 JSON</Text>
-              <pre aria-label="出口票导出 JSON">{exportJson}</pre>
+              <Text as="p" size="1" color="gray">出口票记录</Text>
+              <ReadableData value={exportJson} />
             </section>
 
             <section className="primary-tool classroom-prompts">

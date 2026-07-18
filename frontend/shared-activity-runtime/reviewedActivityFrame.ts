@@ -56,9 +56,15 @@ class ReviewedActivityElement extends HTMLElement {
   }
 
   private sendConfig() {
+    let config: Record<string, unknown> = {}
+    try {
+      config = JSON.parse(JSON.stringify(this.activityConfig)) as Record<string, unknown>
+    } catch {
+      config = {}
+    }
     this.activityFrame?.contentWindow?.postMessage({
       type: 'buyilehu:load-music-content',
-      config: this.activityConfig,
+      config,
     }, window.location.origin)
   }
 

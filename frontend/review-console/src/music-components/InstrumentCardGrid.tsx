@@ -24,7 +24,7 @@ export function InstrumentCardGrid({ instruments, onSelect, onPreviewAudio }: In
           <Text as="p" size="2" weight="bold">乐器家族</Text>
           <Text as="p" size="1" color="gray">音色判断必须来自音频样本</Text>
         </div>
-        <Badge color="blue" variant="soft">instrument_audio_pack</Badge>
+        <Badge color="blue" variant="soft">乐器音频素材包</Badge>
       </Flex>
       <div className="rhythm-card-grid">
         {instruments.map((instrument) => (

@@ -1052,6 +1052,33 @@ body {
   }
 }
 
+/* Embedded classroom activities should fill the host iframe. Individual game
+   layouts remain responsive, but no longer sit inside a centered 1440px island. */
+html,
+body,
+#app {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.student-shell {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(10px, 1.5vw, 24px);
+}
+
+.student-shell.form-treasure-page {
+  margin-inline: auto;
+}
+
+@media (min-width: 1200px) {
+  .student-shell {
+    padding-inline: clamp(18px, 2vw, 36px);
+  }
+}
+
 .beat-guardian-runtime.arcade {
   display: grid;
   gap: 12px;

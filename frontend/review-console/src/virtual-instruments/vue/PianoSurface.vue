@@ -51,7 +51,7 @@ function handleMove(event: PointerEvent): void {
 
 <template>
   <div class="piano-stage" @pointermove.prevent="handleMove">
-    <div class="fallboard"><span>CLASSROOM GRAND</span><i /></div>
+    <div class="fallboard"><span>课堂三角钢琴</span><i /></div>
     <button
       v-for="key in keys"
       :key="key.id"
@@ -68,7 +68,7 @@ function handleMove(event: PointerEvent): void {
       @lostpointercapture="emit('pointerup', $event)"
     ><span>{{ formatPitchLabel(key.midi, { mode: labelMode, tonicMidi, accidentalPreference }) }}</span></button>
     <button class="sustain-pedal" :class="{ active: sustainActive }" type="button" @pointerdown.prevent="emit('sustainchange', true)" @pointerup.prevent="emit('sustainchange', false)" @pointercancel.prevent="emit('sustainchange', false)">
-      <span>延音</span><small>SUSTAIN</small>
+      <span>延音</span><small>延音踏板</small>
     </button>
   </div>
 </template>

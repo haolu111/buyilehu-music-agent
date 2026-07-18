@@ -14,7 +14,7 @@ const params = reactive({
 <template>
   <div class="stack">
     <label>
-      速度 BPM
+      每分钟拍数
       <input v-model.number="params.tempo" min="40" max="180" type="number" @change="emit('change', { ...params })" />
     </label>
     <label class="inline-control">

@@ -657,3 +657,137 @@ textarea:focus,
   .quick-grid { grid-template-columns: 1fr; }
   .classroom-page { padding: 9px 9px 92px; }
 }
+
+/* Reviewed classroom activities use the whole viewport. The activity iframe is
+   the only scrollable content area, so the page and completion action never
+   overlap each other. */
+body:has(.activity-shell) {
+  overflow: hidden;
+}
+
+.page-shell.activity-shell,
+.page-shell.reviewed-activity-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  width: 94vw !important;
+  max-width: 94vw !important;
+  height: calc(100vh - 20px);
+  height: calc(100dvh - 20px);
+  min-height: 0;
+  margin: 10px auto !important;
+  padding: 10px clamp(10px, 1.4vw, 24px);
+  overflow: hidden;
+}
+
+.activity-shell > .scene-header,
+.reviewed-activity-shell > .scene-header {
+  width: 100%;
+  min-height: 74px;
+  margin: 0;
+  padding: 10px 16px;
+}
+
+.activity-shell > .activity-content,
+.reviewed-activity-shell > .activity-content {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.activity-shell buyilehu-reviewed-activity,
+.reviewed-activity-shell buyilehu-reviewed-activity {
+  --reviewed-activity-action-gap: 8px;
+  --reviewed-activity-min-height: 0px;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.activity-shell buyilehu-reviewed-activity > iframe,
+.reviewed-activity-shell buyilehu-reviewed-activity > iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  border-radius: 10px !important;
+}
+
+.activity-shell buyilehu-reviewed-activity > button,
+.reviewed-activity-shell buyilehu-reviewed-activity > button {
+  min-height: 42px;
+  margin-top: 8px !important;
+  font-size: 15px;
+}
+
+.page-shell.activity-result-shell {
+  overflow-y: auto;
+}
+
+.activity-result-shell > .activity-content {
+  display: block;
+  overflow: visible;
+}
+
+.activity-result-shell .tool-panel {
+  align-content: start;
+  width: min(1280px, 100%);
+  height: auto;
+  min-height: 0;
+  margin: 0 auto;
+  padding: clamp(18px, 2vw, 28px);
+  gap: 16px;
+}
+
+.activity-result-shell .submission-success {
+  min-height: 86px;
+  padding: 16px 18px;
+}
+
+.activity-result-shell .student-result-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.activity-result-shell .student-result-grid > span {
+  min-height: 82px;
+  align-content: center;
+}
+
+.activity-result-shell .assessment-panel {
+  min-height: 92px;
+}
+
+.activity-result-shell .action-row {
+  align-items: center;
+  margin-top: 4px;
+}
+
+.activity-result-shell .action-row > button {
+  width: auto;
+  min-height: 44px;
+  padding: 0 18px;
+}
+
+@media (max-height: 760px) {
+  .page-shell.activity-shell,
+  .page-shell.reviewed-activity-shell {
+    gap: 6px;
+    padding-block: 6px;
+  }
+
+  .activity-shell > .scene-header,
+  .reviewed-activity-shell > .scene-header {
+    min-height: 58px;
+    padding-block: 6px;
+  }
+
+  .activity-shell .scene-mark,
+  .reviewed-activity-shell .scene-mark {
+    width: 42px;
+    height: 42px;
+  }
+}

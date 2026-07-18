@@ -12,6 +12,7 @@ import {
   rhythmPatternBeats
 } from "./rhythmQuestionAnswerLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type RhythmQuestionAnswerState = {
   workflow?: {
@@ -196,7 +197,7 @@ export function RhythmQuestionAnswerActivity({ state = window.__RHYTHM_QUESTION_
             <section className="primary-tool rhythm-question-record">
               <Text weight="bold">问答记录</Text>
               <p>{summary.teacherNextStep}</p>
-              <pre aria-label="节奏问答记录导出 JSON">{recordExport}</pre>
+              <ReadableData value={recordExport} />
             </section>
           </aside>
         </Grid>

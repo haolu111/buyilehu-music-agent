@@ -42,7 +42,7 @@ onBeforeUnmount(() => { window.clearInterval(timer); stream?.getTracks().forEach
 
 <template>
   <section class="music-activity">
-    <header><span class="activity-kicker">演唱练习 · {{ bpm }} BPM</span><h2>听一句，唱一句</h2><p>{{ lyrics || '选择乐句，听清旋律后录下你的演唱。' }}</p></header>
+    <header><span class="activity-kicker">演唱练习 · 每分钟 {{ bpm }} 拍</span><h2>听一句，唱一句</h2><p>{{ lyrics || '选择乐句，听清旋律后录下你的演唱。' }}</p></header>
     <audio v-if="audioUrl" class="activity-audio" :src="audioUrl" controls />
     <div class="choice-grid"><button v-for="(phrase, index) in phrases" :key="phrase" type="button" :class="{ selected: activePhrase === index }" @click="activePhrase = index">{{ phrase }}</button></div>
     <div class="recording-strip" :class="{ active: recording }"><span class="record-dot" /><strong>{{ recording ? `录音中 ${seconds} 秒` : attempts ? `已完成 ${attempts} 次录音` : '准备录音' }}</strong></div>

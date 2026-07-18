@@ -891,7 +891,7 @@ function BeatGuardianShell(props: WorldLayoutProps) {
       dataRuntimeShell="beat_guardian_shell"
       dataGameGenre="arcade_guardian"
       eyebrow="充能护盾"
-      accent={<Badge color="teal" variant="solid">Radix UI</Badge>}
+      accent={<Badge color="teal" variant="solid">互动课堂界面</Badge>}
     >
       <BeatGuardianGame {...props.runtimeProps} />
     </RadixGameShell>
@@ -1685,7 +1685,7 @@ function BeatGuardianGame({ state, setFeedback, onProgress, onComplete }: Runtim
       />
       <header className="arcade-topbar compact-template-topbar">
         <div className="arcade-title-lockup">
-          <Text className="eyebrow">The Pulsing Shield</Text>
+          <Text className="eyebrow">律动能量盾</Text>
           <Heading size="6">充能护盾</Heading>
         </div>
         <div className="arcade-mission" aria-label="本局任务">
@@ -3903,7 +3903,7 @@ function CompositionPuzzleGame({ state, setFeedback, onProgress, onComplete }: R
     setCompositionPhase("rhythm");
     setSnapshot(initialCompositionPuzzleSnapshot(sceneConfig));
     return () => controller.destroy();
-  }, [sceneConfig]);
+  }, [config, selectedMeter, selectedTonic, selectedScaleType, currentSegmentIndex]);
 
   const start = () => {
     setCoverVisible(false);

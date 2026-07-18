@@ -20,7 +20,7 @@ const encouragement = computed(() => percentage.value >= 100
       <span v-for="index in 3" :key="index" :class="{ earned: index <= stars }">★</span>
     </div>
     <div class="summary-copy">
-      <p class="summary-kicker">TODAY'S MUSIC</p>
+      <p class="summary-kicker">今日音乐课堂</p>
       <h2>课堂小结</h2>
       <p>{{ encouragement }}</p>
       <div class="summary-progress" aria-label="课堂完成进度">

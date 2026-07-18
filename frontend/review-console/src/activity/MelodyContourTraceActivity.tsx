@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, type PointerEvent } from "react";
 import { playPlayableInstrumentSequence } from "../shared/realAudio";
 import { buildMelodyContourTracePlan, contourToneOffsets } from "./melodyContourTraceLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type MelodyContourState = {
   workflow?: {
@@ -204,7 +205,7 @@ export function MelodyContourTraceActivity({ state = window.__MELODY_CONTOUR_STA
 
             <section className="primary-tool melody-contour-record">
               <Text weight="bold">旋律线记录</Text>
-              <pre aria-label="旋律线记录导出 JSON">{JSON.stringify(record, null, 2)}</pre>
+              <ReadableData value={record} />
             </section>
           </aside>
         </Grid>

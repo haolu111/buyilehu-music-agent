@@ -17,7 +17,7 @@ export function RhythmCardBank({ cards, activeCardId, onSelect }: RhythmCardBank
           <Text as="p" size="2" weight="bold">节奏卡片</Text>
           <Text as="p" size="1" color="gray">可投屏，可替代实体节奏卡</Text>
         </div>
-        <Badge color="amber" variant="soft">rhythm_cards</Badge>
+        <Badge color="amber" variant="soft">节奏卡片</Badge>
       </Flex>
       <div className="rhythm-card-grid">
         {cards.map((card, index) => (

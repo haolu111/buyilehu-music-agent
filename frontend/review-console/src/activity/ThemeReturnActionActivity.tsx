@@ -11,6 +11,7 @@ import {
   type ThemeReturnAttempt
 } from "./themeReturnActionLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type ThemeReturnActionState = {
   workflow?: {
@@ -231,7 +232,7 @@ export function ThemeReturnActionActivity({ state = window.__THEME_RETURN_ACTION
                 <span>{summary.readyForClassShare ? "可全班分享" : "继续复听"}</span>
               </div>
               <p>{summary.teacherNextStep}</p>
-              <pre aria-label="主题再现记录导出 JSON">{recordExport}</pre>
+              <ReadableData value={recordExport} />
             </section>
           </aside>
         </Grid>

@@ -21,6 +21,7 @@ import {
   type GraphicSymbolMeaning
 } from "./graphicScoreLogic";
 import "./primaryActivity.css";
+import { ReadableData } from "./ReadableData";
 
 type GraphicScoreState = {
   workflow?: {
@@ -272,7 +273,7 @@ export function GraphicScoreActivity({ state = window.__GRAPHIC_SCORE_STATE__ ??
                 <span>{summary.readyForPerformance ? "可表演" : "继续修改"}</span>
               </div>
               <p>{summary.teacherNextStep}</p>
-              <pre aria-label="图形谱记录导出 JSON">{recordExport}</pre>
+              <ReadableData value={recordExport} />
             </section>
           </aside>
         </Grid>

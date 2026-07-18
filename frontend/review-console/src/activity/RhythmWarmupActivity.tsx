@@ -15,6 +15,7 @@ import {
   type ResolvedRhythmExercise,
 } from "../shared/rhythmPatternCatalog";
 import { formalRhythmLabel, formalRhythmName } from "./rhythmNaming";
+import { ReadableData } from "./ReadableData";
 import {
   buildBeatTimeline,
   buildDefaultRhythmWarmupToolkit,
@@ -337,7 +338,7 @@ export function RhythmWarmupActivity({ exerciseInput }: RhythmWarmupActivityProp
               {attemptRecord ? (
                 <details className="rhythm-attempt-record">
                   <summary>查看本轮判定记录</summary>
-                  <pre>{JSON.stringify(attemptRecord, null, 2)}</pre>
+                  <ReadableData value={attemptRecord} />
                 </details>
               ) : null}
             </section>
