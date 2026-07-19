@@ -14,6 +14,7 @@ const lessonPlan = ref<LessonPlan | null>(null)
 const error = ref('')
 
 const presentation = computed(() => lessonPlan.value ? presentLessonPlan(lessonPlan.value) : null)
+const parsedJsonPreview = computed(() => createTextPreview(lessonPlan.value?.parsedJson))
 const rawTextPreview = computed(() => createTextPreview(lessonPlan.value?.rawText))
 const hasRecognizedDetails = computed(() => {
   const summary = presentation.value
@@ -59,6 +60,7 @@ onMounted(async () => {
         <p v-else class="muted">未识别课堂流程。</p>
       </section>
       <div class="stack parse-raw-details">
+        <details v-if="lessonPlan.parsedJson" class="card"><summary>查看原始解析数据</summary><pre>{{ parsedJsonPreview.content }}</pre><p v-if="parsedJsonPreview.truncated" class="muted parse-preview-truncated">内容已截断，仅显示前 {{ RAW_PREVIEW_MAX_LENGTH }} 个字符。</p></details>
         <details v-if="lessonPlan.rawText" class="card"><summary>查看教案原文</summary><pre>{{ rawTextPreview.content }}</pre><p v-if="rawTextPreview.truncated" class="muted parse-preview-truncated">内容已截断，仅显示前 {{ RAW_PREVIEW_MAX_LENGTH }} 个字符。</p></details>
       </div>
       <div class="button-row"><RouterLink class="button primary" :to="`/packages/generate?lessonPlanId=${lessonPlanId}`">内容无误，设置课堂</RouterLink></div>

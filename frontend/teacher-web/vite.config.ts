@@ -3,9 +3,6 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  resolve: {
-    extensions: ['.ts', '.tsx', '.vue', '.mjs', '.js', '.jsx', '.json'],
-  },
   test: {
     environment: 'happy-dom',
     globals: true,
@@ -20,6 +17,10 @@ export default defineConfig({
       },
       '/api': {
         target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/static': {
+        target: 'http://localhost:8001',
         changeOrigin: true,
       },
     },

@@ -1,6 +1,8 @@
 import request, { unwrap } from './request'
 import type { GenerationJob, PackageInfo, PackageModifyPayload, PackageModifyResult, PackageVersion, ProposalCard } from '../types'
 
+const PROPOSAL_REQUEST_TIMEOUT = 180000
+
 const createIdempotencyKey = () => (
   globalThis.crypto?.randomUUID?.()
   ?? `generation-${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -83,10 +85,10 @@ export const packageApi = {
     return controller
   },
   getProposal(packageId: number) {
-    return unwrap<ProposalCard>(request.get(`/packages/${packageId}/proposal`))
+    return unwrap<ProposalCard>(request.get(`/packages/${packageId}/proposal`, { timeout: PROPOSAL_REQUEST_TIMEOUT }))
   },
   confirmProposal(packageId: number) {
-    return unwrap<ProposalCard>(request.post(`/packages/${packageId}/proposal/confirm`))
+    return unwrap<ProposalCard>(request.post(`/packages/${packageId}/proposal/confirm`, undefined, { timeout: PROPOSAL_REQUEST_TIMEOUT }))
   },
   getPackage(packageId: number) {
     return unwrap<PackageInfo>(request.get(`/packages/${packageId}`))
